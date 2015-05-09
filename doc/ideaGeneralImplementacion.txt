@@ -1,0 +1,117 @@
+Listado de clases de connect4 con sus respectivos atributos y métodos.
+
+
+
+
+//Tenemos que ver el tema de los invitados, no propuse ideas porque no tengo bien en claro el funcionamiento de activeJDBC. Lo que se me ocurre es que User va a tener que tener si o si, un atributo identificador y un atributo que diga el tipo de User que es si es registrado o no
+
+public class User extends Model{
+	
+
+	//Corrobora si e-mail, nickname y pass son correctas para registrarse.
+	private void isValidateSignUpUser(e-mail,nickname,pass) throws UserException;			
+	
+	//Corrobora si los datos para loguearse son correctos.
+	public void isValidateSignInUser(e-mail,pass);
+
+	//Registra nuevo usuario, corroborando e-mail, nickname y pass mediante isValidateSignUpUser.
+	public void insertUser (e-mail, nickname, pass) throws UserException;
+
+	//Elimina usuario del sistema.
+	public void deleteUser(e-mail,pass) throws UserException;
+
+	//Tiene que haber un metodo que asigne un nombre aleatorio a los users invitados.
+
+}
+
+public class Rank extends Model{
+	User player;
+
+	Rank(User p){
+		this.player=p;
+	}	
+
+	//Registra una partida ganada para player, y una partida perdida para player2;
+	public void userWin(User player2 ) throws UserException;
+
+	//Registra una partida empatada para player y player2;
+	public void userDraw (User player2) throws UserException;
+
+}
+
+public class Match extends Model{
+	User player1,player2;
+	Board b1;
+
+	public Match(User p1, User p2){
+		this.player1=p1;
+		this.player2=p2;
+		b1=new Board(player1,player2);
+	}
+
+
+	//Precondition: columna debe ser un int entre 1 y 6.
+	//Inserta una ficha en el tablero b1
+	public void doMovement(User p, int colum) throws Connect4Exception;
+
+	//Checkea si luego de un movimiento gana 
+	public boolean isWin();
+
+	//Actualiza rank luego de que haya un ganador. Utiliza metodo de Rank
+	public boolean updateRankWithWinner(User winner);
+
+	//Actualiza rank luego de que ha ocurrido un empate. Utiliza metodo de Rank.
+	public boolean updateRankWithDraw();
+}
+
+//Ver si se guardan datos del estado del tablero, supongamos que no. Importar java.util.ArrayList;
+public class Board{
+
+	private ArrayList<Stack<Cell>> board;				
+
+	public Board(User p1,User p2){}
+
+	//NOTA:Realizo metodos diferenciados para llenar celdas (fill cell) por el hecho de que  la imagen o simbolo que identifique las fichas de cada jugador, son distintas para cada uno de ellos.
+	
+	//Poscondition:colum debe ser un int entre 1 y 6
+	public fillCellP1(int colum);
+	public fillCellP2(int colum);
+
+	//Vacia board.
+	public void EmptyBoard();
+
+	//Imprime tablero en terminal.
+	public void printBoard();
+
+	public void setBoard(ArrayList<Stack<Cell>>);
+	public ArrayList<Stack<Cell>> getBoard();
+}
+
+
+
+public class Cell{
+	private User cellOwner;  //Dueño de celda.
+	private String signId; //Identificador por ejemplo X o O. luego el identificador va a ser una imagen(.png)
+
+
+	public void setCellOWner(User p);
+	public void setSignId(String s);
+	public User getCellOwner();
+	publuc String getSignId();
+}
+
+//Clase que en conjunto con UserException permitiran en la clase principal chequear los usuarios que deseen loguearse tanto como registrarse. Vean https://www.youtube.com/watch?v=mCmu7Ps55Dc que lo explica joya.
+
+public class UserValidate{
+	
+
+}
+
+public class UserException extends Exception();
+
+public class App{
+	
+	//Va tener varios menus. En esta clase se van a encontrar metodos que permitan el ingreso de datos para el sing in o el sing up,el control de turnos para cada jugador.
+
+
+}
