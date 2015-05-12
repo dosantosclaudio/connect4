@@ -1,5 +1,7 @@
 package com.unrc.app;
 
-public class Game{
+import org.javalite.activejdbc.Model;
+
+public class Game extends Model{
 	
 }
