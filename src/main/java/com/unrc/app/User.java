@@ -23,7 +23,7 @@ public class User extends Model {
   	//Metodo que permite ingresar user a la base de datos. Debe ser situada dentro de una sentencia try/catch
 	public void insert(String email,String fName,String lName,String pass) throws UserException{
   		UserValidate helper=new UserValidate();
-	  	helper.isValidateSignUpUser(email,fName,lName,pass);
+	  	helper.isValidateSignUpUser(email,fName,lName,pass); 
 	  	User u=new User();
 	  	User.createIt("email",email,"first_name",fName,"last_name",lName,"password",pass);
 	}
