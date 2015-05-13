@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS users;
 CREATE TABLE users(
     id INT NOT NULL AUTO_INCREMENT,
     email VARCHAR(60) UNIQUE,
+    password VARCHAR (56) NOT NULL,
     first_name VARCHAR(56) DEFAULT NULL,
     last_name VARCHAR(56) DEFAULT NULL,
   CONSTRAINT users_pk PRIMARY KEY (id)
