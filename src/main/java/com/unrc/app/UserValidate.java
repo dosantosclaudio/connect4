@@ -8,7 +8,7 @@ public class UserValidate {
 	}
 
 	//Permite verificar si los datos ingresados son correctos para registrarse en el sistema
-	public void isValidateSiggUpUser(String email,String fName,String lName,String password) throws UserException{
+	public void isValidateSignUpUser(String email,String fName,String lName,String password) throws UserException{
 	  	List<User> list=User.where("email = ?",email);
 	  	//Si ya existe el email en la base de datos.(Email es unico).
 	  	if (list.size()!=0) {
