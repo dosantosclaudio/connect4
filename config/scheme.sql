@@ -1,4 +1,13 @@
+-- CONSULTAR AL CHINO sobre el error que tira al eliminaR LAS lineas de set.
+SET FOREIGN_KEY_CHECKS=0;
+DROP TABLE IF EXISTS ranks;
+DROP TABLE IF EXISTS games;
 DROP TABLE IF EXISTS users;
+SET FOREIGN_KEY_CHECKS=1;
+
+/*
+ *	Se crea la tabla users 
+ */
 CREATE TABLE users(
     id INT NOT NULL AUTO_INCREMENT,
     email VARCHAR(60) UNIQUE,
@@ -8,7 +17,9 @@ CREATE TABLE users(
   CONSTRAINT users_pk PRIMARY KEY (id)
 );
 
-DROP TABLE IF EXISTS ranks;
+/*
+ *	Se crea la tabla ranks
+ */
 CREATE TABLE ranks(
 	id INT NOT NULL AUTO_INCREMENT,
 	won_games INT NOT NULL DEFAULT 0,
@@ -20,8 +31,9 @@ CREATE TABLE ranks(
   CONSTRAINT users_fk FOREIGN KEY (user_id) REFERENCES users(id)
  );
 
-
-DROP TABLE IF EXISTS games;
+/*
+ *	Se crea la tabla games
+ */
 CREATE TABLE games(
 	id INT NOT NULL AUTO_INCREMENT, 
 	player1 INT NOT NULL,
