@@ -1,7 +1,7 @@
 package com.unrc.app;
 
 import org.javalite.activejdbc.Model;
-
+import java.util.UUID;
 public class User extends Model {
 
 	private String emailGuest, fNameGuest, lNameGuest;
@@ -10,17 +10,20 @@ public class User extends Model {
 		validatePresenceOf("email");
 	}
 
+	public void UserGuest(){
+		this.emailGuest=getEmailGuest();
+	}
 
 	//Metodo que permite loguearse. Debe ser situada dentro de una sentencia try/catch
 	public void signIn(String email,String pass) throws UserException{
 	  	UserValidate helper=new UserValidate();
-	  	helper.isValidateSingInUser(email,pass);
+	  	helper.isValidateSignInUser(email,pass);
   	}
 
   	//Metodo que permite ingresar user a la base de datos. Debe ser situada dentro de una sentencia try/catch
 	public void insert(String email,String fName,String lName,String pass) throws UserException{
   		UserValidate helper=new UserValidate();
-	  	helper.isValidateSingUpUser(email,fName,lName,pass);
+	  	helper.isValidateSignUpUser(email,fName,lName,pass);
 	  	User u=new User();
 	  	User.createIt("email",email,"first_name",fName,"last_name",lName,"password",pass);
 	}
@@ -30,4 +33,14 @@ public class User extends Model {
 	  	//hacer
 	}
 
+<<<<<<< HEAD
 }
+=======
+	public String getEmailGuest(){
+		return UUID.randomUUID().toString().substring(0,7);						//Ver el tema de repetidos, poca probabilidad.
+		
+
+	}
+
+}
+>>>>>>> 33aab249ccfe6b69e7daadd2f314fa7292683892
