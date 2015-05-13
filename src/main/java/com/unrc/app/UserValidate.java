@@ -1,5 +1,6 @@
 package com.unrc.app;
 import java.util.List;
+
 public class UserValidate {
 	
 	public UserValidate(){
@@ -7,7 +8,7 @@ public class UserValidate {
 	}
 
 	//Permite verificar si los datos ingresados son correctos para registrarse en el sistema
-	public void isValidateSingUpUser(String email,String fName,String lName,String password) throws UserException{
+	public void isValidateSiggUpUser(String email,String fName,String lName,String password) throws UserException{
 	  	List<User> list=User.where("email = ?",email);
 	  	//Si ya existe el email en la base de datos.(Email es unico).
 	  	if (list.size()!=0) {
@@ -23,7 +24,7 @@ public class UserValidate {
 
   	//Verifica en la base de datos si el email está y si la contraseña es la correcta
 
-  	public void isValidateSingInUser(String email,String pass)throws UserException{
+  	public void isValidateSignInUser(String email,String pass)throws UserException{
   		
   		List<User> list=User.where("email = ?",email);
   		//Si no existe el email en la base de datos.
