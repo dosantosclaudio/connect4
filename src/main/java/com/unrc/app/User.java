@@ -1,5 +1,5 @@
 package com.unrc.app;
-
+import java.util.List;
 import org.javalite.activejdbc.Model;
 import java.util.UUID;
 public class User extends Model {
@@ -7,21 +7,23 @@ public class User extends Model {
 	private String emailGuest, fNameGuest, lNameGuest;
 
 	static {
-		validatePresenceOf("email");
+		validatePresenceOf("email","password");
 	}
 
 	public void UserGuest(){
 		this.emailGuest=getEmailGuest();
 	}
 
+	
 	//Metodo que permite loguearse. Debe ser situada dentro de una sentencia try/catch
-	public void signIn(String email,String pass) throws UserException{
+	public static User signIn(String email,String pass) throws UserException{
 	  	UserValidate helper=new UserValidate();
 	  	helper.isValidateSignInUser(email,pass);
+	  	return (User) User.where("email = ?",email).get(0);
   	}
 
   	//Metodo que permite ingresar user a la base de datos. Debe ser situada dentro de una sentencia try/catch
-	public void insert(String email,String fName,String lName,String pass) throws UserException{
+	public static void insert(String email,String fName,String lName,String pass) throws UserException{
   		UserValidate helper=new UserValidate();
 	  	helper.isValidateSignUpUser(email,fName,lName,pass); 
 	  	User u=new User();
