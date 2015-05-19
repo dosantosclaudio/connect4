@@ -7,7 +7,7 @@ public class User extends Model {
 	private String emailGuest, fNameGuest, lNameGuest;
 
 	static {
-		validatePresenceOf("email");
+		validatePresenceOf("email","password");
 	}
 
 	public void UserGuest(){
