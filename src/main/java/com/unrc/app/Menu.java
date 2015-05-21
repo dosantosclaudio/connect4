@@ -37,9 +37,14 @@ public class Menu{
 				signUpMenu();
 				break;
 			case "2":
-				Pair<User,User> p=userMenu(signInMenu());
+				Pair<User,User> p=userMenu(signInMenu());		//Hay que cambiar Pair por game
 				break;
 			case "3":
+				User guest=new User();
+				guest.userGuest();
+				guest.setFirstNameGuest("Example1");
+				guest.setLastNameGuest("Example1");
+				Pair<User,User> p1 =userMenu(guest);				//Hay que cambiar Pair por game
 				
 				break;
 			case "4":
@@ -73,7 +78,7 @@ public class Menu{
 
 
 	private void signUpMenu(){
-		
+		clearConsole();
 		System.out.println("*************************************");
 		System.out.println("***********  CONNECT4  **************");
 		System.out.println("");
@@ -206,11 +211,21 @@ public class Menu{
 
 	public Pair<User,User> userMenu(User u){
 		clearConsole();
-		List<User> anotherU=User.where("email <> ?",u.get("email"));
-		clearConsole();
+		List<User> anotherU;
+		if (u.isGuest()){
+			 anotherU=User.findAll();
+			clearConsole();
+		}else{
+			 anotherU=User.where("email <> ?",u.get("email"));
+			clearConsole();
+		}
 		System.out.println("*************************************");
 		System.out.println("***********  CONNECT4  **************\n\n");
-		System.out.println ("User info - email: "+u.get("email")+ "	- Name: "+u.get("first_name")+" "+u.get("last_name"));
+		if (u.isGuest()){
+			System.out.println ("User info - email: "+u.getEmailGuest()+ "	- Name: "+u.getFirstNameGuest()+" "+u.getLastNameGuest());
+		}else {
+			System.out.println ("User info - email: "+u.get("email")+ "	- Name: "+u.get("first_name")+" "+u.get("last_name"));	
+		}
 		System.out.println("Please any key for search another user");
 		int count=0;
 		for (User user: anotherU){
