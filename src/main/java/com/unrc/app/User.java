@@ -33,9 +33,7 @@ public class User extends Model {
 	  	//hacer
 	}
 
-<<<<<<< HEAD
-}
-=======
+
 	public String getEmailGuest(){
 		return UUID.randomUUID().toString().substring(0,7);						//Ver el tema de repetidos, poca probabilidad.
 		
@@ -43,4 +41,3 @@ public class User extends Model {
 	}
 
 }
->>>>>>> 33aab249ccfe6b69e7daadd2f314fa7292683892
