@@ -10,14 +10,8 @@ import java.io.Console;
 public class App
 {
 	public App(){
-		Menu m=new Menu();
+		//Menu m=new Menu();
 	}
-
-
-
-
-
-
 
     public static void main( String[] args )
     {

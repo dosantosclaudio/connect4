@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="3" failures="0" name="com.unrc.app.BoardTest" time="0.311" errors="3" skipped="0">
+<testsuite tests="3" failures="0" name="com.unrc.app.BoardTest" time="0.244" errors="3" skipped="0">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="/usr/lib/jvm/java-8-oracle/jre/lib/amd64"/>
@@ -59,7 +59,7 @@
     <property name="sun.desktop" value="gnome"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase classname="com.unrc.app.BoardTest" name="shouldValidateBoardCreation2" time="0.156">
+  <testcase classname="com.unrc.app.BoardTest" name="shouldValidateBoardCreation2" time="0.116">
     <error type="java.lang.NullPointerException">java.lang.NullPointerException
 	at com.unrc.app.BoardTest.shouldValidateBoardCreation2(BoardTest.java:50)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
@@ -98,7 +98,7 @@
 BoardTest tearDown
 </system-out>
   </testcase>
-  <testcase classname="com.unrc.app.BoardTest" name="shouldValidateBoardCreation3" time="0.076">
+  <testcase classname="com.unrc.app.BoardTest" name="shouldValidateBoardCreation3" time="0.074">
     <error type="java.lang.NullPointerException">java.lang.NullPointerException
 	at com.unrc.app.BoardTest.shouldValidateBoardCreation3(BoardTest.java:64)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
@@ -137,7 +137,7 @@ BoardTest tearDown
 BoardTest tearDown
 </system-out>
   </testcase>
-  <testcase classname="com.unrc.app.BoardTest" name="shouldValidateBoardCreation" time="0.078">
+  <testcase classname="com.unrc.app.BoardTest" name="shouldValidateBoardCreation" time="0.05">
     <error type="java.lang.NullPointerException">java.lang.NullPointerException
 	at com.unrc.app.BoardTest.shouldValidateBoardCreation(BoardTest.java:37)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
