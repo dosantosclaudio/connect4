@@ -26,8 +26,8 @@ public class BoardTest {
         Base.rollbackTransaction();
         Base.close();
     }
-
 /*
+
     @Test
     public void shouldValidateBoardCreation(){ //CONSULTAR TODOS LOS TEST NCONSTRUCTOR GAME NO ANDA bIEN
         User u1= User.createIt("email","direccion@gmail.com","password","password","first_name","nombre");

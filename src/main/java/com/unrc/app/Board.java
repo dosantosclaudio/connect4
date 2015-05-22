@@ -4,17 +4,16 @@ import java.lang.Exception;
 import org.javalite.activejdbc.Model;
 
 public class Board extends Model{
-	Board bo;
 	public Board(){}
 
 	public Board(Game g){
-		bo =new Board();
-		bo.set("game_id",g.get("id"));
-		bo.saveIt();
+		
+		this.set("game_id",g.get("id"));
+		this.saveIt();
 		for (int i=0; i<7; i++) {
 			for (int j=0; j<6; j++) {
 				Cell aux= new Cell();
-				aux.set("board_id",bo.get("id"));
+				aux.set("board_id",this.get("id"));
 				aux.set("user_id",null);
 				aux.set("col",i);
 				aux.set("row",j);
@@ -31,7 +30,7 @@ public class Board extends Model{
 		if (colum<0 || colum>=7){
 			throw new BoardException("Invalid column value","001");
 		}else{
-			aux= Cell.where("board_id = ? and col = ?",bo.get("id"), colum).orderBy("row");
+			aux= Cell.where("board_id = ? and col = ?",this.get("id"), colum).orderBy("row");
 			while (i<6 && aux.get(i).get("user_id")!=null){
 				i++;
 			}
@@ -52,7 +51,7 @@ public class Board extends Model{
 	public void emptyBoard(){
 		for (int i=0; i<7; i++) {
 			for (int j=0; j<6; j++) {
-				Cell aux= Cell.createIt("board_id",bo.get("id"),"row",j,"col",i);
+				Cell aux= Cell.createIt("board_id",this.get("id"),"row",j,"col",i);
 				aux.saveIt();
 			}
 		}
@@ -61,27 +60,34 @@ public class Board extends Model{
 	//	Show the board on the screen
 	public void printBoard(Pair<User,User> players){
 		Menu.clearConsole();
+		char[][] o = new char[6][7];
 		for (int i=0; i<6; i++) {
-			System.out.println("");
-			for (int j=6; j>=0; j--) {
-				List<Cell> aux= Cell.where("board_id = ? and col = ? and row = ?",bo.get("id"),i,j);
+			for (int j=6; j>=0; j--){
+				List<Cell> aux= Cell.where("board_id = ? and col = ? and row = ?",this.get("id"),j,i);
 				Cell c = aux.get(0);
 				if (players.getFst().get("id")== c.get("user_id")) {
-					System.out.print("X ");
+					o[i][j]='X';
 				}else{
 					if (players.getSnd().get("id")== c.get("user_id")) {
-						System.out.print("0 ");
+						o[i][j]='0';
 					}else{
-						System.out.print("- ");
+						o[i][j]='-';
 					}
 				}
+			}
+		}
+		for (int i=0; i<6; i++) {
+			System.out.println("");
+			for (int j=6; j>=0; j--){
+				System.out.print(o[i][j]);
 			}
 		}
 	}
 
 	// Return true when the board is full
 	public Boolean fullBoard(){
-		List<Cell> c=Cell.where("board_id = ? and user_id = ?",bo.get("id"),null);
+		List<Cell> c=Cell.where("board_id = ? and user_id is null",this.get("id"));
+		System.out.println(c.size());
 		return c.isEmpty();
 	}
 }

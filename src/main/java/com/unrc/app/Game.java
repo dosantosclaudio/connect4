@@ -11,37 +11,29 @@ import org.javalite.activejdbc.annotations.BelongsToParents;
 })
 
 public class Game extends Model{ 	
-	Game gm;
+
 	
 	public Game(){
 	}
 
 	public Game(Pair<User,User> p){
-		gm=new Game();
-		User p1=  p.getFst();
-		User p2=  p.getSnd();
-		gm.set("player1_id",p1.get("id"));
-		gm.set("player2_id", p2.get("id"));
-		gm.saveIt();
-		Board b = new Board(gm);	
+		this.set("player1_id",p.getFst().get("id"));
+		this.set("player2_id",p.getSnd().get("id"));
+		this.saveIt();
+		Board b = new Board(this);
 	}
 
 	//	Insert chip on the board
 	public Cell doMovement(User p){
 		int column=-1;
-		System.out.println(gm.get("id"));
-
-		Board b =Board.findFirst("game_id = ?", gm.get("id"));
-		System.out.println(b);
+		Board b =Board.findFirst("game_id = ?", this.get("id"));
 		Cell c=null;
 		try{
 			column = requestCol();
-			System.out.println(column);
 		}catch(Exception e){
 			return doMovement(p);
 		}
 		try{
-			System.out.println(p);
 			c= b.fillCell(p,column);
 		}catch(BoardException f){
 			switch (f.getCode()){
@@ -75,7 +67,7 @@ public class Game extends Model{
 			return 0;  // this place is not in the board.
 		}else{
 			// the place is valid in this board.
-			List<Cell> aux= Cell.where("board_id=? and col = ? and row = ?",Board.findFirst("game_id = ?",gm.get("id")).get("id"),c,r);
+			List<Cell> aux= Cell.where("board_id=? and col = ? and row = ?",Board.findFirst("game_id = ?",this.get("id")).get("id"),c,r);
 			Cell aux_1=aux.get(0);
 			if (aux_1.get("user_id")==usr.get("id")) {
 				return 1+dSearch(usr,c,r-1);
@@ -91,7 +83,7 @@ public class Game extends Model{
 			return 0;  // this place is not in the board.
 		}else{
 			// the place is valid in this board.
-			List<Cell> aux= Cell.where("board_id = ? and col = ? and row = ?",Board.findFirst("game_id = ?",gm.get("id")).get("id"),c,r);
+			List<Cell> aux= Cell.where("board_id = ? and col = ? and row = ?",Board.findFirst("game_id = ?",this.get("id")).get("id"),c,r);
 			
 			System.out.println(c);
 			System.out.println(r);
@@ -110,7 +102,7 @@ public class Game extends Model{
 			return 0;  // this place is not in the board.
 		}else{
 			// the place is valid in this board.
-			List<Cell> aux= Cell.where("board_id=? and col = ? and row = ?",Board.findFirst("game_id = ?",gm.get("id")).get("id"),c,r);
+			List<Cell> aux= Cell.where("board_id=? and col = ? and row = ?",Board.findFirst("game_id = ?",this.get("id")).get("id"),c,r);
 			Cell aux_1=aux.get(0);
 			if (aux_1.get("user_id")==usr.get("id")) {
 				return 1+lSearch(usr,c-1,r);
@@ -126,7 +118,7 @@ public class Game extends Model{
 			return 0;  // this place is not in the board.
 		}else{
 			// the place is valid in this board.
-			List<Cell> aux= Cell.where("board_id=? and col = ? and row = ?",Board.findFirst("game_id = ?",gm.get("id")).get("id"),c,r);
+			List<Cell> aux= Cell.where("board_id=? and col = ? and row = ?",Board.findFirst("game_id = ?",this.get("id")).get("id"),c,r);
 			Cell aux_1=aux.get(0);
 			if (aux_1.get("user_id")==usr.get("id")) {
 				return 1+ uRSearch(usr,c+1,r+1);
@@ -142,7 +134,7 @@ public class Game extends Model{
 			return 0;  // this place is not in the board.
 		}else{
 			// the place is valid in this board.
-			List<Cell> aux= Cell.where("board_id=? and col = ? and row = ?",Board.findFirst("game_id = ?",gm.get("id")).get("id"),c,r);
+			List<Cell> aux= Cell.where("board_id=? and col = ? and row = ?",Board.findFirst("game_id = ?",this.get("id")).get("id"),c,r);
 			Cell aux_1=aux.get(0);
 			if (aux_1.get("user_id")==usr.get("id")) {
 				return 1+dLSearch(usr,c-1,r-1);
@@ -158,14 +150,14 @@ public class Game extends Model{
 			return 0;  // this place is not in the board.
 		}else{
 			// the place is valid in this board.
-			List<Cell> aux= Cell.where("board_id=? and col = ? and row = ?",Board.findFirst("game_id = ?",gm.get("id")).get("id"),c,r);
+			List<Cell> aux= Cell.where("board_id=? and col = ? and row = ?",Board.findFirst("game_id = ?",this.get("id")).get("id"),c,r);
 			Cell aux_1=aux.get(0);
 			if (aux_1.get("user_id")==usr.get("id")) {
 				return 1+uLSearch(usr,c+1,r-1);
 			}else{
 				return 0;
 			}
-		}b
+		}
 	}
 
 	// Down-right search.
@@ -174,7 +166,7 @@ public class Game extends Model{
 			return 0;  // this place is not in the board.
 		}else{
 			// the place is valid in this board.
-			List<Cell> aux= Cell.where("board_id=? and col = ? and row = ?",Board.findFirst("game_id = ?",gm.get("id")).get("id"),c,r);
+			List<Cell> aux= Cell.where("board_id=? and col = ? and row = ?",Board.findFirst("game_id = ?",this.get("id")).get("id"),c,r);
 			Cell aux_1=aux.get(0);
 			if (aux_1.get("user_id")==usr.get("id")) {
 				return 1+dRSearch(usr,c-1,r+1);
@@ -207,12 +199,12 @@ public class Game extends Model{
 	}
 
 	public boolean full(){
-		Board b= Board.findFirst("game_id= ?",gm.get("id"));
+		Board b= Board.findFirst("game_id= ?",this.get("id"));
 		return b.fullBoard();
 	}
 
 	public void printBoardOnScreen(Pair<User,User> players){
-		Board b= Board.findFirst("game_id= ?",gm.get("id"));
+		Board b= Board.findFirst("game_id= ?",this.get("id"));
 		b.printBoard(players);
 	}
 }
