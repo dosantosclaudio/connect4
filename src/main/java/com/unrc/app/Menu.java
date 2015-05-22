@@ -226,14 +226,22 @@ public class Menu{
 		}else {
 			System.out.println ("User info - email: "+u.get("email")+ "	- Name: "+u.get("first_name")+" "+u.get("last_name"));	
 		}
-		System.out.println("Please any key for search another user");
+		System.out.println("Please some key for select another user");
 		int count=0;
 		for (User user: anotherU){
-			System.out.println ("	"+Integer.toString(count++)+"- email: "+user.get("email")+"		Name: "+user.get("first_name")+" "+user.get("last_name"));
+			count++;
+			System.out.println ("	"+Integer.toString(count)+"- email: "+user.get("email")+"		Name: "+user.get("first_name")+" "+user.get("last_name"));
+		}
+		if (count==0){
+			System.out.println("There aren't available users, try again. Press Enter for continue ");
+			Scanner inputScanner = new Scanner(System.in);
+			String em=inputScanner.nextLine();
+			main_menu();
 		}
 		System.out.print("User: ");
 		Scanner inputScanner = new Scanner(System.in);
 		String em=inputScanner.nextLine();
-		return new Pair(u, anotherU.get(Integer.parseInt(em)));
+		return new Pair(u, anotherU.get(Integer.parseInt(em)-1));
 	}
 }
+

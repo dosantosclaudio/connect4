@@ -29,6 +29,8 @@ public class User extends Model {
 	  	helper.isValidateSignUpUser(email,fName,lName,pass); 
 	  	User u=new User();
 	  	User.createIt("email",email,"first_name",fName,"last_name",lName,"password",pass);
+	  	u=findFirst("email = ?",email);
+	  	Rank.createIt("user_id",u.get("id"));	//Crear Ranking para usuario recien creado. 
 	}
 
 	//Metodo que permite eliminar usuario, ver despues por el tema de la eliminacion en cascada.
@@ -37,9 +39,9 @@ public class User extends Model {
 	}
 
 
+
 	public String getRandomEmailGuest(){
-		return UUID.randomUUID().toString().substring(0,7);						//Ver el tema de repetidos, poca probabilidad.
-		
+		return UUID.randomUUID().toString().substring(0,7);						//Ver el tema de repetidos, poca probabilidad.	
 	}
 
 	public boolean isGuest(){
