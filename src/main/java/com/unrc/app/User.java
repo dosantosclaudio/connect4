@@ -35,6 +35,7 @@ public class User extends Model {
 	  	//hacer
 	}
 
+
 	public String getEmailGuest(){
 		return UUID.randomUUID().toString().substring(0,7);						//Ver el tema de repetidos, poca probabilidad.
 		

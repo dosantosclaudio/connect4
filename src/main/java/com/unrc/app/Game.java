@@ -11,46 +11,55 @@ import org.javalite.activejdbc.annotations.BelongsToParents;
 })
 
 public class Game extends Model{ 	
+	Game gm;
 	
 	public Game(){
-
 	}
 
-	public Game(User p1,User p2){
-		Game g = new Game();
-		g.set("player1_id",p1.get("id"));
-		g.set("player2_id", p2.get("id"));
-		g.saveIt();
-		Board b = new Board(g);
+	public Game(Pair<User,User> p){
+		gm=new Game();
+		User p1=  p.getFst();
+		User p2=  p.getSnd();
+		gm.set("player1_id",p1.get("id"));
+		gm.set("player2_id", p2.get("id"));
+		gm.saveIt();
+		Board b = new Board(gm);	
 	}
-
 
 	//	Insert chip on the board
-	public void doMovement(User p){
+	public Cell doMovement(User p){
 		int column=-1;
-		Board b =Board.findFirst("game_id = ?",this.get("id"));
+		System.out.println(gm.get("id"));
+
+		Board b =Board.findFirst("game_id = ?", gm.get("id"));
+		System.out.println(b);
+		Cell c=null;
 		try{
 			column = requestCol();
+			System.out.println(column);
 		}catch(Exception e){
-			this.doMovement(p);
+			return doMovement(p);
 		}
 		try{
-			b.fillCell(p,column);
+			System.out.println(p);
+			c= b.fillCell(p,column);
 		}catch(BoardException f){
 			switch (f.getCode()){
 				case "000":
 					System.out.println("Has been detected some problems in this aplication ");
+					c=null;
 					break;
 				case "001":
 					System.out.println(f.getMessage());
-					this.doMovement(p);
+					c=doMovement(p);
 					break;
 				case "002":
 					System.out.println(f.getMessage());
-					this.doMovement(p);
+					c=doMovement(p);
 					break;
 			}
 		}
+		return c;
 	}
 
 	private int requestCol() throws Exception{
@@ -66,7 +75,7 @@ public class Game extends Model{
 			return 0;  // this place is not in the board.
 		}else{
 			// the place is valid in this board.
-			List<Cell> aux= Cell.where("board_id=? and col = ? and row = ?",Board.findFirst("game_id = ?",this.get("id")),c,r);
+			List<Cell> aux= Cell.where("board_id=? and col = ? and row = ?",Board.findFirst("game_id = ?",gm.get("id")).get("id"),c,r);
 			Cell aux_1=aux.get(0);
 			if (aux_1.get("user_id")==usr.get("id")) {
 				return 1+dSearch(usr,c,r-1);
@@ -82,7 +91,10 @@ public class Game extends Model{
 			return 0;  // this place is not in the board.
 		}else{
 			// the place is valid in this board.
-			List<Cell> aux= Cell.where("board_id=? and col = ? and row = ?",Board.findFirst("game_id = ?",this.get("id")),c,r);
+			List<Cell> aux= Cell.where("board_id = ? and col = ? and row = ?",Board.findFirst("game_id = ?",gm.get("id")).get("id"),c,r);
+			
+			System.out.println(c);
+			System.out.println(r);
 			Cell aux_1=aux.get(0);
 			if (aux_1.get("user_id")==usr.get("id")) {
 				return 1+rSearch(usr,c+1,r);
@@ -98,7 +110,7 @@ public class Game extends Model{
 			return 0;  // this place is not in the board.
 		}else{
 			// the place is valid in this board.
-			List<Cell> aux= Cell.where("board_id=? and col = ? and row = ?",Board.findFirst("game_id = ?",this.get("id")),c,r);
+			List<Cell> aux= Cell.where("board_id=? and col = ? and row = ?",Board.findFirst("game_id = ?",gm.get("id")).get("id"),c,r);
 			Cell aux_1=aux.get(0);
 			if (aux_1.get("user_id")==usr.get("id")) {
 				return 1+lSearch(usr,c-1,r);
@@ -114,7 +126,7 @@ public class Game extends Model{
 			return 0;  // this place is not in the board.
 		}else{
 			// the place is valid in this board.
-			List<Cell> aux= Cell.where("board_id=? and col = ? and row = ?",Board.findFirst("game_id = ?",this.get("id")),c,r);
+			List<Cell> aux= Cell.where("board_id=? and col = ? and row = ?",Board.findFirst("game_id = ?",gm.get("id")).get("id"),c,r);
 			Cell aux_1=aux.get(0);
 			if (aux_1.get("user_id")==usr.get("id")) {
 				return 1+ uRSearch(usr,c+1,r+1);
@@ -130,7 +142,7 @@ public class Game extends Model{
 			return 0;  // this place is not in the board.
 		}else{
 			// the place is valid in this board.
-			List<Cell> aux= Cell.where("board_id=? and col = ? and row = ?",Board.findFirst("game_id = ?",this.get("id")),c,r);
+			List<Cell> aux= Cell.where("board_id=? and col = ? and row = ?",Board.findFirst("game_id = ?",gm.get("id")).get("id"),c,r);
 			Cell aux_1=aux.get(0);
 			if (aux_1.get("user_id")==usr.get("id")) {
 				return 1+dLSearch(usr,c-1,r-1);
@@ -146,14 +158,14 @@ public class Game extends Model{
 			return 0;  // this place is not in the board.
 		}else{
 			// the place is valid in this board.
-			List<Cell> aux= Cell.where("board_id=? and col = ? and row = ?",Board.findFirst("game_id = ?",this.get("id")),c,r);
+			List<Cell> aux= Cell.where("board_id=? and col = ? and row = ?",Board.findFirst("game_id = ?",gm.get("id")).get("id"),c,r);
 			Cell aux_1=aux.get(0);
 			if (aux_1.get("user_id")==usr.get("id")) {
 				return 1+uLSearch(usr,c+1,r-1);
 			}else{
 				return 0;
 			}
-		}
+		}b
 	}
 
 	// Down-right search.
@@ -162,7 +174,7 @@ public class Game extends Model{
 			return 0;  // this place is not in the board.
 		}else{
 			// the place is valid in this board.
-			List<Cell> aux= Cell.where("board_id=? and col = ? and row = ?",Board.findFirst("game_id = ?",this.get("id")),c,r);
+			List<Cell> aux= Cell.where("board_id=? and col = ? and row = ?",Board.findFirst("game_id = ?",gm.get("id")).get("id"),c,r);
 			Cell aux_1=aux.get(0);
 			if (aux_1.get("user_id")==usr.get("id")) {
 				return 1+dRSearch(usr,c-1,r+1);
@@ -173,21 +185,34 @@ public class Game extends Model{
 	}
 
 	// Check if the user, usr,  won the game. 
-	public boolean isWin(User usr,int c, int r){
+	public boolean thereIsAWinner(User usr,Cell a){
+		int c= (int) a.get("col");
+		int r= (int) a.get("row");
 		return 	(dSearch(usr,c,r-1)>=3) || 
 				(rSearch(usr,c+1,r) + lSearch(usr,c-1,r)>=3) || 
 				(uRSearch(usr,c+1,r+1) + dLSearch(usr,c-1,r-1)>=3) || 
 				(uLSearch(usr,c-1,r+1) + dRSearch(usr,c+1,r-1)>=3);
 	}
-/*
-	//Actualiza rank luego de que haya un ganador. Utiliza metodo de Rank
-	public boolean updateRankWithWinner(User winner,User looser){
 
+	// Update statistics of the 
+	public void updateRankWithWinner(User winner,User looser){
+		Rank.userWin(winner);
+		Rank.userLose(looser);
 	}
 
 	//Actualiza rank luego de que ha ocurrido un empate. Utiliza metodo de Rank.
-	public boolean updateRankWithDraw(){
-
+	public void updateRankWithDraw(User u1, User u2){
+		Rank.userDraw(u1);
+		Rank.userDraw(u2);
 	}
-*/
+
+	public boolean full(){
+		Board b= Board.findFirst("game_id= ?",gm.get("id"));
+		return b.fullBoard();
+	}
+
+	public void printBoardOnScreen(Pair<User,User> players){
+		Board b= Board.findFirst("game_id= ?",gm.get("id"));
+		b.printBoard(players);
+	}
 }
