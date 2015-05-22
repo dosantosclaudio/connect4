@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<<<<<<< HEAD
 <testsuite tests="2" failures="0" name="com.unrc.app.RankTest" time="0.359" errors="0" skipped="0">
+=======
+<testsuite tests="1" failures="0" name="com.unrc.app.RankTest" time="0.139" errors="0" skipped="0">
+>>>>>>> 7a94d5a96d2ee9c3944b458243fb4f2e27a579b3
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="/usr/lib/jvm/java-8-oracle/jre/lib/amd64"/>
@@ -14,7 +18,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="sun.os.patch.level" value="unknown"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
-    <property name="user.dir" value="/home/claudio/connect4"/>
+    <property name="user.dir" value="/home/leo/github/AnalisisyDiseño/connect4"/>
     <property name="java.runtime.version" value="1.8.0_45-b14"/>
     <property name="java.awt.graphicsenv" value="sun.awt.X11GraphicsEnvironment"/>
     <property name="java.endorsed.dirs" value="/usr/lib/jvm/java-8-oracle/jre/lib/endorsed"/>
@@ -30,14 +34,14 @@
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.class.version" value="52.0"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
-    <property name="os.version" value="3.13.0-52-generic"/>
-    <property name="user.home" value="/home/claudio"/>
+    <property name="os.version" value="3.19.0-16-generic"/>
+    <property name="user.home" value="/home/leo"/>
     <property name="user.timezone" value="America/Argentina/Cordoba"/>
     <property name="java.awt.printerjob" value="sun.print.PSPrinterJob"/>
     <property name="file.encoding" value="UTF-8"/>
     <property name="java.specification.version" value="1.8"/>
-    <property name="user.name" value="claudio"/>
-    <property name="java.class.path" value="/usr/share/maven/boot/plexus-classworlds-2.x.jar"/>
+    <property name="user.name" value="leo"/>
+    <property name="java.class.path" value="/usr/share/maven/boot/plexus-classworlds-2.x.jar:/usr/share/java/jayatanaag.jar"/>
     <property name="java.vm.specification.version" value="1.8"/>
     <property name="sun.arch.data.model" value="64"/>
     <property name="java.home" value="/usr/lib/jvm/java-8-oracle/jre"/>
@@ -59,6 +63,10 @@
     <property name="sun.desktop" value="gnome"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
+<<<<<<< HEAD
   <testcase classname="com.unrc.app.RankTest" name="testPlayedGames" time="0.283"/>
   <testcase classname="com.unrc.app.RankTest" name="testPlayed" time="0.008"/>
+=======
+  <testcase classname="com.unrc.app.RankTest" name="testPlayedGames" time="0.138"/>
+>>>>>>> 7a94d5a96d2ee9c3944b458243fb4f2e27a579b3
 </testsuite>

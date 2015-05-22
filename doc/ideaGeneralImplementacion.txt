@@ -39,11 +39,11 @@ public class Rank extends Model{
 
 }
 
-public class Match extends Model{
+public class Game extends Model{
 	User player1,player2;
 	Board b1;
 
-	public Match(User p1, User p2){
+	public Game(User p1, User p2){
 		this.player1=p1;
 		this.player2=p2;
 		b1=new Board(player1,player2);

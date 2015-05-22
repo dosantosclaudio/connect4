@@ -11,8 +11,7 @@ public class Rank extends Model{
 
 
 	// Registra una partida ganada para player;
-	public void userWin(User player) 
-	{
+	public static void userWin(User player) {
 		Rank ranking = Rank.findFirst("user_id = ?", player.get("id"));
 		
 		if (ranking == null) {
@@ -33,8 +32,7 @@ public class Rank extends Model{
 
 
 	// Registra una partida empatada para player y player2;
-	public void userDraw(User player) 
-	{
+	public static void userDraw(User player){
 		Rank ranking = Rank.findFirst("user_id = ?", player.get("id"));
 		
 		if (ranking == null) {
@@ -53,8 +51,7 @@ public class Rank extends Model{
 		}
 	}
 
-	public void userLose(User player) 
-	{
+	public static void userLose(User player){
 		Rank ranking = Rank.findFirst("user_id = ?", player.get("id"));
 		
 		if (ranking == null) {

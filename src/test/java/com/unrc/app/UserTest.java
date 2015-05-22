@@ -37,7 +37,6 @@ public class UserTest {
       the(user).shouldBe("valid");
     }
 
-
     @Test
     public void shouldValidateSignUp(){
         try{
@@ -87,7 +86,5 @@ public class UserTest {
         }catch(UserException e){
             the(u).shouldNotBeNull();       
         }
-       
-
     }
 }

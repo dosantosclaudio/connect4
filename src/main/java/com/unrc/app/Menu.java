@@ -13,7 +13,7 @@ public class Menu{
 	}
 	
 	//It clear the console.
-		public final static void clearConsole(){
+	public final static void clearConsole(){
 	 	System.out.print("\033[H\033[2J");
 		System.out.flush();
 	}	
@@ -26,9 +26,6 @@ public class Menu{
     		Thread.currentThread().interrupt();
 		}
 	}
-
-
-	
 	
 	public void main_menu(){
 		clearConsole();
@@ -37,7 +34,8 @@ public class Menu{
 				signUpMenu();
 				break;
 			case "2":
-				Pair<User,User> p=userMenu(signInMenu());
+				//Game g1= new Game(p);
+				play(userMenu(signInMenu()));
 				break;
 			case "3":
 				
@@ -70,7 +68,6 @@ public class Menu{
 		option = inputScanner.nextLine(); //Invocamos un método sobre un objeto Scanner
 		return option;
 	}
-
 
 	private void signUpMenu(){
 		
@@ -184,7 +181,7 @@ public class Menu{
     			System.out.println(e.getMessage()+" Press 'R' for sign in again or press 'X' for go back.");
     			String option=inputScanner.nextLine();
     			if ((option.equals("r"))||(option.equals("R"))){
-    				signInMenu();
+    				return signInMenu();
     			}else{
     				main_menu();
     			}
@@ -193,15 +190,13 @@ public class Menu{
     			System.out.println(e.getMessage()+" Press 'R' for sign in again or press 'X' for go back.");
 				String option=inputScanner.nextLine();
 				if ((option.equals("r"))||(option.equals("R"))){
-	    			signInMenu();
+	    			return signInMenu();
 	    		}else{
 	    			main_menu();
     			}
     		}
     		return null;
     	}
-
-
 	}
 
 	public Pair<User,User> userMenu(User u){
@@ -220,5 +215,42 @@ public class Menu{
 		Scanner inputScanner = new Scanner(System.in);
 		String em=inputScanner.nextLine();
 		return new Pair(u, anotherU.get(Integer.parseInt(em)));
+	}
+
+	public void play(Pair<User,User> players){
+		int counter=0;
+		Game g=new Game(players);
+		//g.printBoardOnScreen(players);
+		User turn= players.getFst();
+		Cell c = g.doMovement(turn);
+		while(!g.thereIsAWinner(turn,c) && !g.full()){
+			//g.printBoardOnScreen(players);
+			counter ++;
+			if(counter % 2 == 0){
+				turn=players.getFst();
+			}else{
+				turn=players.getSnd();
+			}
+			c=g.doMovement(turn);
+		}
+		if (g.full()){
+			if(g.thereIsAWinner(turn,c)) {
+				if(counter % 2 == 0){
+					g.updateRankWithWinner(players.getFst(),players.getSnd());
+				}else{
+					g.updateRankWithWinner(players.getSnd(),players.getFst());
+				}
+			}else{
+				g.updateRankWithDraw(players.getFst(),players.getSnd());
+			}
+		}else{
+			if(g.thereIsAWinner(turn,c)) {
+				if(counter % 2 == 0){
+					g.updateRankWithWinner(players.getFst(),players.getSnd());
+				}else{
+					g.updateRankWithWinner(players.getSnd(),players.getFst());
+				}
+			}
+		}
 	}
 }
