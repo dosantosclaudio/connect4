@@ -28,6 +28,7 @@ public class GameTest {
     }
 
 
+/*
     @Test
     public void shouldBeValidateGameCreation(){ //CONSULTAR
         User.insert("francomagnado@gmail.com","fRaNcO","","contraseña");
@@ -157,4 +158,5 @@ public class GameTest {
 
 
     }
+*/
 }

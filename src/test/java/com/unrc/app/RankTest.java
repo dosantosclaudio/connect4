@@ -34,17 +34,12 @@ public class RankTest {
     	user.set("email", "juan@hotmail.coms");
     	user.set("password", "pass");
     	user.save();
-
-    	Rank rank = new Rank();
-    	rank.userWin(user);
-
-      Rank ranking = Rank.findFirst("user_id = ?", user.get("id"));
+    	Rank.userWin(user);
+        Rank ranking = Rank.findFirst("user_id = ?", user.get("id"));
     	assertEquals(ranking.get("played_games"), 1);
-
-      System.out.println("TEST 1");
+        System.out.println("TEST 1");
 
     }
 
-    
 
 }

@@ -1,4 +1,5 @@
 package com.unrc.app;
+import java.util.*;
 
 import com.unrc.app.User;
 import org.javalite.activejdbc.Base;
@@ -12,18 +13,11 @@ public class App
 		Menu m=new Menu();
 	}
 
-
-
-
-
-
-
     public static void main( String[] args )
     {
         Base.open("com.mysql.jdbc.Driver", "jdbc:mysql://localhost/connect4", "root", "root");
 
         App a=new App();
-       
         
         Base.close();
     }

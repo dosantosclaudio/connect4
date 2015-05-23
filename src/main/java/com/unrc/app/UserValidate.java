@@ -12,7 +12,7 @@ public class UserValidate {
 	  	List<User> list=User.where("email = ?",email);
 	  	//Si ya existe el email en la base de datos.(Email es unico).
 	  	if (list.size()!=0) {
-	  		throw new UserException("Invalid e-mail adress. Allready have an account in Connect4","001");
+	  		throw new UserException("Invalid e-mail adress. Allready have an account in Connect4.","001");
   		}else{
   			//Si la password tiene un largo menor a 8 caracteres.
   			if (password.length()<8){
@@ -29,12 +29,12 @@ public class UserValidate {
   		List<User> list=User.where("email = ?",email);
   		//Si no existe el email en la base de datos.
   		if (list.size()==0){
-  			throw new UserException("Invalid e-mail adress","003");
+  			throw new UserException("Invalid e-mail adress.","003");
   		}else{
   			User u=list.get(0);							//E-mail unico
   			//Si el password no coincide con el password del email ingresado
   			if (!(u.get("password").equals(pass))){
-  				throw new UserException("Invalid password","004");
+  				throw new UserException("Invalid password.","004");
   			}
   		}
   	}
