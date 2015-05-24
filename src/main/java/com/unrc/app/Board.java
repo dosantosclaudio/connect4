@@ -10,6 +10,7 @@ public class Board extends Model{
 	public Board(){
 		boardM=new Cell[6][7];
 	}
+	
 
 	public Board(Game g){
 		boardM=new Cell[6] [7];
