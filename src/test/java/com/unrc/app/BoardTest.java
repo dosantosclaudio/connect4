@@ -27,7 +27,6 @@ public class BoardTest {
         Base.close();
     }
 
-
 /*
 
     @Test

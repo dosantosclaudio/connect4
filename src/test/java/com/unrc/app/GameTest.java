@@ -28,8 +28,7 @@ public class GameTest {
     }
 
 
-/*
-    @Test
+/*    @Test
     public void shouldBeValidateGameCreation(){ //CONSULTAR
         User.insert("francomagnado@gmail.com","fRaNcO","","contraseña");
         UUser.insert("francomaimbil@gmail.com","Franco","Maimbil","password123");
