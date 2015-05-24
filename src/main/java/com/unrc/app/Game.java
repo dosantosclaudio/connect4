@@ -166,6 +166,7 @@ public class Game extends Model{
 		}
 	}
 
+ 
 	// Down-left search.
 	private int dLSearch(User usr,int c,int r ){
 		if (c<0 || c>6 || r<0 || r>5) {
