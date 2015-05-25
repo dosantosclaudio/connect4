@@ -34,7 +34,6 @@ public class Menu{
 				signUpMenu();
 				break;
 			case "2":
-				//Game g1= new Game(p);
 				play(userMenu(signInMenu()));
 				break;
 			case "3":
@@ -92,8 +91,7 @@ public class Menu{
 		clearConsole();
 		System.out.println("You are registered in Connect4. Thank you!.");
 		wait(3);
-		main_menu();
-	
+		main_menu();	
 	}
 
 	public void signUp(String ema,String fn,String ln,String p){
@@ -220,11 +218,11 @@ public class Menu{
 	public void play(Pair<User,User> players){
 		int counter=0;
 		Game g=new Game(players);
-		//g.printBoardOnScreen(players);
+		g.printBoardOnScreen(players);
 		User turn= players.getFst();
 		Cell c = g.doMovement(turn);
 		while(!g.thereIsAWinner(turn,c) && !g.full()){
-			//g.printBoardOnScreen(players);
+			g.printBoardOnScreen(players);
 			counter ++;
 			if(counter % 2 == 0){
 				turn=players.getFst();
