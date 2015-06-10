@@ -5,6 +5,7 @@ import spark.Request;
 import spark.Response;
 import static spark.Spark.get;
 import static spark.Spark.post;
+import static spark.SparkBase.externalStaticFileLocation;
 import com.unrc.app.User;
 import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.LazyList;
@@ -26,7 +27,7 @@ public class App
             }, new MustacheTemplateEngine());
             */
         
-
+        externalStaticFileLocation("./web/Images");
         App a=new App();
         
        // Base.close();

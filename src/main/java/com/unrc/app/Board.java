@@ -11,6 +11,20 @@ public class Board extends Model{
 		boardM=new Cell[6][7];
 	}
 	
+	/*
+	public String toString(){
+		return "<table width="400" height="400px"; border="0" cellspacing="2" cellpadding="2" bgcolor="#000000">
+<tr align="center">
+<td><font color="#ffffff">1</font></td>
+<td bgcolor="#ffffff">2</td>
+<td><font color="#ffffff">3</font></td>
+<td bgcolor="#ffffff">4</td>
+<td><font color="#ffffff">5</font></td>
+<td bgcolor="#ffffff">6</td>
+<td><font color="#ffffff">7</font></td>
+<td bgcolor="#ffffff">8</td>
+</tr>"
+	}*/
 
 	public Board(Game g){
 		boardM=new Cell[6] [7];

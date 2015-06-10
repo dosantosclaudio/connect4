@@ -56,7 +56,9 @@ public class Menu{
 				 	User.insert(email,f_name,l_name,pass);
 				 	Base.close();
 				 	HashMap<String,Object> attributes=new HashMap<String,Object> ();
-				 	attributes.put("currentUser",email);
+				 	List<User> current_user= User.where("email=?",email);
+				 	attributes.put("currentUser",current_user.get(0).get("id"));
+	
 				 	return new ModelAndView(attributes,"web/initPage.mustache");
 				 }catch(UserException e){
 
@@ -83,7 +85,7 @@ public class Menu{
 
 
 
-	/*	post("/signingin",(request,response)-> {
+		post("/signingin",(request,response)-> {
 
 			 String email=request.queryParams("email");
 			 System.out.println(email);
@@ -94,33 +96,34 @@ public class Menu{
 			 	User current_user=User.signIn(email,pass);
 			 	Base.close();
 			 	HashMap<String,Object> attributes=new HashMap<String,Object> ();
-			 	attributes.put("currentUser",currentUser.getE);
+			 	attributes.put("currentUser",current_user.get("id"));
 			 	return new ModelAndView(attributes,"web/initPage.mustache");
 			 }catch(UserException e){
 
 
 			 	Base.close();
-			 	return new ModelAndView(null,"web/signUp.mustache");
+			 	return new ModelAndView(null,"web/signIn.mustache");
 
 			 }
 
 		 
 			
-		},new MustacheTemplateEngine());*/
+		},new MustacheTemplateEngine());
 
 
 
 		post("/selectOpponent",(request,response)->{
 				String user1=request.queryParams("player1");
-				System.out.println(user1);
-			
-				Map<String, Object> attributes = new HashMap<>();
-				attributes.put("user1",user1);
+				
 				Base.open(driver,jdbc,userdb,passdb);
-				List<User> anotherU=User.where("email <> ?",user1);
-				Base.close();
+				Map<String, Object> attributes = new HashMap<>();
+				
+				attributes.put("user1",User.findFirst("id=?",user1).get("email"));
+				System.out.println(User.findFirst("id=?",user1).get("email"));
+				List<User> anotherU=User.findAll();
+				System.out.println(anotherU);
 				attributes.put("users",anotherU);
-
+				Base.close();
 				return new ModelAndView(attributes,"web/selectOpponent.mustache");
 			/*}else{
 				return new ModelAndView(null,"web/loginOrSignup.mustache");

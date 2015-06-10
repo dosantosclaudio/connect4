@@ -6,6 +6,11 @@ public class User extends Model {
 
 	private String emailGuest, fNameGuest, lNameGuest;
 
+	@Override
+	public String toString(){
+		return this.getString("email");
+	}
+
 
 	static {
 		validatePresenceOf("email","password");
