@@ -15,6 +15,7 @@ public class App
 {
 	public App(){
 		Menu.showWebApp();
+
 	}
 
     public static void main( String[] args )
@@ -28,7 +29,7 @@ public class App
 
         App a=new App();
         
-        Base.close();
+       // Base.close();
     }
 	
 }

@@ -35,12 +35,14 @@
 			}
 		</style> 
 	</head>
-	<body background="http://pows109.pbworks.com/w/file/fetch/36805211/background.jpg" 
-		  text="#FFFFFF" >
+	<body bgcolor="#000000" text="#FFFFFF" >
 		<h1 align="center"> Welcome to Connect 4! Play now!</h1>
 		<h2 align="center"> The most popular connect 4 of the world</h2>
+		<h3>{{currentUser}}</h3>
 		<br>
-		<form action="/play" method="POST">
+		
+		<form action="/selectOpponent" method="POST">
+			<input type=hidden value={{currentUser}} name=player1 >
 			<p align="center" >
 				<input type="submit" value="Play" name="play" class="tim">
 			</p>	

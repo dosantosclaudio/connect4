@@ -20,13 +20,16 @@ public class Menu{
         
 
 	public Menu(){
+		Base.open(driver,jdbc,userdb,passdb);
 		main_menu();
 	}
 
 
 	public static void showWebApp(){
 		get("/", (request, response) -> {
-               return new ModelAndView(null, "web/initPage.mustache");
+			   HashMap<String,Object> attributes=new HashMap<String,Object> ();
+			   attributes.put("currentUser",null);	
+               return new ModelAndView(attributes, "web/initPage.mustache");
             }, new MustacheTemplateEngine());
 
 		post("/signup",(request,response)-> {
@@ -34,7 +37,6 @@ public class Menu{
 		},new MustacheTemplateEngine());
 
 		post("/signingup",(request,response)-> {
-
 
 			 String email=request.queryParams("email");
 			 System.out.println(email);
@@ -44,7 +46,7 @@ public class Menu{
 			 System.out.println(l_name);
 			 String pass=request.queryParams("password");
 			 System.out.println(pass);
-			 String pass_check=request.queryParams("check");
+			 String pass_check=request.queryParams("passwordcheck");
 			 System.out.println(pass_check);
 			 if (!pass.equals(pass_check)){
 			 	return new ModelAndView(null,"web/signUp.mustache");
@@ -53,8 +55,12 @@ public class Menu{
 				 	Base.open(driver,jdbc,userdb,passdb);
 				 	User.insert(email,f_name,l_name,pass);
 				 	Base.close();
-				 	return new ModelAndView(null,"web/initPage.mustache");
+				 	HashMap<String,Object> attributes=new HashMap<String,Object> ();
+				 	attributes.put("currentUser",email);
+				 	return new ModelAndView(attributes,"web/initPage.mustache");
 				 }catch(UserException e){
+
+
 				 	Base.close();
 				 	return new ModelAndView(null,"web/signUp.mustache");
 
@@ -62,6 +68,64 @@ public class Menu{
 
 			 }
 			
+		},new MustacheTemplateEngine());
+
+
+
+
+
+
+
+
+		post("/signin",(request,response)-> {
+			return new ModelAndView(null,"web/signIn.mustache");
+		},new MustacheTemplateEngine());
+
+
+
+	/*	post("/signingin",(request,response)-> {
+
+			 String email=request.queryParams("email");
+			 System.out.println(email);
+			 String pass=request.queryParams("password");
+			 System.out.println(pass);
+		 	 try{
+			 	Base.open(driver,jdbc,userdb,passdb);
+			 	User current_user=User.signIn(email,pass);
+			 	Base.close();
+			 	HashMap<String,Object> attributes=new HashMap<String,Object> ();
+			 	attributes.put("currentUser",currentUser.getE);
+			 	return new ModelAndView(attributes,"web/initPage.mustache");
+			 }catch(UserException e){
+
+
+			 	Base.close();
+			 	return new ModelAndView(null,"web/signUp.mustache");
+
+			 }
+
+		 
+			
+		},new MustacheTemplateEngine());*/
+
+
+
+		post("/selectOpponent",(request,response)->{
+				String user1=request.queryParams("player1");
+				System.out.println(user1);
+			
+				Map<String, Object> attributes = new HashMap<>();
+				attributes.put("user1",user1);
+				Base.open(driver,jdbc,userdb,passdb);
+				List<User> anotherU=User.where("email <> ?",user1);
+				Base.close();
+				attributes.put("users",anotherU);
+
+				return new ModelAndView(attributes,"web/selectOpponent.mustache");
+			/*}else{
+				return new ModelAndView(null,"web/loginOrSignup.mustache");
+
+			}*/	
 		},new MustacheTemplateEngine());
 
 
@@ -100,13 +164,13 @@ public class Menu{
 	}	
 
 
-	public final static void wait(int seconds){
-		try {
-    		Thread.sleep(1000*seconds);                 //1000 milliseconds is one second.
-		} catch(InterruptedException ex) {
-    		Thread.currentThread().interrupt();
+		public final static void wait(int seconds){
+			try {
+	    		Thread.sleep(1000*seconds);                 //1000 milliseconds is one second.
+			} catch(InterruptedException ex) {
+	    		Thread.currentThread().interrupt();
+			}
 		}
-	}
 	
 
 	public void main_menu(){
