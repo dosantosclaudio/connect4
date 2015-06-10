@@ -1,4 +1,8 @@
 -------------------------------------------------------------------------------
 Test set: com.unrc.app.UserTest
 -------------------------------------------------------------------------------
+<<<<<<< HEAD
 Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.147 sec
+=======
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.166 sec
+>>>>>>> 056d804c978e1296ebe2e9bf05c7241159e35305

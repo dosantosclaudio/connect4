@@ -27,6 +27,7 @@ public class Menu{
 		}
 	}
 	
+
 	public void main_menu(){
 		clearConsole();
 		switch(submenu1()){
@@ -34,9 +35,14 @@ public class Menu{
 				signUpMenu();
 				break;
 			case "2":
-				play(userMenu(signInMenu()));
+					menu_option2();
 				break;
 			case "3":
+				User guest=new User();
+				guest.userGuest();
+				guest.setFirstNameGuest("Example1");
+				guest.setLastNameGuest("Example1");
+			//	play(userMenu(guest));				//Hay que cambiar Pair por game
 				
 				break;
 			case "4":
@@ -69,7 +75,7 @@ public class Menu{
 	}
 
 	private void signUpMenu(){
-		
+		clearConsole();
 		System.out.println("*************************************");
 		System.out.println("***********  CONNECT4  **************");
 		System.out.println("");
@@ -196,59 +202,166 @@ public class Menu{
     		return null;
     	}
 	}
+ 
+ 
 
-	public Pair<User,User> userMenu(User u){
-		clearConsole();
-		List<User> anotherU=User.where("email <> ?",u.get("email"));
+	public void menu_option2(){
 		clearConsole();
 		System.out.println("*************************************");
 		System.out.println("***********  CONNECT4  **************\n\n");
-		System.out.println ("User info - email: "+u.get("email")+ "	- Name: "+u.get("first_name")+" "+u.get("last_name"));
-		System.out.println("Please any key for search another user");
+		System.out.println("Select just a option: ");
+		System.out.println("\n 1- New game. ");
+		System.out.println(" 2- Resume game.");
+		System.out.print("Option :");
+		Scanner inputScanner = new Scanner(System.in);
+		String em=inputScanner.nextLine();
+		if (em.equals("1")){
+			play(userMenu(signInMenu()),null);
+		}
+		if(em.equals("2")){
+			resumeGameMenu(signInMenu());
+		}
+
+	}
+
+	public Pair<User,User> userMenu(User u){
+		clearConsole();
+		List<User> anotherU;
+		if (u.isGuest()){
+			 anotherU=User.findAll();
+			clearConsole();
+		}else{
+			 anotherU=User.where("email <> ?",u.get("email"));
+			clearConsole();
+		}
+		System.out.println("*************************************");
+		System.out.println("***********  CONNECT4  **************\n\n");
+		if (u.isGuest()){
+			System.out.println ("User info - email: "+u.getEmailGuest()+ "	- Name: "+u.getFirstNameGuest()+" "+u.getLastNameGuest());
+		}else {
+			System.out.println ("User info - email: "+u.get("email")+ "	- Name: "+u.get("first_name")+" "+u.get("last_name"));	
+		}
+		System.out.println("Please some key for select another user");
 		int count=0;
 		for (User user: anotherU){
-			System.out.println ("	"+Integer.toString(count++)+"- email: "+user.get("email")+"		Name: "+user.get("first_name")+" "+user.get("last_name"));
+			count++;
+			System.out.println ("	"+Integer.toString(count)+"- email: "+user.get("email")+"		Name: "+user.get("first_name")+" "+user.get("last_name"));
+		}
+		if (count==0){
+			System.out.println("There aren't available users, try again. Press Enter for continue ");
+			Scanner inputScanner = new Scanner(System.in);
+			String em=inputScanner.nextLine();
+			main_menu();
 		}
 		System.out.print("User: ");
 		Scanner inputScanner = new Scanner(System.in);
 		String em=inputScanner.nextLine();
-		return new Pair(u, anotherU.get(Integer.parseInt(em)));
+		return new Pair(u, anotherU.get(Integer.parseInt(em)-1));
 	}
 
-	public void play(Pair<User,User> players){
-		int counter=0;
-		Game g=new Game(players);
-		g.printBoardOnScreen(players);
-		User turn= players.getFst();
-		Cell c = g.doMovement(turn);
-		while(!g.thereIsAWinner(turn,c) && !g.full()){
-			g.printBoardOnScreen(players);
-			counter ++;
-			if(counter % 2 == 0){
-				turn=players.getFst();
-			}else{
-				turn=players.getSnd();
-			}
-			c=g.doMovement(turn);
-		}
-		if (g.full()){
-			if(g.thereIsAWinner(turn,c)) {
-				if(counter % 2 == 0){
-					g.updateRankWithWinner(players.getFst(),players.getSnd());
-				}else{
-					g.updateRankWithWinner(players.getSnd(),players.getFst());
-				}
-			}else{
-				g.updateRankWithDraw(players.getFst(),players.getSnd());
-			}
+	public void resumeGameMenu(User a){	
+
+		List<Game> game=Game.where("(player1_id=? or player2_id=?)and end_date is null",a.get("id"),a.get("id"));
+		System.out.println("Please, choose the game that you want resume");
+		String em=null;
+		if (game.size()==0){
+			System.out.println("You don't have any game saved.");
+			wait(2);
+			main_menu();
 		}else{
-			if(g.thereIsAWinner(turn,c)) {
+			System.out.println("Please, choose a game saved: ");
+			int count=0;
+			for(Game g: game ){
+				count ++;
+				System.out.println(" "+Integer.toString(count)+" - Number game: "+g.get("id")+" - player 1: "+User.findFirst("id=?",g.get("player1_id")).get("email")+"- player2: "+ User.findFirst("id=?",g.get("player2_id")).get("email"));
+			
+			}
+			System.out.print("Game number : ");
+			Scanner inputScanner = new Scanner(System.in);
+			em=inputScanner.nextLine();
+		}
+		Game aux= game.get(Integer.parseInt(em)-1);
+		aux.resumeGame();
+		play(new Pair<User,User>(User.findFirst("id=?",aux.get("player1_id")),User.findFirst("id=?",aux.get("player2_id"))),aux);
+
+	}
+
+
+
+
+
+
+	public void play(Pair<User,User> players,Game game){
+		int counter=0;
+		Game g;
+		if (game==null){
+			counter=0;
+			g=new Game(players);	
+		}else{
+			g=game;
+			counter=g.turnUser();
+			
+		}
+		User turn;
+		g.printBoardOnScreen(players);
+		if(counter % 2 == 0){
+			turn=players.getFst();
+		}else{
+			turn=players.getSnd();
+		}
+		clearConsole();
+		g.printBoardOnScreen(players);
+		Cell c = g.doMovement(turn);
+		if (c==null){
+			g.saveGame();					// if the player wanna save the game.
+		}else{
+			while(!g.thereIsAWinner(turn,c) && !g.full()){
+				g.printBoardOnScreen(players);
+				counter ++;
 				if(counter % 2 == 0){
-					g.updateRankWithWinner(players.getFst(),players.getSnd());
+					turn=players.getFst();
 				}else{
-					g.updateRankWithWinner(players.getSnd(),players.getFst());
+					turn=players.getSnd();
+				}
+				c=g.doMovement(turn);
+				if (c==null){
+					break;
+				}
+			}
+			if (c==null){
+				g.saveGame();				//if the player wanna save the game.
+
+			}else{	
+					g.set("end_date",Game.getDateMysql());
+					g.saveIt();
+				if (g.full()){
+					if(g.thereIsAWinner(turn,c)) {
+						if(counter % 2 == 0){
+							g.updateRankWithWinner(players.getFst(),players.getSnd());
+							g.set("result_p1","WIN");
+						}else{
+							g.updateRankWithWinner(players.getSnd(),players.getFst());
+							g.set("result_p1","LOOSE");
+						}
+					}else{
+						g.updateRankWithDraw(players.getFst(),players.getSnd());
+						g.set("result_p1","TIE");
+					}
+					g.saveIt();
+				}else{
+					if(g.thereIsAWinner(turn,c)) {
+						if(counter % 2 == 0){
+							g.updateRankWithWinner(players.getFst(),players.getSnd());
+							g.set("result_p1","WIN");
+						}else{
+							g.updateRankWithWinner(players.getSnd(),players.getFst());
+							g.set("result_p1","LOOSE");
+						}
+						g.saveIt();
+					}
 				}
 			}
 		}
 	}
 }
+

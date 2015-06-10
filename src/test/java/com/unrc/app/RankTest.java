@@ -38,6 +38,8 @@ public class RankTest {
         Rank ranking = Rank.findFirst("user_id = ?", user.get("id"));
     	assertEquals(ranking.get("played_games"), 1);
         System.out.println("TEST 1");
-    }    
+
+    }
+
 
 }

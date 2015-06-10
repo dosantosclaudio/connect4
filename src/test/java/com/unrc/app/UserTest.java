@@ -47,7 +47,7 @@ public class UserTest {
         }
         try{
             User.insert("juan@hotmail.es","Juan","Perez","12345678");
-            User.insert("juan@hotmail.es","Juan","Lopez","123456789");
+            User.insert("juan@hotmail.es","Juan","Perez","123456789");
         }catch(UserException e){
             User u=User.findFirst("email = ?", "juan@hotmail.es" );     //The second insert mustn't work because "juan@hotmail.es" allready registered.
             assertEquals(u.get("password"),"12345678");
@@ -86,5 +86,7 @@ public class UserTest {
         }catch(UserException e){
             the(u).shouldNotBeNull();       
         }
+       
     }
+
 }

@@ -6,12 +6,13 @@ public class User extends Model {
 
 	private String emailGuest, fNameGuest, lNameGuest;
 
+
 	static {
 		validatePresenceOf("email","password");
 	}
 
-	public void UserGuest(){
-		this.emailGuest=getEmailGuest();
+	public void userGuest(){
+		this.emailGuest=getRandomEmailGuest();
 	}
 
 	
@@ -28,6 +29,8 @@ public class User extends Model {
 	  	helper.isValidateSignUpUser(email,fName,lName,pass); 
 	  	User u=new User();
 	  	User.createIt("email",email,"first_name",fName,"last_name",lName,"password",pass);
+	  	u=findFirst("email = ?",email);
+	  	Rank.createIt("user_id",u.get("id"));	//Crear Ranking para usuario recien creado. 
 	}
 
 	//Metodo que permite eliminar usuario, ver despues por el tema de la eliminacion en cascada.
@@ -36,10 +39,40 @@ public class User extends Model {
 	}
 
 
-	public String getEmailGuest(){
-		return UUID.randomUUID().toString().substring(0,7);						//Ver el tema de repetidos, poca probabilidad.
-		
 
+	public String getRandomEmailGuest(){
+		return UUID.randomUUID().toString().substring(0,7);						//Ver el tema de repetidos, poca probabilidad.	
 	}
 
+	public boolean isGuest(){
+		if (emailGuest!=null){
+			return ((emailGuest.length()) > 0);  
+		}else{
+			return false;
+		}
+	}
+
+	public String getEmailGuest(){
+		return this.emailGuest;
+	}
+
+	public String getFirstNameGuest(){
+		return this.fNameGuest;
+	}
+
+	public String getLastNameGuest(){
+		return this.lNameGuest;
+	}
+
+	public void setEmailGuest(String e){
+		this.emailGuest=e;
+	}
+
+	public void setFirstNameGuest(String f){
+		this.fNameGuest=f;
+	}
+
+	public void setLastNameGuest(String l){
+		this.lNameGuest=l;
+	}
 }
