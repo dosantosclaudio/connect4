@@ -1,0 +1,64 @@
+<html>
+	<head>
+		<title>Welcome to Connect 4!</title>
+		<style>
+			.tim{
+			font-size: 25px;
+			text-decoration: #FFFFFF;
+			border: 2px solid #AD235E;
+			border-radius: 100px;
+			width: 198px;
+			height: 198px; background-image: url(https://lh6.ggpht.com/fNbGHxtPE8gOA4Ty5S1TLng0XpPwEN7OstBiTPIi480kMX7Ks_tCJheBkuV6Pap7W7NM=w300);
+			}
+		</style> 
+		
+			<style>
+			.tim1{
+			font-size: 25px;
+
+			border: 2px solid #AD235E;
+			border-radius: 100px;
+			width: 200px;
+			height: 200px; background-image: url(http://binjiesun.com/images/signupIcon.png);
+			}
+		</style> 
+
+			<style>
+			.tim2{
+			font-size: 25px;
+
+			border: 2px solid #AD235E;
+			border-radius: 100px;
+			width: 200px;
+			height: 200px; background-image: url(http://turningpointpropellers.com/img/login-icon.png
+);
+			}
+		</style> 
+	</head>
+	<body bgcolor="#000000" text="#FFFFFF" >
+		<h1 align="center"> Welcome to Connect 4! Play now!</h1>
+		<h2 align="center"> The most popular connect 4 of the world</h2>
+		<h3>{{currentUser}}</h3>
+		<br>
+		
+		<form action="/selectOpponent" method="POST">
+			<input type=hidden value={{currentUser}} name=player1 >
+			<p align="center" >
+				<input type="submit" value="Play" name="play" class="tim">
+			</p>	
+		</form>	
+		
+		<form action="/signup" method="POST">
+		<p align="center">
+			<input type="submit" value="Sign Up" name="signup" class="tim1">
+			</p>
+		</form>
+
+		<form action="/signin" method="POST">
+		<p align="center">
+			<input type="submit" value="Sign In"  name="signin" class="tim2">
+			</p>
+		</form>
+
+</body>
+</html>

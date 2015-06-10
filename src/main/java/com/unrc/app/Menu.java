@@ -5,12 +5,157 @@ import com.unrc.app.User;
 import java.util.*;
 import java.lang.Exception;
 import java.io.Console;
+import org.javalite.activejdbc.Base;
+import spark.ModelAndView;
+import spark.Request;
+import spark.Response;
+import static spark.Spark.get;
+import static spark.Spark.post;
 
 public class Menu{
+	 public static final String driver = "com.mysql.jdbc.Driver";
+     public static final String jdbc = "jdbc:mysql://localhost/connect4";
+     public static final String userdb = "root";
+     public static final String passdb = "root";
+        
 
 	public Menu(){
+		Base.open(driver,jdbc,userdb,passdb);
 		main_menu();
 	}
+
+
+	public static void showWebApp(){
+		get("/", (request, response) -> {
+			   HashMap<String,Object> attributes=new HashMap<String,Object> ();
+			   attributes.put("currentUser",null);	
+               return new ModelAndView(attributes, "web/initPage.mustache");
+            }, new MustacheTemplateEngine());
+
+		post("/signup",(request,response)-> {
+			return new ModelAndView(null,"web/signUp.mustache");
+		},new MustacheTemplateEngine());
+
+		post("/signingup",(request,response)-> {
+
+			 String email=request.queryParams("email");
+			 System.out.println(email);
+			 String f_name=request.queryParams("first_name");
+			 System.out.println(f_name);
+			 String l_name=request.queryParams("last_name");
+			 System.out.println(l_name);
+			 String pass=request.queryParams("password");
+			 System.out.println(pass);
+			 String pass_check=request.queryParams("passwordcheck");
+			 System.out.println(pass_check);
+			 if (!pass.equals(pass_check)){
+			 	return new ModelAndView(null,"web/signUp.mustache");
+			 }else{
+			 	 try{
+				 	Base.open(driver,jdbc,userdb,passdb);
+				 	User.insert(email,f_name,l_name,pass);
+				 	Base.close();
+				 	HashMap<String,Object> attributes=new HashMap<String,Object> ();
+				 	attributes.put("currentUser",email);
+				 	return new ModelAndView(attributes,"web/initPage.mustache");
+				 }catch(UserException e){
+
+
+				 	Base.close();
+				 	return new ModelAndView(null,"web/signUp.mustache");
+
+				 }
+
+			 }
+			
+		},new MustacheTemplateEngine());
+
+
+
+
+
+
+
+
+		post("/signin",(request,response)-> {
+			return new ModelAndView(null,"web/signIn.mustache");
+		},new MustacheTemplateEngine());
+
+
+
+	/*	post("/signingin",(request,response)-> {
+
+			 String email=request.queryParams("email");
+			 System.out.println(email);
+			 String pass=request.queryParams("password");
+			 System.out.println(pass);
+		 	 try{
+			 	Base.open(driver,jdbc,userdb,passdb);
+			 	User current_user=User.signIn(email,pass);
+			 	Base.close();
+			 	HashMap<String,Object> attributes=new HashMap<String,Object> ();
+			 	attributes.put("currentUser",currentUser.getE);
+			 	return new ModelAndView(attributes,"web/initPage.mustache");
+			 }catch(UserException e){
+
+
+			 	Base.close();
+			 	return new ModelAndView(null,"web/signUp.mustache");
+
+			 }
+
+		 
+			
+		},new MustacheTemplateEngine());*/
+
+
+
+		post("/selectOpponent",(request,response)->{
+				String user1=request.queryParams("player1");
+				System.out.println(user1);
+			
+				Map<String, Object> attributes = new HashMap<>();
+				attributes.put("user1",user1);
+				Base.open(driver,jdbc,userdb,passdb);
+				List<User> anotherU=User.where("email <> ?",user1);
+				Base.close();
+				attributes.put("users",anotherU);
+
+				return new ModelAndView(attributes,"web/selectOpponent.mustache");
+			/*}else{
+				return new ModelAndView(null,"web/loginOrSignup.mustache");
+
+			}*/	
+		},new MustacheTemplateEngine());
+
+
+	/*	 post("/signinup", (request, response) -> {
+               
+			 String email=request.queryParams("email");
+			 String f_name=request.queryParams("first_name");
+			 String l_name=request.queryParams("last_name");
+			 String pass=request.queryParams("password");
+			 String pass_check=request.queryParams("check");
+                if (!pass.equals(pass_check)){
+			 	return new ModelAndView(null,"web/singUp.mustache");
+			 }else{
+
+				 try{
+				 	Base.open(driver,jdbc,userdb,passdb);
+				 	User.insert(email,f_name,l_name,pass);
+				 	Base.close();
+				 	return new ModelAndView(null,"web/initPage.mustache");
+				 }catch(UserException e){
+				 	Base.close();
+
+				 }
+			 }
+               
+            }, new MustacheTemplateEngine());
+*/
+	}
+
+
 	
 	//It clear the console.
 	public final static void clearConsole(){
@@ -19,13 +164,13 @@ public class Menu{
 	}	
 
 
-	public final static void wait(int seconds){
-		try {
-    		Thread.sleep(1000*seconds);                 //1000 milliseconds is one second.
-		} catch(InterruptedException ex) {
-    		Thread.currentThread().interrupt();
+		public final static void wait(int seconds){
+			try {
+	    		Thread.sleep(1000*seconds);                 //1000 milliseconds is one second.
+			} catch(InterruptedException ex) {
+	    		Thread.currentThread().interrupt();
+			}
 		}
-	}
 	
 
 	public void main_menu(){
