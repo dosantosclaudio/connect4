@@ -54,11 +54,11 @@ public class Menu{
 			 	 try{
 				 	Base.open(driver,jdbc,userdb,passdb);
 				 	User.insert(email,f_name,l_name,pass);
-				 	Base.close();
+				 	
 				 	HashMap<String,Object> attributes=new HashMap<String,Object> ();
 				 	List<User> current_user= User.where("email=?",email);
 				 	attributes.put("currentUser",current_user.get(0).get("id"));
-	
+					Base.close();
 				 	return new ModelAndView(attributes,"web/initPage.mustache");
 				 }catch(UserException e){
 
