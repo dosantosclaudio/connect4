@@ -6,8 +6,8 @@ public class User extends Model {
 
 	private String emailGuest, fNameGuest, lNameGuest;
 
-	@Override
-	public String toString(){
+
+	public String toString2(){
 		return this.getString("email");
 	}
 

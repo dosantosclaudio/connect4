@@ -6,24 +6,52 @@ import org.javalite.activejdbc.Model;
 public class Board extends Model{
 	
 	private Cell [] [] boardM;	
-
+	
 	public Board(){
 		boardM=new Cell[6][7];
 	}
 	
-	/*
-	public String toString(){
-		return "<table width="400" height="400px"; border="0" cellspacing="2" cellpadding="2" bgcolor="#000000">
-<tr align="center">
-<td><font color="#ffffff">1</font></td>
-<td bgcolor="#ffffff">2</td>
-<td><font color="#ffffff">3</font></td>
-<td bgcolor="#ffffff">4</td>
-<td><font color="#ffffff">5</font></td>
-<td bgcolor="#ffffff">6</td>
-<td><font color="#ffffff">7</font></td>
-<td bgcolor="#ffffff">8</td>
-</tr>"
+	
+	
+	public List<String>  toList(Game g){
+		List<String> res=new LinkedList<String>();
+		//res.add("<table   border="+'"'+"1"+'"'+" width="+'"'+"400"+'"'+" height="+'"'+"400px"+'"'+"; border="+'"'+"0"+'"'+" cellspacing="+'"'+"2"+'"'+" cellpadding="+'"'+"2"+'"'+" bgcolor="+'"'+"#000000"+"> ");
+		Cell current;
+		for (int i=5; i>=0;i--){
+			res.add("<tr align= "+'"'+"center"+'"'+">");
+			for (int j=0;j<=6;j++){
+				current=boardM[i][j];
+				if (current.get("user_id")==null){
+					res.add("<td bgcolor="+'"'+"#FFFFFF"+'"'+">");
+					res.add("</td>");
+
+				}else{
+					if(isPlayer1(g,current)){
+						res.add("<td bgcolor="+'"'+"#FF0000"+'"'+">");
+						res.add("</td>");
+					}else{
+						res.add("<td bgcolor="+'"'+"#0004FF"+'"'+">");
+						res.add("</td>");
+					}
+					
+				}
+			
+			}
+			//res.add("</tr>");
+		}
+		res.add("</table>");
+		return res;
+	}
+
+	private Boolean isPlayer1(Game g,Cell c){
+		System.out.println(this.get("game_id"));
+
+		return (Game.findFirst("id=?",g.get("id")).get("player1_id").equals(c.get("user_id")));
+	}
+
+/*
+	public String get voidPlace(){
+		return "<td><font color="+"#ffffff"+">1</font></td>";
 	}*/
 
 	public Board(Game g){
@@ -152,7 +180,7 @@ public class Board extends Model{
 	}
 
 	//	Show the board on the screen
-	public void printBoard(Pair<User,User> players){
+/*	public void printBoard(Pair<User,User> players){
 		Menu.clearConsole();
 		char[][] o = new char[6][7];
 		for (int i=0; i<7; i++) {
@@ -179,7 +207,7 @@ public class Board extends Model{
 		}
 		System.out.println("");
 	}
-
+*/
 	// Return true when the board is full
 	/*public Boolean fullBoard(){
 		List<Cell> c=Cell.where("board_id = ? and user_id is null",this.get("id"));

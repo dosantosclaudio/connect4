@@ -1,0 +1,83 @@
+<html>
+	<body 
+		bgcolor="#000000" 
+		bacnd="http://pows109.pbworks.com/w/file/fetch/36805211/background.jpg" text="#FFFFFF" >
+
+	  <h1 align="center">Connect 4 - Smart-team</h1>
+	  <h3 align="center">Playing</h3>
+	  <p align="center">
+		<table width="520px" height="520px"; border="0" cellspacing="2" cellpadding="2" bgcolor="#000000">
+	 		<tr align="center">
+		 		<form action="/doMovement" method="POST">
+		 			<input type="hidden" value={{user1}} name="player1" >
+		 			<input type="hidden" value={{user2}} name="player2" >
+		 			<input type="hidden" value={{turnUser}} name="turnUser" >
+		 			<input type="hidden" value={{gameId}} name="game">
+		 			<input type="hidden" value="0"        name="col">
+		 			<input type="submit" value="Put here!" name="1col">
+		 		</form>
+		 		<form action="/doMovement" method="POST">
+		 			<input type="hidden" value={{user1}} name="player1" >
+		 			<input type="hidden" value={{user2}} name="player2" >
+		 			<input type="hidden" value={{turnUser}} name="turnUser" >
+		 			<input type="hidden" value={{gameId}} name="game">
+		 			<input type="hidden" value="1"        name="col">
+		 			<input type="submit" value="Put here!" name="2col">
+		 		</form>
+		 		<form action="/doMovement" method="POST">
+		 			<input type="hidden" value={{user1}} name="player1" >
+		 			<input type="hidden" value={{user2}} name="player2" >
+		 			<input type="hidden" value={{turnUser}} name="turnUser" >
+		 			<input type="hidden" value={{gameId}} name="game">
+		 			<input type="hidden" value="2"        name="col">
+		 			<input type="submit" value="Put here!" name="3col">
+		 		</form>
+		 		<form action="/doMovement" method="POST">
+		 			<input type="hidden" value={{user1}} name="player1" >
+		 			<input type="hidden" value={{user2}} name="player2" >
+		 			<input type="hidden" value={{turnUser}} name="turnUser" >
+		 			<input type="hidden" value={{gameId}} name="game">
+		 			<input type="hidden" value="3"        name="col">
+		 			<input type="submit" value="Put here!" name="4col">
+		 		</form>
+		 		<form action="/doMovement" method="POST">
+		 			<input type="hidden" value={{user1}} name="player1" >
+		 			<input type="hidden" value={{user2}} name="player2" >
+		 			<input type="hidden" value={{turnUser}} name="turnUser" >
+		 			<input type="hidden" value={{gameId}} name="game">
+		 			<input type="hidden" value="4"        name="col">
+		 			<input type="submit" value="Put here!" name="5col">
+		 		</form>
+		 		<form action="/doMovement" method="POST">
+		 			<input type="hidden" value={{user1}} name="player1" >
+		 			<input type="hidden" value={{user2}} name="player2" >
+		 			<input type="hidden" value={{turnUser}} name="turnUser" >
+		 			<input type="hidden" value={{gameId}} name="game">
+		 			<input type="hidden" value="5"        name="col">
+		 			<input type="submit" value="Put here!" name="6col">
+		 		</form>
+		 		<form action="/doMovement" method="POST">
+		 			<input type="hidden" value={{user1}} name="player1" >
+		 			<input type="hidden" value={{user2}} name="player2" >
+		 			<input type="hidden" value={{turnUser}} name="turnUser" >
+		 			<input type="hidden" value={{gameId}} name="game">
+		 			<input type="hidden" value="6"        name="col">
+		 			<input type="submit" value="Put here!" name="7col">
+		 		</form>
+		 	</tr>
+	 		{{#board}}
+	 			{{{toString}}}
+	 		{{/board}}
+	 	</table>
+
+	 	<form action="/savegame" method="POST" >
+	 		<input type="hidden" value={{gameId}} name="gameId">
+	 		<input align="center" type="submit" value="Save game" name="save_game">
+	 	</form>
+	 	<form action="/exit" method="POST" >
+	 		<input type="hidden" value={{gameId}} name="gameId">
+	 		<input align="center" type="submit" value="Exit game" name="exit_game">
+	 	</form>
+
+	</body>
+</html>

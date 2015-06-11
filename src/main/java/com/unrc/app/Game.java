@@ -30,6 +30,9 @@ public class Game extends Model{
 		b= new Board(this);
 	}
 
+	public String toString2(){
+		return this.getString("id");
+	}
 
 
 	public static String getDateMysql(){
@@ -52,11 +55,11 @@ public class Game extends Model{
 	}
 
 	//	Insert chip on the board
-	public Cell doMovement(User p){
-		String column="-1";
+	public Cell doMovement(User p,Integer col) throws BoardException{
+	//String column="-1";
 	//	Board b =Board.findFirst("game_id = ?", this.get("id"));
-		Cell c=null;
-		try{
+		
+	/*	try{
 			System.out.println("Plase "+p.get("first_name")+" "+p.get("last_name")+" insert a coin.");
 			column = requestCol();
 			if (column.equals("s") || column.equals("S") ){
@@ -64,10 +67,10 @@ public class Game extends Model{
 			}
 		}catch(Exception e){
 			return doMovement(p);
-		}
-		try{
-			c= b.fillCellMemory(p,Integer.parseInt(column));
-		}catch(BoardException f){
+		}*/
+		/*try{*/
+			return b.fillCellMemory(p,col);
+		/*}catch(BoardException f){
 			switch (f.getCode()){
 				case "000":
 					System.out.println("Has been detected some problems in this aplication ");
@@ -82,8 +85,8 @@ public class Game extends Model{
 					c=doMovement(p);
 					break;
 			}
-		}
-		return c;
+		}*/
+		
 	}
 
 	private String requestCol() throws Exception{
@@ -248,9 +251,13 @@ public class Game extends Model{
 	//	Board b= Board.findFirst("game_id= ?",this.get("id"));
 		return b.fullBoard();
 	}
-
+/*
 	public void printBoardOnScreen(Pair<User,User> players){
 	//	Board b= Board.findFirst("game_id= ?",this.get("id"));
 		b.printBoard(players);
+	}*/
+
+	public Board getBoard(){
+		return this.b;
 	}
 }

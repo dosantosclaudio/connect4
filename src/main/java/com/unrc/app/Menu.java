@@ -18,10 +18,10 @@ public class Menu{
      public static final String userdb = "root";
      public static final String passdb = "root";
         
-
+    public static Game currentGameChanchada=null;
 	public Menu(){
-		Base.open(driver,jdbc,userdb,passdb);
-		main_menu();
+		
+		//main_menu();
 	}
 
 
@@ -94,9 +94,10 @@ public class Menu{
 		 	 try{
 			 	Base.open(driver,jdbc,userdb,passdb);
 			 	User current_user=User.signIn(email,pass);
-			 	Base.close();
+			 
 			 	HashMap<String,Object> attributes=new HashMap<String,Object> ();
 			 	attributes.put("currentUser",current_user.get("id"));
+			 	Base.close();
 			 	return new ModelAndView(attributes,"web/initPage.mustache");
 			 }catch(UserException e){
 
@@ -110,17 +111,28 @@ public class Menu{
 			
 		},new MustacheTemplateEngine());
 
+		post("/selectSavedGame",(request,response)->{
+			String user1=request.queryParams("player1");
+			Base.open(driver,jdbc,userdb,passdb);
+			Map<String, Object> attributes = new HashMap<String,Object>();
+			List<Game> game=Game.where("(player1_id=? or player2_id=?)and end_date is null",user1,user1);
+			attributes.put("player1_id",user1);
+			System.out.println(game.size());
+			attributes.put("games",game);
+			Base.close();
+			return new ModelAndView(attributes,"web/selectSavedGame.mustache");
+
+		},new MustacheTemplateEngine());
 
 
 		post("/selectOpponent",(request,response)->{
 				String user1=request.queryParams("player1");
-				
 				Base.open(driver,jdbc,userdb,passdb);
-				Map<String, Object> attributes = new HashMap<>();
-				
+				Map<String, Object> attributes = new HashMap<String,Object>();
+				attributes.put("player1_id",user1);
 				attributes.put("user1",User.findFirst("id=?",user1).get("email"));
 				System.out.println(User.findFirst("id=?",user1).get("email"));
-				List<User> anotherU=User.findAll();
+				List<User> anotherU=User.where("id<>?",user1);
 				System.out.println(anotherU);
 				attributes.put("users",anotherU);
 				Base.close();
@@ -131,7 +143,57 @@ public class Menu{
 			}*/	
 		},new MustacheTemplateEngine());
 
+		post("/play",(request,response)->{	//inicio de juego.
+			Base.open(driver,jdbc,userdb,passdb);
+			String user1_id=request.queryParams("player1_id");
+			String resumeGame=request.queryParams("game");
+			Map<String, Object> attributes = new HashMap<>();
+			if (resumeGame!=null){
+				currentGameChanchada=Game.findFirst("id=?",resumeGame);
+				currentGameChanchada.resumeGame();
+				String user2_id=Integer.toString((Integer)currentGameChanchada.get("player2_id"));
+				System.out.println("FIJA ACA");
+				System.out.println(user2_id);
+				attributes.put("user1",user1_id);
+				attributes.put("user2",user2_id);
+				if(currentGameChanchada.turnUser() %2==0){
+					attributes.put("turnUser",user1_id);
+				}else{
+					attributes.put("turnUser",user2_id);
+				}
+			}else{
+				String user2=request.queryParams("player2");
+				System.out.println(user2);
+				System.out.println(User.findFirst("email=?",user2) );
+				String user2_id= Integer.toString((Integer)User.findFirst("email=?",user2).get("id"));
+				System.out.println(user1_id);
+				System.out.println(user2_id);
+				
+				attributes.put("user1",user1_id);
+				attributes.put("user2",user2_id);
+				attributes.put("turnUser",user1_id);
 
+				Game g=new Game(new Pair<User,User>(User.findFirst("id=?",user1_id),User.findFirst("id=?",user2_id)));
+				currentGameChanchada=g;
+
+
+			}
+
+
+			attributes.put("gameId",currentGameChanchada.get("id"));
+			System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaaaa");
+			System.out.println(currentGameChanchada.get("id"));
+			//attributes.put("user1",1);
+			//attributes.put("user2",2);
+			//Game g=Game.findFirst("id=?",1);
+
+			System.out.println(currentGameChanchada);
+		//	g.resumeGame();
+			attributes.put("board",currentGameChanchada.getBoard().toList(currentGameChanchada));
+			Base.close();
+			return new ModelAndView(attributes,"web/play.mustache");			
+
+		},new MustacheTemplateEngine());
 	/*	 post("/signinup", (request, response) -> {
                
 			 String email=request.queryParams("email");
@@ -156,10 +218,149 @@ public class Menu{
                
             }, new MustacheTemplateEngine());
 */
-	}
+	
 
+		post("/doMovement",(request,response)->{
+			Cell c=null;
+			String turnUser=request.queryParams("turnUser");
+			String col=request.queryParams("col");
+			String user1_id=request.queryParams("player1");
+			String user2_id=request.queryParams("player2");
+			String current_g=request.queryParams("game");
+			Base.open(driver,jdbc,userdb,passdb);
+			//Game currentGameChanchada=Game.findFirst("id=?",current_g);
+			System.out.println(turnUser);
+			System.out.println(user1_id);
+			User turn=User.findFirst("id=?",turnUser);
+			try{
+				c=currentGameChanchada.doMovement(turn,Integer.parseInt(col));
+			}catch(BoardException f){
+				switch (f.getCode()){
+					case "000":
+						System.out.println("Has been detected some problems in this aplication ");
+						//c=null;
+						break;
+					case "001":
+						System.out.println(f.getMessage());
+						
+						break;
+					case "002":
+						System.out.println(f.getMessage());
+						
+						break;
+					}
+			}
+			if (!currentGameChanchada.thereIsAWinner(turn,c) && !currentGameChanchada.full()){
+				Map<String, Object> attributes = new HashMap<>();
+				attributes.put("user1",user1_id);
+				attributes.put("user2",user2_id);
+				if (turnUser.equals(user1_id)){
+					attributes.put("turnUser",user2_id);
+					
+				}else{
+					attributes.put("turnUser",user1_id);
+				
+				}
+				currentGameChanchada=currentGameChanchada;
+				attributes.put("gameId",currentGameChanchada.get("id"));
+				attributes.put("board",currentGameChanchada.getBoard().toList(currentGameChanchada));
+				Base.close();
+				return new ModelAndView(attributes,"web/play.mustache");
+			}else{
+				Base.close();
+				return new ModelAndView(null,"web/initPage.mustache");
+				//partida ganada o empatada"
+			}
+			
+
+		},new MustacheTemplateEngine());
 
 	
+
+		post("/savegame",(request,response)->{
+			Base.open(driver,jdbc,userdb,passdb);
+			String game_id=request.queryParams("gameId");
+			currentGameChanchada.saveGame();
+			Base.close();
+			return new ModelAndView(null,"web/initPage.mustache");
+		},new MustacheTemplateEngine());
+
+
+	}	
+	/*public void play(Pair<User,User> players,Game game){
+		int counter=0;
+		Game g;
+		if (game==null){
+			counter=0;
+			g=new Game(players);	
+		}else{
+			g=game;
+			counter=g.turnUser();
+			
+		}
+		User turn;
+		g.printBoardOnScreen(players);
+		if(counter % 2 == 0){
+			turn=players.getFst();
+		}else{
+			turn=players.getSnd();
+		}
+		clearConsole();
+		g.printBoardOnScreen(players);
+		Cell c = g.doMovement(turn);
+		if (c==null){
+			g.saveGame();					// if the player wanna save the game.
+		}else{
+			while(!g.thereIsAWinner(turn,c) && !g.full()){
+				g.printBoardOnScreen(players);
+				counter ++;
+				if(counter % 2 == 0){
+					turn=players.getFst();
+				}else{
+					turn=players.getSnd();
+				}
+				c=g.doMovement(turn);
+				if (c==null){
+					break;
+				}
+			}
+			if (c==null){
+				g.saveGame();				//if the player wanna save the game.
+
+			}else{	
+					g.set("end_date",Game.getDateMysql());
+					g.saveIt();
+				if (g.full()){
+					if(g.thereIsAWinner(turn,c)) {
+						if(counter % 2 == 0){
+							g.updateRankWithWinner(players.getFst(),players.getSnd());
+							g.set("result_p1","WIN");
+						}else{
+							g.updateRankWithWinner(players.getSnd(),players.getFst());
+							g.set("result_p1","LOOSE");
+						}
+					}else{
+						g.updateRankWithDraw(players.getFst(),players.getSnd());
+						g.set("result_p1","TIE");
+					}
+					g.saveIt();
+				}else{
+					if(g.thereIsAWinner(turn,c)) {
+						if(counter % 2 == 0){
+							g.updateRankWithWinner(players.getFst(),players.getSnd());
+							g.set("result_p1","WIN");
+						}else{
+							g.updateRankWithWinner(players.getSnd(),players.getFst());
+							g.set("result_p1","LOOSE");
+						}
+						g.saveIt();
+					}
+				}
+			}
+		}
+	}
+*/
+/*	
 	//It clear the console.
 	public final static void clearConsole(){
 	 	System.out.print("\033[H\033[2J");
@@ -511,5 +712,5 @@ public class Menu{
 			}
 		}
 	}
-}
+*/}
 
