@@ -9,12 +9,12 @@
 
 
   <table width="50%" border="1" cellspacing="0" cellpadding="3">
-    {{#users}}
+    {{#games}}
         <tr>
           <td>
           	<form action="/play" method="POST">
           		<input type=hidden value={{player1_id}} name="player1_id" >
-          		<input type=hidden value={{toString2}} name="player2">
+          		<input type=hidden value={{toString2}} name="game">
           		{{toString2}} 
           		<a align="rigth">
           			<input type="submit" value="Play" >
@@ -22,7 +22,7 @@
           </form>
           </td>
         </tr>
-    {{/users}}
+    {{/games}}
   </table>
 
 	

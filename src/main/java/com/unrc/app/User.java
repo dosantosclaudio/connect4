@@ -7,6 +7,11 @@ public class User extends Model {
 	private String emailGuest, fNameGuest, lNameGuest;
 
 
+	public String toString2(){
+		return this.getString("email");
+	}
+
+
 	static {
 		validatePresenceOf("email","password");
 	}
