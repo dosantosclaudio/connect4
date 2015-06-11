@@ -4,11 +4,9 @@ import org.javalite.activejdbc.Model;
 
 public class Rank extends Model{
 	
-	private void empty(){
-
+	public String toString3(){
+		return this.getString("score");
 	}
-
-
 
 	// Registra una partida ganada para player;
 	public static void userWin(User player) {

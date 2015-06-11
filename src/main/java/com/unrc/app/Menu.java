@@ -113,6 +113,7 @@ public class Menu{
 
 		post("/selectSavedGame",(request,response)->{
 			String user1=request.queryParams("player1");
+
 			Base.open(driver,jdbc,userdb,passdb);
 			Map<String, Object> attributes = new HashMap<String,Object>();
 			List<Game> game=Game.where("(player1_id=? or player2_id=?)and end_date is null",user1,user1);
@@ -127,10 +128,12 @@ public class Menu{
 
 		post("/selectOpponent",(request,response)->{
 				String user1=request.queryParams("player1");
+				
 				Base.open(driver,jdbc,userdb,passdb);
 				Map<String, Object> attributes = new HashMap<String,Object>();
 				attributes.put("player1_id",user1);
 				attributes.put("user1",User.findFirst("id=?",user1).get("email"));
+				
 				System.out.println(User.findFirst("id=?",user1).get("email"));
 				List<User> anotherU=User.where("id<>?",user1);
 				System.out.println(anotherU);
@@ -285,6 +288,26 @@ public class Menu{
 			return new ModelAndView(null,"web/initPage.mustache");
 		},new MustacheTemplateEngine());
 
+
+/*		post("/ranking",(request,response)->{
+			String user1=request.queryParams("player1");
+
+			Base.open(driver,jdbc,userdb,passdb);
+			Map<String, Object> attributes = new HashMap<String,Object>();
+
+			attributes.put("user1",User.findFirst("id=?",user1).get("email"));
+			//System.out.println(User.findFirst("id=?",user1).get("email"));
+			
+			List<Rank> anotherU=Rank.where("id<>?", 50);
+			System.out.println(anotherU);
+			attributes.put("ranks",anotherU);
+
+			Base.close();
+			return new ModelAndView(attributes,"web/ranking.mustache");
+
+		},new MustacheTemplateEngine());
+*/
+			
 
 	}	
 	/*public void play(Pair<User,User> players,Game game){
