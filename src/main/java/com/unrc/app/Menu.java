@@ -19,10 +19,8 @@ public class Menu{
      public static final String userdb = "root";
      public static final String passdb = "root";
         
-    public static Game currentGameChanchada=null;
+  
 	public Menu(){
-		
-		//main_menu();
 	}
 
 
@@ -33,10 +31,10 @@ public class Menu{
 			   HashMap<String,Object> attributes=new HashMap<String,Object> ();
 			   request.session(true);   
 			   String usr=request.session().attribute("SESSION_NAME");  
-			   if (usr==null){
+			   if (usr==null){																	//Si no hay usuario registrado
 			   		attributes.put("currentUser","Sign In or Sign Up for play now!");
 			   		attributes.put("nameButton",'"'+"Sign In"+'"');
-			   }else{
+			   }else{																			//Si no hay usuario registrado
 			   		Base.open(driver,jdbc,userdb,passdb);
 			   		attributes.put("currentUser",User.findFirst("id=?",usr).get("email"));
 			   		attributes.put("stateSignUp","disabled");
@@ -61,6 +59,7 @@ public class Menu{
 
 		post("/signingup",(request,response)-> {
 
+			// Obtengo datos del formulario
 			 String email=request.queryParams("email");
 			 System.out.println(email);
 			 String f_name=request.queryParams("first_name");
@@ -76,23 +75,17 @@ public class Menu{
 			 }else{
 			 	 try{
 				 	Base.open(driver,jdbc,userdb,passdb);
-				 	User.insert(email,f_name,l_name,pass);
-				 	
-				 	HashMap<String,Object> attributes=new HashMap<String,Object> ();
+				 	User.insert(email,f_name,l_name,pass);	
+				 	HashMap<String,Object> attributes=new HashMap<String,Object>();
 				 	String user=User.findFirst("email=?",email).getString("id");
-				 	System.out.println(user);
-
 				 	request.session().attribute("SESSION_NAME",user);
 				 	attributes.put("currentUser",user);
 					Base.close();
 					response.redirect("/");
 				 	return null;
 				 }catch(UserException e){
-
-
 				 	Base.close();
 				 	return new ModelAndView(null,"web/signUp.mustache");
-
 				 }
 
 			 }
@@ -195,18 +188,20 @@ public class Menu{
 
 		post("/play",(request,response)->{	//inicio de juego.
 			Base.open(driver,jdbc,userdb,passdb);
-			String user1_id=request.session().attribute("SESSION_NAME");
-			String resumeGame=request.queryParams("game");
+			String user1_id=request.session().attribute("SESSION_NAME");								//player1
+			String rGame=request.queryParams("game");													
 			Map<String, Object> attributes = new HashMap<>();
-			if (resumeGame!=null){
-				currentGameChanchada=Game.findFirst("id=?",resumeGame);
-				currentGameChanchada.resumeGame();
-				String user2_id=Integer.toString((Integer)currentGameChanchada.get("player2_id"));
+			Game currentGame;
+			if (rGame!=null){
+				currentGame=Game.findFirst("id=?",rGame);
+				currentGame.resumeGame();
+				String user2_id=Integer.toString((Integer)currentGame.get("player2_id"));
 				System.out.println("FIJA ACA");
 				System.out.println(user2_id);
 				attributes.put("user1",user1_id);
 				attributes.put("user2",user2_id);
-				if(currentGameChanchada.turnUser() %2==0){
+
+				if(currentGame.turnUser() %2==0){
 					attributes.put("turnUser",user1_id);
 				}else{
 					attributes.put("turnUser",user2_id);
@@ -232,80 +227,59 @@ public class Menu{
 				attributes.put("turnUser",user1_id);
 
 				Game g=new Game(new Pair<User,User>(User.findFirst("id=?",user1_id),User.findFirst("id=?",user2_id)));
-				currentGameChanchada=g;
+
+				currentGame=g;
+				currentGame.resumeGame();
 
 
 			}
-
-			attributes.put("gameId",currentGameChanchada.get("id"));
-			System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaaaa");
-			System.out.println(currentGameChanchada.get("id"));
-			//attributes.put("user1",1);
-			//attributes.put("user2",2);
-			//Game g=Game.findFirst("id=?",1);
-
-			System.out.println(currentGameChanchada);
-		//	g.resumeGame();
-			attributes.put("board",currentGameChanchada.getBoard().toList(currentGameChanchada));
+			Integer count=0;
+			for (int i=0;i<7;i++){	
+				if (currentGame.fullCol(count)) {
+					attributes.put("stateButton"+Integer.toString(count),"disabled");
+				}else{
+					attributes.put("stateButton"+Integer.toString(count),"");
+				}
+				count++;
+			}
+			System.out.println("FIJA ACAAAAA");
+			request.session().attribute("gameId",currentGame.getInteger("id"));
+			System.out.println(currentGame.get("id"));
+			attributes.put("board",currentGame.getBoard().toList(currentGame));
 			Base.close();
 			return new ModelAndView(attributes,"web/play.mustache");			
 
 		},new MustacheTemplateEngine());
-	/*	 post("/signinup", (request, response) -> {
-               
-			 String email=request.queryParams("email");
-			 String f_name=request.queryParams0 ("first_name");
-			 String l_name=request.queryParams("last_name");
-			 String pass=request.queryParams("password");
-			 String pass_check=request.queryParams("check");
-                if (!pass.equals(pass_check)){
-			 	return new ModelAndView(null,"web/singUp.mustache");
-			 }else{
-
-				 try{
-				 	Base.open(driver,jdbc,userdb,passdb);
-				 	User.insert(email,f_name,l_name,pass);
-				 	Base.close();
-				 	return new ModelAndView(null,"web/initPage.mustache");
-				 }catch(UserException e){
-				 	Base.close();
-
-				 }
-			 }
-               
-            }, new MustacheTemplateEngine());
-*/
-	
 
 		post("/doMovement",(request,response)->{
+			Base.open(driver,jdbc,userdb,passdb);
 			Cell c=null;
 			String turnUser;
-			if(currentGameChanchada.turnUser() %2==0){
-				
+			
+			Integer gameId=request.session().attribute("gameId");
+	
+			Game currentGame=Game.findFirst("id=?",Integer.toString(gameId));
+			currentGame.resumeGame();
+
+			if(currentGame.turnUser() %2==0){
 					turnUser=request.session().attribute("SESSION_NAME");
 			}else{
 					turnUser=request.queryParams("player2");
 			}
-
-
-			//String turnUser=request.queryParams("turnUser");
-
-
 			String col=request.queryParams("col");
 			String user1_id=request.session().attribute("SESSION_NAME");
 			String user2_id=request.queryParams("player2");
 			String current_g=request.queryParams("game");
-			Base.open(driver,jdbc,userdb,passdb);
+			
 			User player1=User.findFirst("id=?",user1_id);
 			User player2=User.findFirst("id=?",user2_id);
 			Map<String, Object> attributes = new HashMap<>();
-			//Game currentGameChanchada=Game.findFirst("id=?",current_g);
+			//Game currentGame=Game.findFirst("id=?",current_g);
 			System.out.println(turnUser);
 			System.out.println(user1_id);
 			User turn=User.findFirst("id=?",turnUser);
 			try{
-				c=currentGameChanchada.doMovement(turn,Integer.parseInt(col));
-				System.out.println(c);
+				c=currentGame.doMovement(turn,Integer.parseInt(col));
 			}catch(BoardException f){
 				switch (f.getCode()){
 					case "000":
@@ -322,7 +296,8 @@ public class Menu{
 						break;
 					}
 			}
-			if (!currentGameChanchada.thereIsAWinner(turn,c) && !currentGameChanchada.full()){
+
+			if (!currentGame.thereIsAWinner(turn,c) && !currentGame.full()){
 				
 				attributes.put("user1",user1_id);
 				attributes.put("user2",user2_id);
@@ -333,9 +308,10 @@ public class Menu{
 					attributes.put("turnUser",user1_id);
 				
 				}
+
 				Integer count=0;
 				for (int i=0;i<7;i++){
-					if (currentGameChanchada.fullCol(count)) {
+					if (currentGame.fullCol(count)) {
 						attributes.put("stateButton"+Integer.toString(count),"disabled");
 					}else{
 						attributes.put("stateButton"+Integer.toString(count),"");
@@ -344,64 +320,64 @@ public class Menu{
 				}
 
 
-				attributes.put("gameId",currentGameChanchada.get("id"));
-				attributes.put("board",currentGameChanchada.getBoard().toList(currentGameChanchada));
+				attributes.put("gameId",currentGame.get("id"));
+				attributes.put("board",currentGame.getBoard().toList(currentGame));
 				Base.close();
 				return new ModelAndView(attributes,"web/play.mustache");
 			}else{
 
 					request.session().attribute("PLAYER2",user2_id);
-					currentGameChanchada.set("end_date",Game.getDateMysql());
-					currentGameChanchada.saveIt();
-				if (currentGameChanchada.full()){
-					if(currentGameChanchada.thereIsAWinner(turn,c)) {
+					currentGame.set("end_date",Game.getDateMysql());
+					currentGame.saveIt();
+				if (currentGame.full()){
+					if(currentGame.thereIsAWinner(turn,c)) {
 						
 						if(turnUser.equals(user1_id)){
-							currentGameChanchada.updateRankWithWinner(player1,player2);
-							currentGameChanchada.set("result_p1","WIN");
+							currentGame.updateRankWithWinner(player1,player2);
+							currentGame.set("result_p1","WIN");
 							
 							attributes.put("user",User.findFirst("id=?",user1_id).getString("email"));
 							attributes.put("text","The WINNER is ");
-							currentGameChanchada.saveIt();
+							currentGame.saveIt();
 							Base.close();
 							return new ModelAndView(attributes,"web/finishedGame.mustache");
 						}else{
-							currentGameChanchada.updateRankWithWinner(player2,player1);
-							currentGameChanchada.set("result_p1","LOOSE");
+							currentGame.updateRankWithWinner(player2,player1);
+							currentGame.set("result_p1","LOOSE");
 							
 							attributes.put("user",User.findFirst("id=?",user2_id).getString("email"));
 							attributes.put("text","The WINNER is ");
-							currentGameChanchada.saveIt();
+							currentGame.saveIt();
 							Base.close();
 							return new ModelAndView(attributes,"web/finishedGame.mustache");
 						}
 					}else{
-						currentGameChanchada.updateRankWithDraw(player1,player2);
-						currentGameChanchada.set("result_p1","TIE GAME"); 
+						currentGame.updateRankWithDraw(player1,player2);
+						currentGame.set("result_p1","TIE GAME"); 
 						attributes.put("text","TIE");
 						attributes.put("user",null);
 						
-						currentGameChanchada.saveIt();
+						currentGame.saveIt();
 						Base.close();
 						return new ModelAndView(attributes,"web/finishedGame.mustache");
 					}
 					
 				}else{
-					if(currentGameChanchada.thereIsAWinner(turn,c)) {
+					if(currentGame.thereIsAWinner(turn,c)) {
 						if(turnUser.equals(user1_id)){
-							currentGameChanchada.updateRankWithWinner(player1,player2);
+							currentGame.updateRankWithWinner(player1,player2);
 							attributes.put("user",User.findFirst("id=?",user1_id).getString("email"));
 							attributes.put("text","The WINNER is ");
 							
-							currentGameChanchada.saveIt();
+							currentGame.saveIt();
 							Base.close();
 							return new ModelAndView(attributes,"web/finishedGame.mustache");
 						}else{
-							currentGameChanchada.updateRankWithWinner(player2,player1);
-							currentGameChanchada.set("result_p1","LOOSE");
+							currentGame.updateRankWithWinner(player2,player1);
+							currentGame.set("result_p1","LOOSE");
 							attributes.put("user",User.findFirst("id=?",user2_id).getString("email"));
 							attributes.put("text","The WINNER is ");
-							currentGameChanchada.saveIt();
+							currentGame.saveIt();
 							Base.close();
 							return new ModelAndView(attributes,"web/finishedGame.mustache");
 						}
@@ -424,18 +400,22 @@ public class Menu{
 		},new MustacheTemplateEngine());
 
 		post("/abandonedGame",(request,response)->{
+
 			Base.open(driver,jdbc,userdb,passdb);
-			String currentGameId=request.queryParams("gameId");
-			Game currentGame=Game.findFirst("id=?",currentGameId);
+			Integer gameId=request.session().attribute("gameId");
+			Game currentGame=Game.findFirst("id=?",Integer.toString(gameId));
 			currentGame.resumeGame();
+
 			User player1= User.findFirst("id=?",(String)request.session().attribute("SESSION_NAME"));
 			User player2=User.findFirst("id=?",request.queryParams("player2"));
-
+			currentGame.set("end_date",Game.getDateMysql());
+			currentGame.saveIt();
 			if(currentGame.turnUser() %2==0){	
 				currentGame.updateRankWithWinner(player2,player1);
 			}else{
 				currentGame.updateRankWithWinner(player1,player2);
 			}
+			request.session().removeAttribute("gameId");
 			request.session().removeAttribute("PLAYER2");
 			Base.close();
 			response.redirect("/");
@@ -446,16 +426,16 @@ public class Menu{
 	
 		post("/finishedgame",(request,response)->{
 			request.session().removeAttribute("PLAYER2");
+			request.session().removeAttribute("gameId");
 			response.redirect("/");
 			return null;
 		},new MustacheTemplateEngine());
 
 
 		post("/savegame",(request,response)->{
-			Base.open(driver,jdbc,userdb,passdb);
-			String game_id=request.queryParams("gameId");
-			currentGameChanchada.saveGame();
-			Base.close();
+			
+			request.session().removeAttribute("PLAYER2");
+			request.session().removeAttribute("gameId");
 			response.redirect("/");
 			return null;
 		},new MustacheTemplateEngine());
