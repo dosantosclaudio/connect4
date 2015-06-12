@@ -1,6 +1,9 @@
 package com.unrc.app;
+
 import java.util.*;
+
 import java.lang.Exception;
+
 import org.javalite.activejdbc.Model;
 
 public class Board extends Model{
@@ -11,11 +14,8 @@ public class Board extends Model{
 		boardM=new Cell[6][7];
 	}
 	
-	
-	
 	public List<String>  toList(Game g){
 		List<String> res=new LinkedList<String>();
-		//res.add("<table   border="+'"'+"1"+'"'+" width="+'"'+"400"+'"'+" height="+'"'+"400px"+'"'+"; border="+'"'+"0"+'"'+" cellspacing="+'"'+"2"+'"'+" cellpadding="+'"'+"2"+'"'+" bgcolor="+'"'+"#000000"+"> ");
 		Cell current;
 		for (int i=5; i>=0;i--){
 			res.add("<tr align= "+'"'+"center"+'"'+">");
@@ -37,7 +37,6 @@ public class Board extends Model{
 				}
 			
 			}
-			//res.add("</tr>");
 		}
 		res.add("</table>");
 		return res;
@@ -45,14 +44,8 @@ public class Board extends Model{
 
 	private Boolean isPlayer1(Game g,Cell c){
 		System.out.println(this.get("game_id"));
-
 		return (Game.findFirst("id=?",g.get("id")).get("player1_id").equals(c.get("user_id")));
 	}
-
-/*
-	public String get voidPlace(){
-		return "<td><font color="+"#ffffff"+">1</font></td>";
-	}*/
 
 	public Board(Game g){
 		boardM=new Cell[6] [7];
@@ -67,15 +60,11 @@ public class Board extends Model{
 				aux.set("row",j);
 				aux.saveIt();
 				boardM [j] [i] = aux;
-
-
 			}
 		}
 		System.out.println("Acaaaa");
 		System.out.println(boardM [2] [2]);
 	}
-	
-
 
 	public void updateBoard(Game g){
 		Board b=Board.findFirst("game_id=?",g.get("id"));
@@ -103,6 +92,7 @@ public class Board extends Model{
 		}
 		return count;
 	}
+
 	public void saveBoard(Game g){
 		Board board=Board.findFirst("game_id=?",g.get("id"));
 		List<Cell> aux=Cell.where("board_id=? order by col,row",board.get("id"));
@@ -118,6 +108,7 @@ public class Board extends Model{
 		}
 
 	}
+
 	public Cell fillCellMemory(User u,int colum) throws BoardException{
 		int i=0;
 		if (colum<0 || colum>=7){
@@ -141,38 +132,6 @@ public class Board extends Model{
 	
 	}
 
-
-
-
-	// Incert the chip in colum, if it is not full
-/*	// Return the cell in whitch the chip was inserted  
-	public void fillCell(User u, int colum) throws BoardException{
-		int i=0;
-		List<Cell> aux=null; 
-
-		if (colum<0 || colum>=7){
-			throw new BoardException("Invalid column value","001");
-		}else{
-			aux= Cell.where("board_id = ? and col = ?",this.get("id"), colum).orderBy("row");
-			while (i<6 && aux.get(i).get("user_id")!=null){
-				i++;
-			}
-			
-			// Muy ineficiente.
-
-			if (i>=6){
-				throw new BoardException("This column is complete, insert your chip in another place","002");
-			}else{
-				if (aux.get(i).get("user_id")==null){
-					aux.get(i).set("user_id",u.get("id")).saveIt(); 
-				}else{
-					throw new BoardException("Fatal error","000");
-				}
-			}
-		}
-		//return aux.get(i);
-	}
-*/
 	//	Initializes the board, all the cells are empty.
 	public void emptyBoard(){
 		for (int i=0; i<7; i++) {
@@ -182,42 +141,6 @@ public class Board extends Model{
 			}
 		}
 	}
-
-	//	Show the board on the screen
-/*	public void printBoard(Pair<User,User> players){
-		Menu.clearConsole();
-		char[][] o = new char[6][7];
-		for (int i=0; i<7; i++) {
-			for (int j=0; j<6; j++){
-				//List<Cell> aux= Cell.where("board_id = ? and col = ? and row = ?",this.get("id"),j,i);
-				
-				Cell c = this.boardM[j][i];
-				if ((c.get("user_id")!=null)&&(players.getFst().get("id").equals(c.get("user_id")))) {
-					o[j][i]='X';
-				}else{
-					if ((c.get("user_id")!=null)&&(players.getSnd().get("id").equals(c.get("user_id")))) {
-						o[j][i]='0';
-					}else{
-						o[j][i]='-';
-					}
-				}
-			}
-		}
-		for (int i=5; i>=0; i--) {
-			System.out.println("");
-			for (int j=0; j<7; j++){
-				System.out.print(o[i][j]);
-			}
-		}
-		System.out.println("");
-	}
-*/
-	// Return true when the board is full
-	/*public Boolean fullBoard(){
-		List<Cell> c=Cell.where("board_id = ? and user_id is null",this.get("id"));
-		System.out.println(c.size());
-		return c.isEmpty();
-	}*/
 
 	public Boolean fullBoard(){
 		Boolean result=true;
