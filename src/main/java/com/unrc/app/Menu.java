@@ -33,12 +33,14 @@ public class Menu{
 			   HashMap<String,Object> attributes=new HashMap<String,Object> ();
 			   request.session(true);   
 			   String usr=request.session().attribute("SESSION_NAME");  
-
 			   if (usr==null){
 			   		attributes.put("currentUser","Sign In or Sign Up for play now!");
+			   		attributes.put("nameButton",'"'+"Sign In"+'"');
 			   }else{
 			   		Base.open(driver,jdbc,userdb,passdb);
 			   		attributes.put("currentUser",User.findFirst("id=?",usr).get("email"));
+			   		attributes.put("stateSignUp","disabled");
+			   		attributes.put("nameButton",'"'+"Sign Out"+'"');
 			   		Base.close();
 			   }
                return new ModelAndView(attributes, "web/initPage.mustache");
@@ -105,8 +107,10 @@ public class Menu{
 
 
 		post("/signin",(request,response)-> {
+
 			String usr=request.session().attribute("SESSION_NAME");  
 			if(usr!=null){
+				request.session().removeAttribute("SESSION_NAME");
 				response.redirect("/");
 				return null;
 			}else{
@@ -329,7 +333,6 @@ public class Menu{
 					attributes.put("turnUser",user1_id);
 				
 				}
-				currentGameChanchada=currentGameChanchada;
 				Integer count=0;
 				for (int i=0;i<7;i++){
 					if (currentGameChanchada.fullCol(count)) {
@@ -420,9 +423,29 @@ public class Menu{
 			return null;
 		},new MustacheTemplateEngine());
 
+		post("/abandonedGame",(request,response)->{
+			Base.open(driver,jdbc,userdb,passdb);
+			String currentGameId=request.queryParams("gameId");
+			Game currentGame=Game.findFirst("id=?",currentGameId);
+			currentGame.resumeGame();
+			User player1= User.findFirst("id=?",(String)request.session().attribute("SESSION_NAME"));
+			User player2=User.findFirst("id=?",request.queryParams("player2"));
+
+			if(currentGame.turnUser() %2==0){	
+				currentGame.updateRankWithWinner(player2,player1);
+			}else{
+				currentGame.updateRankWithWinner(player1,player2);
+			}
+			request.session().removeAttribute("PLAYER2");
+			Base.close();
+			response.redirect("/");
+			return null;
+
+		},new MustacheTemplateEngine());
 		
 	
 		post("/finishedgame",(request,response)->{
+			request.session().removeAttribute("PLAYER2");
 			response.redirect("/");
 			return null;
 		},new MustacheTemplateEngine());
