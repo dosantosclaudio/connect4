@@ -199,7 +199,7 @@ public class Game extends Model{
 			Cell [][]  board=b.getBoard();
 			Cell aux_1=board [r] [c];
 			if (((aux_1.get("user_id")!=null)&&aux_1.get("user_id").equals(usr.get("id")))) {
-				return 1+uLSearch(usr,c+1,r-1);
+				return 1+uLSearch(usr,c-1,r+1);
 			}else{
 				return 0;
 			}
@@ -217,7 +217,7 @@ public class Game extends Model{
 			Cell [][]  board=b.getBoard();
 			Cell aux_1=board [r] [c];
 			if (((aux_1.get("user_id")!=null)&&aux_1.get("user_id").equals(usr.get("id"))))	 {
-				return 1+dRSearch(usr,c-1,r+1);
+				return 1+dRSearch(usr,c+1,r-1);
 			}else{
 				return 0;
 			}
@@ -229,6 +229,7 @@ public class Game extends Model{
 		System.out.println("AAAAA");
 		int c= (int) a.get("col");
 		int r= (int) a.get("row");
+		
 		return 	(dSearch(usr,c,r-1)>=3) || 
 				(rSearch(usr,c+1,r) + lSearch(usr,c-1,r)>=3) || 
 				(uRSearch(usr,c+1,r+1) + dLSearch(usr,c-1,r-1)>=3) || 
@@ -250,6 +251,10 @@ public class Game extends Model{
 	public boolean full(){
 	//	Board b= Board.findFirst("game_id= ?",this.get("id"));
 		return b.fullBoard();
+	}
+
+	public boolean fullCol(Integer i){
+		return b.fullCol(i);
 	}
 /*
 	public void printBoardOnScreen(Pair<User,User> players){

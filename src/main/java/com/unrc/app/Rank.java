@@ -1,14 +1,27 @@
 package com.unrc.app;
 
 import org.javalite.activejdbc.Model;
-
+import org.javalite.activejdbc.Base;
 public class Rank extends Model{
 	
-	private void empty(){
-
+	public String toStringName(){
+		Base.open("com.mysql.jdbc.Driver","jdbc:mysql://localhost/connect4","root","root");
+		User u=User.findFirst("id=?",this.getString("user_id"));
+		Base.close();
+		return u.toString2();
 	}
+	public String toStringPos(){
+		Base.open("com.mysql.jdbc.Driver","jdbc:mysql://localhost/connect4","root","root");
 
+		long i=Rank.count("score> ?",this.get("score"));
+		i++;
+		Base.close();
 
+		return Long.toString(i);
+	}
+	public String toStringScore(){
+		return this.getString("score");
+	}
 
 	// Registra una partida ganada para player;
 	public static void userWin(User player) {

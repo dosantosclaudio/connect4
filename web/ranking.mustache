@@ -1,0 +1,39 @@
+
+<html>
+<HEAD>
+	
+</HEAD> 
+<BODY bgcolor="#000000" text="#FFFFFF">
+
+	 <h2>Ranking : </h2>
+
+
+
+  <table width="50%" border="1" cellspacing="10" cellpadding="10">
+ 
+        <tr>
+          <td width="5%">Pos</td>
+          <td width="40%">Name</td>
+          <td width="40%">Score</td>
+        </tr>
+    {{#ranks}}
+        
+        <tr>
+          <form action="/ranking" method="POST">
+           <td width="5%">
+              {{toStringPos}}
+          </td>
+          <td width="40%">
+              {{toStringName}}
+          </td>
+          <td width ="40%">
+          		{{toStringScore}}
+          </td>
+          </form>
+        </tr>
+    {{/ranks}}
+  </table>
+
+	
+  </BODY>
+</html>

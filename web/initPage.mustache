@@ -1,6 +1,7 @@
 <html>
 	<head>
 		<title>Welcome to Connect 4!</title>
+
 		<style>
 			.tim{
 			font-size: 25px;
@@ -36,8 +37,21 @@
 		</style> 
 	</head>
 	<body bgcolor="#000000" text="#FFFFFF" >
-		<h1 align="center"> Welcome to Connect 4! Play now!</h1>
+		<p align="center">
+			<font  size=20> Welcome to Connect 4! Play now!</font>
+			<
+				<form action="/signin" method="POST">
+					<input type="submit" value="Sign In"  name="signin" >
+				</form>
+
+				<form action="/signup" method="POST">
+						<input type="submit" value="Sign Up" name="signup" >
+				</form>
+			
+		</p>
+
 		<h2 align="center"> The most popular connect 4 of the world</h2>
+		
 		<h3 align="center">{{currentUser}}</h3>
 		<br>
 		
@@ -53,20 +67,22 @@
 				<input type="submit" value="Resume Play" name="resumeplay" class="tim">
 			</p>	
 		</form>	
-		
-		<form action="/signup" method="POST">
+	
+		<form action="/ranking" method="POST">
 		<p align="center">
-			<input type="submit" value="Sign Up" name="signup" class="tim1">
-			</p>
-		</form>
-
-		<form action="/signin" method="POST">
-		<p align="center">
-			<input type="submit" value="Sign In"  name="signin" class="tim2">
+			<input type="submit" value="Ranking"  name="rank" class="tim2">
 			</p>
 		</form>
 
 
+<!-- 
+		<form action="/ranking" method="POST">
+			<input type=hidden value={{currentUser}} name="player1" >
+			<p align="center" >
+				<input type="submit" value="Ranking" name="ranking" class="tim">
+			</p>	
+		</form>	
+ -->
 
 </body>
 </html>

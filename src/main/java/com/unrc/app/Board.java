@@ -149,6 +149,7 @@ public class Board extends Model{
 	public void fillCell(User u, int colum) throws BoardException{
 		int i=0;
 		List<Cell> aux=null; 
+
 		if (colum<0 || colum>=7){
 			throw new BoardException("Invalid column value","001");
 		}else{
@@ -156,6 +157,9 @@ public class Board extends Model{
 			while (i<6 && aux.get(i).get("user_id")!=null){
 				i++;
 			}
+			
+			// Muy ineficiente.
+
 			if (i>=6){
 				throw new BoardException("This column is complete, insert your chip in another place","002");
 			}else{
@@ -225,6 +229,9 @@ public class Board extends Model{
 		return result;
 	}
 
+	public Boolean fullCol(Integer i){
+		return (boardM[5][i].get("user_id")!=null);
+	}
 	public Cell[] [] getBoard(){
 		return this.boardM;
 	}
@@ -232,4 +239,6 @@ public class Board extends Model{
 	public void setBoard(Cell [] [] board){
 		this.boardM=board;
 	}
+
+
 }
