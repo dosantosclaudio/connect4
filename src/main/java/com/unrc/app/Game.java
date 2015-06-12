@@ -2,6 +2,7 @@ package com.unrc.app;
 import java.util.*;
 import java.lang.Exception;
 import org.javalite.activejdbc.Model;
+import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.annotations.BelongsTo;
 import org.javalite.activejdbc.annotations.BelongsToParents;
 import java.text.DateFormat;
@@ -20,6 +21,17 @@ public class Game extends Model{
 	public Game(){
 	}
 
+	public String toStringPlayer2(){
+		Base.open("com.mysql.jdbc.Driver","jdbc:mysql://localhost/connect4","root","root");
+		User u=User.findFirst("id=?",this.getString("player2_id"));
+		Base.close();
+		return u.toString2();
+	}
+
+	public String toString2(){
+		return this.getString("id");
+	}
+
 
 
 	public Game(Pair<User,User> p){
@@ -28,10 +40,6 @@ public class Game extends Model{
 		this.set ("init_date",getDateMysql());
 		this.saveIt();
 		b= new Board(this);
-	}
-
-	public String toString2(){
-		return this.getString("id");
 	}
 
 

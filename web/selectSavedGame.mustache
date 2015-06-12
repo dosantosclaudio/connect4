@@ -1,31 +1,34 @@
+
 <html>
 <HEAD>
-	
+  
 </HEAD> 
-<BODY>
+<BODY bgcolor="#000000" text="#FFFFFF">
 
-	 <h2>Users : {{user1}}</h2>
-	
+   <h2>Resume : {{player1_id}}</h2>
 
 
-  <table width="50%" border="1" cellspacing="0" cellpadding="3">
-    {{#games}}
+
+  <table width="45%" border="1" cellspacing="10" cellpadding="10">
+ 
         <tr>
-          <td>
-          	<form action="/play" method="POST">
-          		<input type=hidden value={{player1_id}} name="player1_id" >
-          		<input type=hidden value={{toString2}} name="game">
-          		{{toString2}} 
-          		<a align="rigth">
-          			<input type="submit" value="Play" >
-          		</a>
+          <td width="5%">Number</td>
+          <td width="40%">Player2</td>
+        </tr>
+    {{#games}}        
+        <tr>
+          <form action="/play" method="POST">
+            <td width="5%">
+                {{toString2}}
+            </td>
+            <td width="40%">
+                {{toStringPlayer2}}
+            </td>  
           </form>
-          </td>
         </tr>
     {{/games}}
   </table>
 
-	
+  
   </BODY>
-
 </html>
