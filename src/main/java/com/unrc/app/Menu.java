@@ -10,8 +10,7 @@ import org.javalite.activejdbc.Base;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
-import static spark.Spark.get;
-import static spark.Spark.post;
+import static spark.Spark.*;
 
 public class Menu{
 	 public static final String driver = "com.mysql.jdbc.Driver";
@@ -26,6 +25,17 @@ public class Menu{
 
 	public static void showWebApp(){
 		
+		before((request, response) -> {
+  			if (!(Base.hasConnection())){
+  				Base.open(driver,jdbc,userdb,passdb);
+  			}
+		});
+		after((request, response) -> {
+  			if (Base.hasConnection()){
+  				Base.close();
+  			}
+		});
+
 
 		get("/", (request, response) -> {
 			   HashMap<String,Object> attributes=new HashMap<String,Object> ();
@@ -35,11 +45,11 @@ public class Menu{
 			   		attributes.put("currentUser","Sign In or Sign Up for play now!");
 			   		attributes.put("nameButton",'"'+"Sign In"+'"');
 			   }else{																			//Si no hay usuario registrado
-			   		Base.open(driver,jdbc,userdb,passdb);
+			   		
 			   		attributes.put("currentUser",User.findFirst("id=?",usr).get("email"));
 			   		attributes.put("stateSignUp","disabled");
 			   		attributes.put("nameButton",'"'+"Sign Out"+'"');
-			   		Base.close();
+			   		
 			   }
                return new ModelAndView(attributes, "web/initPage.mustache");
             }, new MustacheTemplateEngine());
@@ -74,17 +84,17 @@ public class Menu{
 			 	return new ModelAndView(null,"web/signUp.mustache");
 			 }else{
 			 	 try{
-				 	Base.open(driver,jdbc,userdb,passdb);
+				 	//Base.open(driver,jdbc,userdb,passdb);
 				 	User.insert(email,f_name,l_name,pass);	
 				 	HashMap<String,Object> attributes=new HashMap<String,Object>();
 				 	String user=User.findFirst("email=?",email).getString("id");
 				 	request.session().attribute("SESSION_NAME",user);
 				 	attributes.put("currentUser",user);
-					Base.close();
+					
 					response.redirect("/");
 				 	return null;
 				 }catch(UserException e){
-				 	Base.close();
+				 	//Base.close();
 				 	return new ModelAndView(null,"web/signUp.mustache");
 				 }
 
@@ -120,20 +130,18 @@ public class Menu{
 			 String pass=request.queryParams("password");
 			 System.out.println(pass);
 		 	 try{
-			 	Base.open(driver,jdbc,userdb,passdb);
+			 	
 			 	User current_user=User.signIn(email,pass);
 			 
 			 	HashMap<String,Object> attributes=new HashMap<String,Object> ();
 			 	attributes.put("currentUser",current_user.get("id"));
 			 	String user=current_user.getString("id");
 			 	request.session().attribute("SESSION_NAME",user);
-			 	Base.close();
 			 	response.redirect("/");
 			 	return null;
 			 }catch(UserException e){
 
 
-			 	Base.close();
 			 	return new ModelAndView(null,"web/signIn.mustache");
 
 			 }
@@ -149,13 +157,12 @@ public class Menu{
 				return null;
 			}else{
 			
-				Base.open(driver,jdbc,userdb,passdb);
+			
 				Map<String, Object> attributes = new HashMap<String,Object>();
 				List<Game> game=Game.where("(player1_id=? or player2_id=?)and end_date is null",user1,user1);
 				attributes.put("player1_id",user1);
 				System.out.println(game.size());
 				attributes.put("games",game);
-				Base.close();
 				return new ModelAndView(attributes,"web/selectSavedGame.mustache");
 			}
 		},new MustacheTemplateEngine());
@@ -168,7 +175,7 @@ public class Menu{
 				return null;
 			}else{
 									
-				Base.open(driver,jdbc,userdb,passdb);
+				
 				Map<String, Object> attributes = new HashMap<String,Object>();
 				attributes.put("player1_id",user1);
 				attributes.put("user1",User.findFirst("id=?",user1).get("email"));
@@ -177,7 +184,7 @@ public class Menu{
 				List<User> anotherU=User.where("id<>?",user1);
 				System.out.println(anotherU);
 				attributes.put("users",anotherU);
-				Base.close();
+			
 				return new ModelAndView(attributes,"web/selectOpponent.mustache");
 			}
 			/*}else{
@@ -187,7 +194,7 @@ public class Menu{
 		},new MustacheTemplateEngine());
 
 		post("/play",(request,response)->{	//inicio de juego.
-			Base.open(driver,jdbc,userdb,passdb);
+			
 			String user1_id=request.session().attribute("SESSION_NAME");								//player1
 			String rGame=request.queryParams("game");													
 			Map<String, Object> attributes = new HashMap<>();
@@ -246,13 +253,13 @@ public class Menu{
 			request.session().attribute("gameId",currentGame.getInteger("id"));
 			System.out.println(currentGame.get("id"));
 			attributes.put("board",currentGame.getBoard().toList(currentGame));
-			Base.close();
+			
 			return new ModelAndView(attributes,"web/play.mustache");			
 
 		},new MustacheTemplateEngine());
 
 		post("/doMovement",(request,response)->{
-			Base.open(driver,jdbc,userdb,passdb);
+			
 			Cell c=null;
 			String turnUser;
 			
@@ -322,7 +329,7 @@ public class Menu{
 
 				attributes.put("gameId",currentGame.get("id"));
 				attributes.put("board",currentGame.getBoard().toList(currentGame));
-				Base.close();
+				
 				return new ModelAndView(attributes,"web/play.mustache");
 			}else{
 
@@ -339,7 +346,7 @@ public class Menu{
 							attributes.put("user",User.findFirst("id=?",user1_id).getString("email"));
 							attributes.put("text","The WINNER is ");
 							currentGame.saveIt();
-							Base.close();
+						
 							return new ModelAndView(attributes,"web/finishedGame.mustache");
 						}else{
 							currentGame.updateRankWithWinner(player2,player1);
@@ -348,7 +355,7 @@ public class Menu{
 							attributes.put("user",User.findFirst("id=?",user2_id).getString("email"));
 							attributes.put("text","The WINNER is ");
 							currentGame.saveIt();
-							Base.close();
+							
 							return new ModelAndView(attributes,"web/finishedGame.mustache");
 						}
 					}else{
@@ -358,7 +365,7 @@ public class Menu{
 						attributes.put("user",null);
 						
 						currentGame.saveIt();
-						Base.close();
+					
 						return new ModelAndView(attributes,"web/finishedGame.mustache");
 					}
 					
@@ -370,7 +377,7 @@ public class Menu{
 							attributes.put("text","The WINNER is ");
 							
 							currentGame.saveIt();
-							Base.close();
+							
 							return new ModelAndView(attributes,"web/finishedGame.mustache");
 						}else{
 							currentGame.updateRankWithWinner(player2,player1);
@@ -378,7 +385,7 @@ public class Menu{
 							attributes.put("user",User.findFirst("id=?",user2_id).getString("email"));
 							attributes.put("text","The WINNER is ");
 							currentGame.saveIt();
-							Base.close();
+							
 							return new ModelAndView(attributes,"web/finishedGame.mustache");
 						}
 						
@@ -386,7 +393,7 @@ public class Menu{
 				}
 
 
-				Base.close();
+			
 				return new ModelAndView(null,"web/initPage.mustache");
 				//partida ganada o empatada"
 			}
@@ -401,7 +408,7 @@ public class Menu{
 
 		post("/abandonedGame",(request,response)->{
 
-			Base.open(driver,jdbc,userdb,passdb);
+			
 			Integer gameId=request.session().attribute("gameId");
 			Game currentGame=Game.findFirst("id=?",Integer.toString(gameId));
 			currentGame.resumeGame();
@@ -417,7 +424,7 @@ public class Menu{
 			}
 			request.session().removeAttribute("gameId");
 			request.session().removeAttribute("PLAYER2");
-			Base.close();
+			
 			response.redirect("/");
 			return null;
 
@@ -444,7 +451,7 @@ public class Menu{
 		post("/ranking",(request,response)->{
 		//	String user1=request.queryParams("player1");
 
-			Base.open(driver,jdbc,userdb,passdb);
+			
 			Map<String, Object> attributes = new HashMap<String,Object>();
 
 			List<Rank> usersRank=Rank.where("true order by score DESC");
@@ -452,7 +459,7 @@ public class Menu{
 			System.out.println(usersRank);
 			attributes.put("ranks",usersRank);
 
-			Base.close();
+		
 			return new ModelAndView(attributes,"web/ranking.mustache");
 
 		},new MustacheTemplateEngine());
