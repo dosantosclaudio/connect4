@@ -42,11 +42,6 @@ public class Board extends Model{
 		return res;
 	}
 
-	private Boolean isPlayer1(Game g,Cell c){
-		System.out.println(this.get("game_id"));
-		return (Game.findFirst("id=?",g.get("id")).get("player1_id").equals(c.get("user_id")));
-	}
-
 	public Board(Game g){
 		boardM=new Cell[6] [7];
 		this.set("game_id",g.get("id"));
@@ -62,8 +57,11 @@ public class Board extends Model{
 				boardM [j] [i] = aux;
 			}
 		}
-		System.out.println("Acaaaa");
-		System.out.println(boardM [2] [2]);
+	}
+	
+	private Boolean isPlayer1(Game g,Cell c){
+		System.out.println(this.get("game_id"));
+		return (Game.findFirst("id=?",g.get("id")).get("player1_id").equals(c.get("user_id")));
 	}
 
 	public void updateBoard(Game g){
@@ -77,8 +75,6 @@ public class Board extends Model{
 				count++;
 			}
 		}
-
-
 	}
 
 	public int counterCellNull(){
@@ -128,8 +124,7 @@ public class Board extends Model{
 				}
 			}
 		}
-		return boardM[i][colum];
-	
+		return boardM[i][colum];	
 	}
 
 	//	Initializes the board, all the cells are empty.
@@ -155,6 +150,7 @@ public class Board extends Model{
 	public Boolean fullCol(Integer i){
 		return (boardM[5][i].get("user_id")!=null);
 	}
+	
 	public Cell[] [] getBoard(){
 		return this.boardM;
 	}

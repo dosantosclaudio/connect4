@@ -2,28 +2,27 @@ package com.unrc.app;
 
 import org.javalite.activejdbc.Model;
 import org.javalite.activejdbc.Base;
+
 public class Rank extends Model{
 	
 	public String toStringName(){
-		Base.open("com.mysql.jdbc.Driver","jdbc:mysql://localhost/connect4","root","root");
 		User u=User.findFirst("id=?",this.getString("user_id"));
-		Base.close();
 		return u.toString2();
 	}
-	public String toStringPos(){
-		Base.open("com.mysql.jdbc.Driver","jdbc:mysql://localhost/connect4","root","root");
 
+	public String toStringPos(){
+		
 		long i=Rank.count("score> ?",this.get("score"));
 		i++;
-		Base.close();
-
+		
 		return Long.toString(i);
 	}
+
 	public String toStringScore(){
 		return this.getString("score");
 	}
 
-	// Registra una partida ganada para player;
+	// register a win game 
 	public static void userWin(User player) {
 		Rank ranking = Rank.findFirst("user_id = ?", player.get("id"));
 		
@@ -43,11 +42,9 @@ public class Rank extends Model{
 		}
 	}	
 
-
-	// Registra una partida empatada para player y player2;
+	// register a tie game 
 	public static void userDraw(User player){
 		Rank ranking = Rank.findFirst("user_id = ?", player.get("id"));
-		
 		if (ranking == null) {
 			Rank r = new Rank();
 			r.set("user_id", player.get("id"));
@@ -55,7 +52,6 @@ public class Rank extends Model{
 			r.set("tie_games", 1);
 			r.set("score", 50);
 			r.save();	
-				
 		}else{	
 			ranking.set("played_games", ranking.getInteger("played_games")+1);
 			ranking.set("tie_games", ranking.getInteger("tie_games")+1);
@@ -64,21 +60,19 @@ public class Rank extends Model{
 		}
 	}
 
+	// register a lose game 
 	public static void userLose(User player){
 		Rank ranking = Rank.findFirst("user_id = ?", player.get("id"));
-		
 		if (ranking == null) {
 			Rank r = new Rank();
 			r.set("user_id", player.get("id"));
 			r.set("played_games", 1);
 			r.set("score", -60);
 			r.save();	
-
 		}else{	
 			ranking.set("played_games", ranking.getInteger("played_games")+1);
 			ranking.set("score", ranking.getInteger("score")-60);
 			ranking.save();
-			
 		}
 	}
 

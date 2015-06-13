@@ -75,7 +75,6 @@ public class Game extends Model{
 		if (c<0 || c>6 || r<0 || r>5) {
 			return 0;  // this place is not in the board.
 		}else{
-			System.out.println("DDDDDDDD");
 			// the place is valid in this board.
 			Cell [][]  board=b.getBoard();
 			Cell aux_1=board [r] [c];
@@ -186,7 +185,6 @@ public class Game extends Model{
 
 	// Check if the user, usr,  won the game. 
 	public boolean thereIsAWinner(User usr,Cell a){
-		System.out.println("AAAAA");
 		int c= (int) a.get("col");
 		int r= (int) a.get("row");
 		
