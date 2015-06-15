@@ -1,63 +1,66 @@
 
 package com.unrc.app;
 
+import org.javalite.activejdbc.Base;
 import com.unrc.app.Pair;
 import com.unrc.app.User;
-import java.util.*;
+
 import java.lang.Exception;
 import java.io.Console;
-import org.javalite.activejdbc.Base;
+import java.util.*;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
-import static spark.Spark.*;
+import static spark.Spark.get;
+import static spark.Spark.post;
+import static spark.Spark.before;
+import static spark.Spark.after;
+
 
 public class Menu{
-	 public static final String driver = "com.mysql.jdbc.Driver";
-     public static final String jdbc = "jdbc:mysql://localhost/connect4";
-     public static final String userdb = "root";
-     public static final String passdb = "root";
-        
-  
-	public Menu(){
-	}
+	public static final String driver = "com.mysql.jdbc.Driver";
+    public static final String jdbc = "jdbc:mysql://localhost/connect4";
+    public static final String userdb = "root";
+    public static final String passdb = "root";
 
+	public Menu(){}
 
 	public static void showWebApp(){
-		
+
+
+		//	Open database before execute a rote
 		before((request, response) -> {
-  			if (!(Base.hasConnection())){
-  				Base.open(driver,jdbc,userdb,passdb);
-  			}
+			if(!(Base.hasConnection())){
+				Base.open(driver,jdbc,userdb,passdb);
+			}
+
 		});
+		
+		//	Close database after execute a rote
 		after((request, response) -> {
-  			if (Base.hasConnection()){
-  				Base.close();
-  			}
+    		if(Base.hasConnection()){
+				Base.close();
+			}
 		});
-
-
+		
+		//	Show init page 
 		get("/", (request, response) -> {
-			   HashMap<String,Object> attributes=new HashMap<String,Object> ();
-			   request.session(true);   
-			   String usr=request.session().attribute("SESSION_NAME");  
-			   if (usr==null){																	//Si no hay usuario registrado
-			   		attributes.put("currentUser","Sign In or Sign Up for play now!");
-			   		attributes.put("nameButton",'"'+"Sign In"+'"');
-			   }else{																			//Si no hay usuario registrado
-			   		
-			   		attributes.put("currentUser",User.findFirst("id=?",usr).get("email"));
-			   		attributes.put("stateSignUp","disabled");
-			   		attributes.put("nameButton",'"'+"Sign Out"+'"');
-			   		
-			   }
-               return new ModelAndView(attributes, "web/initPage.mustache");
-            }, new MustacheTemplateEngine());
+			HashMap<String,Object> attributes=new HashMap<String,Object> ();
+			request.session(true);   
+			String usr=request.session().attribute("SESSION_NAME");  
+			if (usr==null){
+				attributes.put("currentUser","Sign In or Sign Up for play now!");
+				attributes.put("nameButton",'"'+"Sign In"+'"');
+			}else{
+				attributes.put("currentUser",User.findFirst("id=?",usr).get("email"));
+				attributes.put("stateSignUp","disabled");
+				attributes.put("nameButton",'"'+"Sign Out"+'"');	
+			}
+         	return new ModelAndView(attributes, "web/initPage.mustache");
+		}, new MustacheTemplateEngine());
 
 
-
-		post("/signup",(request,response)-> {
-	
+		post("/signup",(request,response)-> {	
 			String usr=request.session().attribute("SESSION_NAME");  
 			if(usr!=null){
 				response.redirect("/");
@@ -67,50 +70,8 @@ public class Menu{
 			}
 		},new MustacheTemplateEngine());
 
-		post("/signingup",(request,response)-> {
-
-			// Obtengo datos del formulario
-			 String email=request.queryParams("email");
-			 System.out.println(email);
-			 String f_name=request.queryParams("first_name");
-			 System.out.println(f_name);
-			 String l_name=request.queryParams("last_name");
-			 System.out.println(l_name);
-			 String pass=request.queryParams("password");
-			 System.out.println(pass);
-			 String pass_check=request.queryParams("passwordcheck");
-			 System.out.println(pass_check);
-			 if (!pass.equals(pass_check)){
-			 	return new ModelAndView(null,"web/signUp.mustache");
-			 }else{
-			 	 try{
-				 	//Base.open(driver,jdbc,userdb,passdb);
-				 	User.insert(email,f_name,l_name,pass);	
-				 	HashMap<String,Object> attributes=new HashMap<String,Object>();
-				 	String user=User.findFirst("email=?",email).getString("id");
-				 	request.session().attribute("SESSION_NAME",user);
-				 	attributes.put("currentUser",user);
-					
-					response.redirect("/");
-				 	return null;
-				 }catch(UserException e){
-				 	//Base.close();
-				 	return new ModelAndView(null,"web/signUp.mustache");
-				 }
-
-			 }
-			
-		},new MustacheTemplateEngine());
-
-
-
-
-
-
-
-
+		
 		post("/signin",(request,response)-> {
-
 			String usr=request.session().attribute("SESSION_NAME");  
 			if(usr!=null){
 				request.session().removeAttribute("SESSION_NAME");
@@ -122,33 +83,49 @@ public class Menu{
 		},new MustacheTemplateEngine());
 
 
-
-		post("/signingin",(request,response)-> {
-
+		post("/signingup",(request,response)-> {
+			// Obtengo datos del formulario
 			 String email=request.queryParams("email");
-			 System.out.println(email);
+			 String f_name=request.queryParams("first_name");
+			 String l_name=request.queryParams("last_name");
 			 String pass=request.queryParams("password");
-			 System.out.println(pass);
-		 	 try{
-			 	
-			 	User current_user=User.signIn(email,pass);
-			 
-			 	HashMap<String,Object> attributes=new HashMap<String,Object> ();
-			 	attributes.put("currentUser",current_user.get("id"));
-			 	String user=current_user.getString("id");
-			 	request.session().attribute("SESSION_NAME",user);
-			 	response.redirect("/");
-			 	return null;
-			 }catch(UserException e){
-
-
-			 	return new ModelAndView(null,"web/signIn.mustache");
+			 String pass_check=request.queryParams("passwordcheck");
+			 if (!pass.equals(pass_check)){
+			 	return new ModelAndView(null,"web/signUp.mustache");
+			 }else{
+			 	 try{
+					User.insert(email,f_name,l_name,pass);	
+				 	HashMap<String,Object> attributes=new HashMap<String,Object>();
+				 	String user=User.findFirst("email=?",email).getString("id");
+				 	request.session().attribute("SESSION_NAME",user);
+				 	attributes.put("currentUser",user);
+					response.redirect("/");
+				 	return null;
+				 }catch(UserException e){
+				 	return new ModelAndView(null,"web/signUp.mustache");
+				 }
 
 			 }
-
-		 
-			
 		},new MustacheTemplateEngine());
+
+
+
+		post("/signingin",(request,response)-> {
+			String email=request.queryParams("email");			
+			String pass=request.queryParams("password");
+		 	try{
+				User current_user=User.signIn(email,pass);			
+				HashMap<String,Object> attributes=new HashMap<String,Object> ();
+				attributes.put("currentUser",current_user.get("id"));
+				String user=current_user.getString("id");
+				request.session().attribute("SESSION_NAME",user);
+				response.redirect("/");
+				return null;
+			}catch(UserException e){
+		 		return new ModelAndView(null,"web/signIn.mustache");
+			}
+		},new MustacheTemplateEngine());
+
 
 		post("/selectSavedGame",(request,response)->{
 			String user1=request.session().attribute("SESSION_NAME");
@@ -156,12 +133,9 @@ public class Menu{
 				response.redirect("/");
 				return null;
 			}else{
-			
-			
 				Map<String, Object> attributes = new HashMap<String,Object>();
 				List<Game> game=Game.where("(player1_id=? or player2_id=?)and end_date is null",user1,user1);
 				attributes.put("player1_id",user1);
-				System.out.println(game.size());
 				attributes.put("games",game);
 				return new ModelAndView(attributes,"web/selectSavedGame.mustache");
 			}
@@ -173,29 +147,19 @@ public class Menu{
 			if(user1==null){
 				response.redirect("/");
 				return null;
-			}else{
-									
-				
+			}else{								
 				Map<String, Object> attributes = new HashMap<String,Object>();
 				attributes.put("player1_id",user1);
-				attributes.put("user1",User.findFirst("id=?",user1).get("email"));
-				
-				System.out.println(User.findFirst("id=?",user1).get("email"));
+				attributes.put("user1",User.findFirst("id=?",user1).get("email"));	
 				List<User> anotherU=User.where("id<>?",user1);
-				System.out.println(anotherU);
 				attributes.put("users",anotherU);
-			
 				return new ModelAndView(attributes,"web/selectOpponent.mustache");
 			}
-			/*}else{
-				return new ModelAndView(null,"web/loginOrSignup.mustache");
-
-			}*/	
 		},new MustacheTemplateEngine());
 
+
 		post("/play",(request,response)->{	//inicio de juego.
-			
-			String user1_id=request.session().attribute("SESSION_NAME");								//player1
+			String user1_id=request.session().attribute("SESSION_NAME");
 			String rGame=request.queryParams("game");													
 			Map<String, Object> attributes = new HashMap<>();
 			Game currentGame;
@@ -203,11 +167,8 @@ public class Menu{
 				currentGame=Game.findFirst("id=?",rGame);
 				currentGame.resumeGame();
 				String user2_id=Integer.toString((Integer)currentGame.get("player2_id"));
-				System.out.println("FIJA ACA");
-				System.out.println(user2_id);
 				attributes.put("user1",user1_id);
 				attributes.put("user2",user2_id);
-
 				if(currentGame.turnUser() %2==0){
 					attributes.put("turnUser",user1_id);
 				}else{
@@ -218,27 +179,17 @@ public class Menu{
 				String user2_id;
 				if (user2==null){
 					user2=request.queryParams("player2");
-				
-				//String user2=request.queryParams("player2");
-					System.out.println(user2);
-					System.out.println(User.findFirst("email=?",user2) );
 					user2_id= Integer.toString((Integer)User.findFirst("email=?",user2).get("id"));
-					System.out.println(user1_id);
-					System.out.println(user2_id);
+					
 				}else{
 					user2_id=user2;
 				}
 				attributes.put("user1",user1_id);
-
 				attributes.put("user2",user2_id);
 				attributes.put("turnUser",user1_id);
-
 				Game g=new Game(new Pair<User,User>(User.findFirst("id=?",user1_id),User.findFirst("id=?",user2_id)));
-
 				currentGame=g;
 				currentGame.resumeGame();
-
-
 			}
 			Integer count=0;
 			for (int i=0;i<7;i++){	
@@ -249,25 +200,18 @@ public class Menu{
 				}
 				count++;
 			}
-			System.out.println("FIJA ACAAAAA");
 			request.session().attribute("gameId",currentGame.getInteger("id"));
-			System.out.println(currentGame.get("id"));
 			attributes.put("board",currentGame.getBoard().toList(currentGame));
-			
 			return new ModelAndView(attributes,"web/play.mustache");			
-
 		},new MustacheTemplateEngine());
 
+
 		post("/doMovement",(request,response)->{
-			
 			Cell c=null;
 			String turnUser;
-			
 			Integer gameId=request.session().attribute("gameId");
-	
 			Game currentGame=Game.findFirst("id=?",Integer.toString(gameId));
 			currentGame.resumeGame();
-
 			if(currentGame.turnUser() %2==0){
 					turnUser=request.session().attribute("SESSION_NAME");
 			}else{
@@ -277,13 +221,9 @@ public class Menu{
 			String user1_id=request.session().attribute("SESSION_NAME");
 			String user2_id=request.queryParams("player2");
 			String current_g=request.queryParams("game");
-			
 			User player1=User.findFirst("id=?",user1_id);
 			User player2=User.findFirst("id=?",user2_id);
 			Map<String, Object> attributes = new HashMap<>();
-			//Game currentGame=Game.findFirst("id=?",current_g);
-			System.out.println(turnUser);
-			System.out.println(user1_id);
 			User turn=User.findFirst("id=?",turnUser);
 			try{
 				c=currentGame.doMovement(turn,Integer.parseInt(col));
@@ -291,31 +231,24 @@ public class Menu{
 				switch (f.getCode()){
 					case "000":
 						System.out.println("Has been detected some problems in this aplication ");
-						//c=null;
 						break;
 					case "001":
 						System.out.println(f.getMessage());
-						
 						break;
 					case "002":
 						System.out.println(f.getMessage());
-						
 						break;
 					}
 			}
 
-			if (!currentGame.thereIsAWinner(turn,c) && !currentGame.full()){
-				
+			if (!currentGame.thereIsAWinner(turn,c) && !currentGame.full()){		
 				attributes.put("user1",user1_id);
 				attributes.put("user2",user2_id);
 				if (turnUser.equals(user1_id)){
 					attributes.put("turnUser",user2_id);
-					
 				}else{
 					attributes.put("turnUser",user1_id);
-				
 				}
-
 				Integer count=0;
 				for (int i=0;i<7;i++){
 					if (currentGame.fullCol(count)) {
@@ -325,47 +258,36 @@ public class Menu{
 					}
 					count++;
 				}
-
-
 				attributes.put("gameId",currentGame.get("id"));
 				attributes.put("board",currentGame.getBoard().toList(currentGame));
-				
 				return new ModelAndView(attributes,"web/play.mustache");
 			}else{
-
 					request.session().attribute("PLAYER2",user2_id);
 					currentGame.set("end_date",Game.getDateMysql());
 					currentGame.saveIt();
 				if (currentGame.full()){
-					if(currentGame.thereIsAWinner(turn,c)) {
-						
+					if(currentGame.thereIsAWinner(turn,c)) {		
 						if(turnUser.equals(user1_id)){
 							currentGame.updateRankWithWinner(player1,player2);
 							currentGame.set("result_p1","WIN");
-							
 							attributes.put("user",User.findFirst("id=?",user1_id).getString("email"));
 							attributes.put("text","The WINNER is ");
 							currentGame.saveIt();
-						
 							return new ModelAndView(attributes,"web/finishedGame.mustache");
 						}else{
 							currentGame.updateRankWithWinner(player2,player1);
 							currentGame.set("result_p1","LOOSE");
-							
 							attributes.put("user",User.findFirst("id=?",user2_id).getString("email"));
 							attributes.put("text","The WINNER is ");
 							currentGame.saveIt();
-							
 							return new ModelAndView(attributes,"web/finishedGame.mustache");
 						}
 					}else{
 						currentGame.updateRankWithDraw(player1,player2);
-						currentGame.set("result_p1","TIE GAME"); 
+						currentGame.set("result_p1","TIE"); 
 						attributes.put("text","TIE");
-						attributes.put("user",null);
-						
+						attributes.put("user",null);	
 						currentGame.saveIt();
-					
 						return new ModelAndView(attributes,"web/finishedGame.mustache");
 					}
 					
@@ -375,9 +297,7 @@ public class Menu{
 							currentGame.updateRankWithWinner(player1,player2);
 							attributes.put("user",User.findFirst("id=?",user1_id).getString("email"));
 							attributes.put("text","The WINNER is ");
-							
 							currentGame.saveIt();
-							
 							return new ModelAndView(attributes,"web/finishedGame.mustache");
 						}else{
 							currentGame.updateRankWithWinner(player2,player1);
@@ -385,34 +305,27 @@ public class Menu{
 							attributes.put("user",User.findFirst("id=?",user2_id).getString("email"));
 							attributes.put("text","The WINNER is ");
 							currentGame.saveIt();
-							
 							return new ModelAndView(attributes,"web/finishedGame.mustache");
 						}
 						
 					}
 				}
-
-
-			
 				return new ModelAndView(null,"web/initPage.mustache");
 				//partida ganada o empatada"
 			}
-			
-
 		},new MustacheTemplateEngine());
 
+		
 		post("/revenge",(request,response)->{
 			response.redirect("/play");
 			return null;
 		},new MustacheTemplateEngine());
 
+		
 		post("/abandonedGame",(request,response)->{
-
-			
 			Integer gameId=request.session().attribute("gameId");
 			Game currentGame=Game.findFirst("id=?",Integer.toString(gameId));
 			currentGame.resumeGame();
-
 			User player1= User.findFirst("id=?",(String)request.session().attribute("SESSION_NAME"));
 			User player2=User.findFirst("id=?",request.queryParams("player2"));
 			currentGame.set("end_date",Game.getDateMysql());
@@ -424,10 +337,8 @@ public class Menu{
 			}
 			request.session().removeAttribute("gameId");
 			request.session().removeAttribute("PLAYER2");
-			
 			response.redirect("/");
 			return null;
-
 		},new MustacheTemplateEngine());
 		
 	
@@ -439,8 +350,7 @@ public class Menu{
 		},new MustacheTemplateEngine());
 
 
-		post("/savegame",(request,response)->{
-			
+		post("/savegame",(request,response)->{	
 			request.session().removeAttribute("PLAYER2");
 			request.session().removeAttribute("gameId");
 			response.redirect("/");
@@ -449,451 +359,12 @@ public class Menu{
 
 
 		post("/ranking",(request,response)->{
-		//	String user1=request.queryParams("player1");
-
-			
 			Map<String, Object> attributes = new HashMap<String,Object>();
-
 			List<Rank> usersRank=Rank.where("true order by score DESC");
-		
-			System.out.println(usersRank);
 			attributes.put("ranks",usersRank);
-
-		
 			return new ModelAndView(attributes,"web/ranking.mustache");
-
 		},new MustacheTemplateEngine());
 
-			
-
-
-
-
 	}	
-	/*public void play(Pair<User,User> players,Game game){
-		int counter=0;
-		Game g;
-		if (game==null){
-			counter=0;
-			g=new Game(players);	
-		}else{
-			g=game;
-			counter=g.turnUser();
-			
-		}
-		User turn;
-		g.printBoardOnScreen(players);
-		if(counter % 2 == 0){
-			turn=players.getFst();
-		}else{
-			turn=players.getSnd();
-		}
-		clearConsole();
-		g.printBoardOnScreen(players);
-		Cell c = g.doMovement(turn);
-		if (c==null){
-			g.saveGame();					// if the player wanna save the game.
-		}else{
-			while(!g.thereIsAWinner(turn,c) && !g.full()){
-				g.printBoardOnScreen(players);
-				counter ++;
-				if(counter % 2 == 0){
-					turn=players.getFst();
-				}else{
-					turn=players.getSnd();
-				}
-				c=g.doMovement(turn);
-				if (c==null){
-					break;
-				}
-			}
-			if (c==null){
-				g.saveGame();				//if the player wanna save the game.
-
-			}else{	
-					g.set("end_date",Game.getDateMysql());
-					g.saveIt();
-				if (g.full()){
-					if(g.thereIsAWinner(turn,c)) {
-						if(counter % 2 == 0){
-							g.updateRankWithWinner(players.getFst(),players.getSnd());
-							g.set("result_p1","WIN");
-						}else{
-							g.updateRankWithWinner(players.getSnd(),players.getFst());
-							g.set("result_p1","LOOSE");
-						}
-					}else{
-						g.updateRankWithDraw(players.getFst(),players.getSnd());
-						g.set("result_p1","TIE");
-					}
-					g.saveIt();
-				}else{
-					if(g.thereIsAWinner(turn,c)) {
-						if(counter % 2 == 0){
-							g.updateRankWithWinner(players.getFst(),players.getSnd());
-							g.set("result_p1","WIN");
-						}else{
-							g.updateRankWithWinner(players.getSnd(),players.getFst());
-							g.set("result_p1","LOOSE");
-						}
-						g.saveIt();
-					}
-				}
-			}
-		}
-	}
-*/
-/*	
-	//It clear the console.
-	public final static void clearConsole(){
-	 	System.out.print("\033[H\033[2J");
-		System.out.flush();
-	}	
-
-
-		public final static void wait(int seconds){
-			try {
-	    		Thread.sleep(1000*seconds);                 //1000 milliseconds is one second.
-			} catch(InterruptedException ex) {
-	    		Thread.currentThread().interrupt();
-			}
-		}
-	
-
-	public void main_menu(){
-		clearConsole();
-		switch(submenu1()){
-			case "1":
-				signUpMenu();
-				break;
-			case "2":
-					menu_option2();
-				break;
-			case "3":
-				User guest=new User();
-				guest.userGuest();
-				guest.setFirstNameGuest("Example1");
-				guest.setLastNameGuest("Example1");
-			//	play(userMenu(guest));				//Hay que cambiar Pair por game
-				
-				break;
-			case "4":
-					System.exit(0);
-				break;
-			default:
-				System.out.println("Option is incorrect. Please choose again.");
-				wait(2);
-				main_menu();
-		}
-
-	}
-
-	private String submenu1(){
-		clearConsole();
-		System.out.println("*************************************");
-		System.out.println("***********  CONNECT4  **************");
-		System.out.println("");
-		System.out.println("Select just a option:");
-		System.out.println("   1. Sign Up.");
-		System.out.println("   2. Sign In.");
-		System.out.println("   3. Play (Guest).");
-		System.out.println("   4. Exit.");
-		System.out.println("");
-		System.out.print("Option: ");
-		String option = "";
-		Scanner inputScanner = new Scanner(System.in); //Creación de un objeto Scanner
-		option = inputScanner.nextLine(); //Invocamos un método sobre un objeto Scanner
-		return option;
-	}
-
-	private void signUpMenu(){
-		clearConsole();
-		System.out.println("*************************************");
-		System.out.println("***********  CONNECT4  **************");
-		System.out.println("");
-		System.out.println("Complete:");
-		System.out.print("E-mail: ");
-		String email = "";
-		Scanner inputScanner = new Scanner(System.in); //Creación de un objeto Scanner
-		email = inputScanner.nextLine(); //Invocamos un método sobre un objeto Scanner
-		System.out.println("");
-		System.out.print("First name: ");
-		String fName="";
-		fName=inputScanner.nextLine(); 
-		System.out.println("");
-		System.out.print("Last name: ");
-		String lName="";
-		lName=inputScanner.nextLine();
-		String pass=SignUpPassword();
-		signUp(email,lName,fName,pass);
-		clearConsole();
-		System.out.println("You are registered in Connect4. Thank you!.");
-		wait(3);
-		main_menu();	
-	}
-
-	public void signUp(String ema,String fn,String ln,String p){
-		try{
-			User.insert(ema,fn,ln,p);
-			clearConsole();
-			System.out.println("You are registered in Connect4 now.");
-		}catch(UserException e){
-			if (e.getCode().equals("001")){
-				clearConsole();
-				System.out.println(e.getMessage()+"Press 'Enter' for continue. ");
-				Scanner inputScanner = new Scanner(System.in);
-				String option=inputScanner.nextLine();
-				main_menu();
-
-			}
-			if (e.getCode().equals("002")){
-				boolean cont=true;
-				while (cont){
-					clearConsole();
-					System.out.println(e.getMessage()+" What do you want to do?\n Press 'C' for enter your password again or press 'X' for go back.");
-					Scanner inputScanner = new Scanner(System.in);
-					String option=inputScanner.nextLine();
-					if ((option.equals("c"))||(option.equals("C"))){
-						signUp(ema,fn,ln,SignUpPassword());
-						cont=false;
-
-					}else{
-						if ((option.equals("X"))||(option.equals("x"))){
-							main_menu();
-							cont=false;
-						}
-					}
-				}
-			}
-
-		}
-	}
-
-	private String SignUpPassword(){
-		Console console = System.console();
-    	char passwordArray[] = console.readPassword("\nEnter your password: ");
-    	String pass=new String(passwordArray);
-    	System.out.println("");
-		char passwordArray1[] = console.readPassword("\nPlease confirm your password: ");
-		String pass1=new String(passwordArray1);
-		if (!(pass.equals(pass1))){
-			System.out.println("You cannot confirm your password.\nPlease press 'Y' for enter your password again or press 'X' for go back.");
-			Scanner inputScanner = new Scanner(System.in);
-			String option=inputScanner.nextLine();
-
-			if ((option.equals("y"))||(option.equals("u"))){
-						return SignUpPassword();
-	
-
-					}else{
-						if ((option.equals("X"))||(option.equals("x"))){
-							main_menu();
-							
-						}
-					}
-
-			return SignUpPassword();		//Si presiona otra tecla que no sea ni y ni x, vuelve a pedir la password.	
-		}else{
-			return pass;
-		}
-	}
-
-	public User signInMenu(){
-		clearConsole();
-		System.out.println("*************************************");
-		System.out.println("***********  CONNECT4  **************\n\n");
-		System.out.print("Enter your e-mail: ");
-		Scanner inputScanner = new Scanner(System.in);
-		String em=inputScanner.nextLine();
-		Console console=System.console();
-		char passwordArray[] = console.readPassword("\nEnter your password: ");
-    	String pass=new String(passwordArray);
-    	try{
-    		return User.signIn(em,pass);
-
-    	}catch(UserException e){
-    		clearConsole();
-    		if (e.getCode().equals("003")){
-    			System.out.println(e.getMessage()+" Press 'R' for sign in again or press 'X' for go back.");
-    			String option=inputScanner.nextLine();
-    			if ((option.equals("r"))||(option.equals("R"))){
-    				return signInMenu();
-    			}else{
-    				main_menu();
-    			}
-    		}
-    		if (e.getCode().equals("004")){
-    			System.out.println(e.getMessage()+" Press 'R' for sign in again or press 'X' for go back.");
-				String option=inputScanner.nextLine();
-				if ((option.equals("r"))||(option.equals("R"))){
-	    			return signInMenu();
-	    		}else{
-	    			main_menu();
-    			}
-    		}
-    		return null;
-    	}
-	}
- 
- 
-
-	public void menu_option2(){
-		clearConsole();
-		System.out.println("*************************************");
-		System.out.println("***********  CONNECT4  **************\n\n");
-		System.out.println("Select just a option: ");
-		System.out.println("\n 1- New game. ");
-		System.out.println(" 2- Resume game.");
-		System.out.print("Option :");
-		Scanner inputScanner = new Scanner(System.in);
-		String em=inputScanner.nextLine();
-		if (em.equals("1")){
-			play(userMenu(signInMenu()),null);
-		}
-		if(em.equals("2")){
-			resumeGameMenu(signInMenu());
-		}
-
-	}
-
-	public Pair<User,User> userMenu(User u){
-		clearConsole();
-		List<User> anotherU;
-		if (u.isGuest()){
-			 anotherU=User.findAll();
-			clearConsole();
-		}else{
-			 anotherU=User.where("email <> ?",u.get("email"));
-			clearConsole();
-		}
-		System.out.println("*************************************");
-		System.out.println("***********  CONNECT4  **************\n\n");
-		if (u.isGuest()){
-			System.out.println ("User info - email: "+u.getEmailGuest()+ "	- Name: "+u.getFirstNameGuest()+" "+u.getLastNameGuest());
-		}else {
-			System.out.println ("User info - email: "+u.get("email")+ "	- Name: "+u.get("first_name")+" "+u.get("last_name"));	
-		}
-		System.out.println("Please some key for select another user");
-		int count=0;
-		for (User user: anotherU){
-			count++;
-			System.out.println ("	"+Integer.toString(count)+"- email: "+user.get("email")+"		Name: "+user.get("first_name")+" "+user.get("last_name"));
-		}
-		if (count==0){
-			System.out.println("There aren't available users, try again. Press Enter for continue ");
-			Scanner inputScanner = new Scanner(System.in);
-			String em=inputScanner.nextLine();
-			main_menu();
-		}
-		System.out.print("User: ");
-		Scanner inputScanner = new Scanner(System.in);
-		String em=inputScanner.nextLine();
-		return new Pair(u, anotherU.get(Integer.parseInt(em)-1));
-	}
-
-	public void resumeGameMenu(User a){	
-
-		List<Game> game=Game.where("(player1_id=? or player2_id=?)and end_date is null",a.get("id"),a.get("id"));
-		System.out.println("Please, choose the game that you want resume");
-		String em=null;
-		if (game.size()==0){
-			System.out.println("You don't have any game saved.");
-			wait(2);
-			main_menu();
-		}else{
-			System.out.println("Please, choose a game saved: ");
-			int count=0;
-			for(Game g: game ){
-				count ++;
-				System.out.println(" "+Integer.toString(count)+" - Number game: "+g.get("id")+" - player 1: "+User.findFirst("id=?",g.get("player1_id")).get("email")+"- player2: "+ User.findFirst("id=?",g.get("player2_id")).get("email"));
-			
-			}
-			System.out.print("Game number : ");
-			Scanner inputScanner = new Scanner(System.in);
-			em=inputScanner.nextLine();
-		}
-		Game aux= game.get(Integer.parseInt(em)-1);
-		aux.resumeGame();
-		play(new Pair<User,User>(User.findFirst("id=?",aux.get("player1_id")),User.findFirst("id=?",aux.get("player2_id"))),aux);
-
-	}
-
-
-
-
-
-
-	public void play(Pair<User,User> players,Game game){
-		int counter=0;
-		Game g;
-		if (game==null){
-			counter=0;
-			g=new Game(players);	
-		}else{
-			g=game;
-			counter=g.turnUser();
-			
-		}
-		User turn;
-		g.printBoardOnScreen(players);
-		if(counter % 2 == 0){
-			turn=players.getFst();
-		}else{
-			turn=players.getSnd();
-		}
-		clearConsole();
-		g.printBoardOnScreen(players);
-		Cell c = g.doMovement(turn);
-		if (c==null){
-			g.saveGame();					// if the player wanna save the game.
-		}else{
-			while(!g.thereIsAWinner(turn,c) && !g.full()){
-				g.printBoardOnScreen(players);
-				counter ++;
-				if(counter % 2 == 0){
-					turn=players.getFst();
-				}else{
-					turn=players.getSnd();
-				}
-				c=g.doMovement(turn);
-				if (c==null){
-					break;
-				}
-			}
-			if (c==null){
-				g.saveGame();				//if the player wanna save the game.
-
-			}else{	
-					g.set("end_date",Game.getDateMysql());
-					g.saveIt();
-				if (g.full()){
-					if(g.thereIsAWinner(turn,c)) {
-						if(counter % 2 == 0){
-							g.updateRankWithWinner(players.getFst(),players.getSnd());
-							g.set("result_p1","WIN");
-						}else{
-							g.updateRankWithWinner(players.getSnd(),players.getFst());
-							g.set("result_p1","LOOSE");
-						}
-					}else{
-						g.updateRankWithDraw(players.getFst(),players.getSnd());
-						g.set("result_p1","TIE");
-					}
-					g.saveIt();
-				}else{
-					if(g.thereIsAWinner(turn,c)) {
-						if(counter % 2 == 0){
-							g.updateRankWithWinner(players.getFst(),players.getSnd());
-							g.set("result_p1","WIN");
-						}else{
-							g.updateRankWithWinner(players.getSnd(),players.getFst());
-							g.set("result_p1","LOOSE");
-						}
-						g.saveIt();
-					}
-				}
-			}
-		}
-	}
-*/}
+}
 
