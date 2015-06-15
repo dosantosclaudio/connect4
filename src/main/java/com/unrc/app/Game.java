@@ -77,6 +77,7 @@ public class Game extends Model{
 			return doMovement(p);
 		}*/
 		/*try{*/
+			
 			return b.fillCellMemory(p,col);
 		/*}catch(BoardException f){
 			switch (f.getCode()){

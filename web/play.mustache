@@ -74,7 +74,8 @@
 	 		<input type="hidden" value={{gameId}} name="gameId">
 	 		<input align="center" type="submit" value="Save game" name="save_game">
 	 	</form>
-	 	<form action="/exit" method="POST" >
+	 	<form action="/abandonedGame" method="POST" >
+	 		<input type="hidden" value={{user2}} name="player2">
 	 		<input type="hidden" value={{gameId}} name="gameId">
 	 		<input align="center" type="submit" value="Exit game" name="exit_game">
 	 	</form>
