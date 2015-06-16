@@ -1,34 +1,46 @@
-
 <html>
 <HEAD>
   
 </HEAD> 
-<BODY bgcolor="#000000" text="#FFFFFF">
+<BODY background="background.jpg" text="#FFFFFF">
 
-   <h2>Resume : {{player1_id}}</h2>
+   <!-- <h2>Users : {{user1}}</h2> -->
+  
+  <table align="center" width="60%" border="1" cellspacing="0" cellpadding="3">
 
+    <tr>
+      <td width="5%">Code</td>
+      <td width="50%">Game</td>
+      <td width="5%"></td>
+    </tr>
 
-
-  <table width="45%" border="1" cellspacing="10" cellpadding="10">
- 
+    {{#games}}
         <tr>
-          <td width="5%">Number</td>
-          <td width="40%">Player2</td>
-        </tr>
-    {{#games}}        
-        <tr>
-          <form action="/play" method="POST">
-            <td width="5%">
-                {{toString2}}
-            </td>
-            <td width="40%">
-                {{toStringPlayer2}}
-            </td>  
-          </form>
+          <td align="center">
+            {{toString2}}
+          </td>
+          <td align="center">
+            {{toStringPlayers}}
+          </td>
+          <td>
+            <form action="/play" method="POST">
+              <input type=hidden value={{player1_id}} name="player1_id" >
+              <input type=hidden value={{toString2}} name="game">
+              
+              <a align="rigth">
+                <input type="submit" value="Play" >
+              </a>
+            </form>
+          </td>
+
         </tr>
     {{/games}}
   </table>
 
+    <form action="/" method="GET" >
+      <input align="center" type="submit" style="Position:Absolute; left: 87%; top: 3%" value="Back" name="back">
+    </form>
   
   </BODY>
+
 </html>

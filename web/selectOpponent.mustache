@@ -2,20 +2,31 @@
 <HEAD>
 	
 </HEAD> 
-<BODY>
+<BODY background="background.jpg" text="#FFFFFF">
 
 	 <h2>Users : {{user1}}</h2>
 	
+  <table align="center" width="50%" border="1" cellspacing="0" cellpadding="3">
+   
+     <tr>
+          <td width="50%">Opponent</td>
+          <td align="center" width="10%">Ranking</td>
+          <td width="5%"></td>
+      </tr>
 
-
-  <table width="50%" border="1" cellspacing="0" cellpadding="3">
     {{#users}}
         <tr>
+          <td>
+              {{toString2}} 
+          </td>
+          <td align="center">
+              {{toStringRanking}}
+          </td>
           <td>
           	<form action="/play" method="POST">
           		<input type=hidden value={{player1_id}} name="player1_id" >
           		<input type=hidden value={{toString2}} name="player2">
-          		{{toString2}} 
+          		
           		<a align="rigth">
           			<input type="submit" value="Play" >
           		</a>
@@ -25,6 +36,9 @@
     {{/users}}
   </table>
 
+  <form action="/" method="GET" >
+      <input align="center" type="submit" style="Position:Absolute; left: 87%; top: 3%" value="Back" name="back">
+    </form>
 	
   </BODY>
 

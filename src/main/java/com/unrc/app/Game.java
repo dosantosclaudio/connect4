@@ -1,14 +1,18 @@
 package com.unrc.app;
-import java.util.*;
-import java.lang.Exception;
+
 import org.javalite.activejdbc.Model;
 import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.annotations.BelongsTo;
 import org.javalite.activejdbc.annotations.BelongsToParents;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
+import java.lang.Exception;
+
 import java.util.Calendar;
 import java.util.Date;
+import java.util.*;
 
 @BelongsToParents({ 
 @BelongsTo(foreignKeyName="player1_id",parent=User.class), 
@@ -21,11 +25,13 @@ public class Game extends Model{
 	public Game(){
 	}
 
-	public String toStringPlayer2(){
-		Base.open("com.mysql.jdbc.Driver","jdbc:mysql://localhost/connect4","root","root");
-		User u=User.findFirst("id=?",this.getString("player2_id"));
-		Base.close();
-		return u.toString2();
+
+	public String toStringPlayers(){
+		User u1=User.findFirst("id=?", this.get("player1_id"));
+		User u2=User.findFirst("id=?", this.get("player2_id"));
+		
+		
+		return (u1.toString2() + "   VS   " + u2.toString2());
 	}
 
 	public String toString2(){
@@ -49,14 +55,12 @@ public class Game extends Model{
 		String reportDate = df.format(today);
 		return reportDate;	
 	}
+
 	public int turnUser(){
 		return b.counterCellNull();
 	}
-	public void saveGame(){
 
-		b.saveBoard(this);
-	}
-
+	
 	public void resumeGame(){
 		b=new Board();
 		b.updateBoard(this);
@@ -64,38 +68,7 @@ public class Game extends Model{
 
 	//	Insert chip on the board
 	public Cell doMovement(User p,Integer col) throws BoardException{
-	//String column="-1";
-	//	Board b =Board.findFirst("game_id = ?", this.get("id"));
-		
-	/*	try{
-			System.out.println("Plase "+p.get("first_name")+" "+p.get("last_name")+" insert a coin.");
-			column = requestCol();
-			if (column.equals("s") || column.equals("S") ){
-				return null;									//If the user want to save the game.
-			}
-		}catch(Exception e){
-			return doMovement(p);
-		}*/
-		/*try{*/
-			
-			return b.fillCellMemory(p,col);
-		/*}catch(BoardException f){
-			switch (f.getCode()){
-				case "000":
-					System.out.println("Has been detected some problems in this aplication ");
-					c=null;
-					break;
-				case "001":
-					System.out.println(f.getMessage());
-					c=doMovement(p);
-					break;
-				case "002":
-					System.out.println(f.getMessage());
-					c=doMovement(p);
-					break;
-			}
-		}*/
-		
+		return b.fillCellMemory(p,col);
 	}
 
 	private String requestCol() throws Exception{
@@ -110,11 +83,8 @@ public class Game extends Model{
 		if (c<0 || c>6 || r<0 || r>5) {
 			return 0;  // this place is not in the board.
 		}else{
-			System.out.println("DDDDDDDD");
 			// the place is valid in this board.
-			//Board b=findFirst("game_id",this.get("id"));
 			Cell [][]  board=b.getBoard();
-			//List<Cell> aux= Cell.where("board_id=? and col = ? and row = ?",Board.findFirst("game_id = ?",this.get("id")).get("id"),c,r);
 			Cell aux_1=board [r] [c];
 			if (aux_1.get("user_id").equals(usr.get("id"))) {
 				return 1+dSearch(usr,c,r-1);
@@ -130,8 +100,6 @@ public class Game extends Model{
 			return 0;  // this place is not in the board.
 		}else{
 			// the place is valid in this board.
-		//	List<Cell> aux= Cell.where("board_id = ? and col = ? and row = ?",Board.findFirst("game_id = ?",this.get("id")).get("id"),c,r);
-		//	Board b=findFirst("game_id",this.get("id"));
 			Cell [][]  board=b.getBoard();
 			Cell aux_1=board [r] [c];
 			if ((aux_1.get("user_id")!=null)&&(aux_1.get("user_id").equals(usr.get("id")))) {
@@ -148,8 +116,6 @@ public class Game extends Model{
 			return 0;  // this place is not in the board.
 		}else{
 			// the place is valid in this board.
-			//List<Cell> aux= Cell.where("board_id=? and col = ? and row = ?",Board.findFirst("game_id = ?",this.get("id")).get("id"),c,r);
-			//Board b=findFirst("game_id",this.get("id"));
 			Cell [][]  board=b.getBoard();
 			Cell aux_1=board [r] [c];
 			if (((aux_1.get("user_id")!=null)&&aux_1.get("user_id").equals((usr.get("id"))))) {
@@ -166,8 +132,6 @@ public class Game extends Model{
 			return 0;  // this place is not in the board.
 		}else{
 			// the place is valid in this board.
-		//	List<Cell> aux= Cell.where("board_id=? and col = ? and row = ?",Board.findFirst("game_id = ?",this.get("id")).get("id"),c,r);
-		//	Board b=findFirst("game_id",this.get("id"));
 			Cell [][]  board=b.getBoard();
 			Cell aux_1=board [r] [c];
 			if (((aux_1.get("user_id")!=null)&&aux_1.get("user_id").equals(usr.get("id")))) {
@@ -185,8 +149,6 @@ public class Game extends Model{
 			return 0;  // this place is not in the board.
 		}else{
 			// the place is valid in this board.
-			//List<Cell> aux= Cell.where("board_id=? and col = ? and row = ?",Board.findFirst("game_id = ?",this.get("id")).get("id"),c,r);
-		//	Board b=findFirst("game_id",this.get("id"));
 			Cell [][]  board=b.getBoard();
 			Cell aux_1=board [r] [c];
 			if (((aux_1.get("user_id")!=null)&&aux_1.get("user_id").equals(usr.get("id")))) {
@@ -203,8 +165,6 @@ public class Game extends Model{
 			return 0;  // this place is not in the board.
 		}else{
 			// the place is valid in this board.
-			//List<Cell> aux= Cell.where("board_id=? and col = ? and row = ?",Board.findFirst("game_id = ?",this.get("id")).get("id"),c,r);
-		//	Board b=findFirst("game_id",this.get("id"));
 			Cell [][]  board=b.getBoard();
 			Cell aux_1=board [r] [c];
 			if (((aux_1.get("user_id")!=null)&&aux_1.get("user_id").equals(usr.get("id")))) {
@@ -221,8 +181,6 @@ public class Game extends Model{
 			return 0;  // this place is not in the board.
 		}else{
 			// the place is valid in this board.
-		//	List<Cell> aux= Cell.where("board_id=? and col = ? and row = ?",Board.findFirst("game_id = ?",this.get("id")).get("id"),c,r);
-		//	Board b=findFirst("game_id",this.get("id"));
 			Cell [][]  board=b.getBoard();
 			Cell aux_1=board [r] [c];
 			if (((aux_1.get("user_id")!=null)&&aux_1.get("user_id").equals(usr.get("id"))))	 {
@@ -235,7 +193,6 @@ public class Game extends Model{
 
 	// Check if the user, usr,  won the game. 
 	public boolean thereIsAWinner(User usr,Cell a){
-		System.out.println("AAAAA");
 		int c= (int) a.get("col");
 		int r= (int) a.get("row");
 		
@@ -258,19 +215,12 @@ public class Game extends Model{
 	}
 
 	public boolean full(){
-	//	Board b= Board.findFirst("game_id= ?",this.get("id"));
 		return b.fullBoard();
 	}
 
 	public boolean fullCol(Integer i){
 		return b.fullCol(i);
 	}
-/*
-	public void printBoardOnScreen(Pair<User,User> players){
-	//	Board b= Board.findFirst("game_id= ?",this.get("id"));
-		b.printBoard(players);
-	}*/
-
 	public Board getBoard(){
 		return this.b;
 	}
