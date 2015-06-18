@@ -1,6 +1,7 @@
 package com.unrc.app;
 
 import org.javalite.activejdbc.Model;
+import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.annotations.BelongsTo;
 import org.javalite.activejdbc.annotations.BelongsToParents;
 
@@ -24,16 +25,27 @@ public class Game extends Model{
 	public Game(){
 	}
 
+
+	public String toStringPlayers(){
+		User u1=User.findFirst("id=?", this.get("player1_id"));
+		User u2=User.findFirst("id=?", this.get("player2_id"));
+		
+		
+		return (u1.toString2() + "   VS   " + u2.toString2());
+	}
+
+	public String toString2(){
+		return this.getString("id");
+	}
+
+
+
 	public Game(Pair<User,User> p){
 		this.set("player1_id",p.getFst().get("id"));
 		this.set("player2_id",p.getSnd().get("id"));
 		this.set ("init_date",getDateMysql());
 		this.saveIt();
 		b= new Board(this);
-	}
-
-	public String toString2(){
-		return this.getString("id");
 	}
 
 

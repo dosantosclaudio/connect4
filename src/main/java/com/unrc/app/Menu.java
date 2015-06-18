@@ -134,8 +134,9 @@ public class Menu{
 				return null;
 			}else{
 				Map<String, Object> attributes = new HashMap<String,Object>();
-				List<Game> game=Game.where("(player1_id=? or player2_id=?)and end_date is null",user1,user1);
 				attributes.put("player1_id",user1);
+				attributes.put("user1",User.findFirst("id=?",user1).get("email"));
+				List<Game> game=Game.where("(player1_id=? or player2_id=?)and end_date is null",user1,user1);
 				attributes.put("games",game);
 				return new ModelAndView(attributes,"web/selectSavedGame.mustache");
 			}
@@ -159,39 +160,49 @@ public class Menu{
 
 
 		post("/play",(request,response)->{	//inicio de juego.
-			String user1_id=request.session().attribute("SESSION_NAME");
 			String rGame=request.queryParams("game");													
 			Map<String, Object> attributes = new HashMap<>();
 			Game currentGame;
+			String user1_id, user2_id;
 			if (rGame!=null){
 				currentGame=Game.findFirst("id=?",rGame);
 				currentGame.resumeGame();
-				String user2_id=Integer.toString((Integer)currentGame.get("player2_id"));
+				user1_id=Integer.toString((Integer)currentGame.get("player1_id"));
+				user2_id=Integer.toString((Integer)currentGame.get("player2_id"));
 				attributes.put("user1",user1_id);
 				attributes.put("user2",user2_id);
 				if(currentGame.turnUser() %2==0){
 					attributes.put("turnUser",user1_id);
+					attributes.put("turnUserEmail",User.findFirst("id=?",user1_id).getString("email"));
 				}else{
 					attributes.put("turnUser",user2_id);
+					attributes.put("turnUserEmail",User.findFirst("id=?",user2_id).getString("email"));	
 				}
+
 			}else{
-				String user2=request.session().attribute("PLAYER2");
-				String user2_id;
-				if (user2==null){
-					user2=request.queryParams("player2");
+				Integer lastGameId=request.session().attribute("gameId");
+				if (lastGameId!=null){												// if the game is revange
+					Game lastGame=Game.findFirst("id=?",Integer.toString(lastGameId));
+					user1_id=Integer.toString((Integer)lastGame.get("player1_id"));
+					user2_id=Integer.toString((Integer)lastGame.get("player2_id"));
+				}else{
+					user1_id=request.session().attribute("SESSION_NAME");
+					String user2=request.queryParams("player2");
 					user2_id= Integer.toString((Integer)User.findFirst("email=?",user2).get("id"));
 					
-				}else{
-					user2_id=user2;
 				}
+
 				attributes.put("user1",user1_id);
 				attributes.put("user2",user2_id);
 				attributes.put("turnUser",user1_id);
+				attributes.put("turnUserEmail",User.findFirst("id=?",user1_id).getString("email"));
 				Game g=new Game(new Pair<User,User>(User.findFirst("id=?",user1_id),User.findFirst("id=?",user2_id)));
 				currentGame=g;
 				currentGame.resumeGame();
 			}
 			Integer count=0;
+
+			// Se restringe la insercion de fichas en el tabler deshabilitando  los botones
 			for (int i=0;i<7;i++){	
 				if (currentGame.fullCol(count)) {
 					attributes.put("stateButton"+Integer.toString(count),"disabled");
@@ -213,12 +224,12 @@ public class Menu{
 			Game currentGame=Game.findFirst("id=?",Integer.toString(gameId));
 			currentGame.resumeGame();
 			if(currentGame.turnUser() %2==0){
-					turnUser=request.session().attribute("SESSION_NAME");
+					turnUser=request.queryParams("player1");
 			}else{
 					turnUser=request.queryParams("player2");
 			}
 			String col=request.queryParams("col");
-			String user1_id=request.session().attribute("SESSION_NAME");
+			String user1_id=request.queryParams("player1");
 			String user2_id=request.queryParams("player2");
 			String current_g=request.queryParams("game");
 			User player1=User.findFirst("id=?",user1_id);
@@ -246,8 +257,10 @@ public class Menu{
 				attributes.put("user2",user2_id);
 				if (turnUser.equals(user1_id)){
 					attributes.put("turnUser",user2_id);
+					attributes.put("turnUserEmail",User.findFirst("id=?",user2_id).getString("email"));			
 				}else{
 					attributes.put("turnUser",user1_id);
+					attributes.put("turnUserEmail",User.findFirst("id=?",user1_id).getString("email"));
 				}
 				Integer count=0;
 				for (int i=0;i<7;i++){
@@ -262,7 +275,7 @@ public class Menu{
 				attributes.put("board",currentGame.getBoard().toList(currentGame));
 				return new ModelAndView(attributes,"web/play.mustache");
 			}else{
-					request.session().attribute("PLAYER2",user2_id);
+					
 					currentGame.set("end_date",Game.getDateMysql());
 					currentGame.saveIt();
 				if (currentGame.full()){
@@ -270,15 +283,17 @@ public class Menu{
 						if(turnUser.equals(user1_id)){
 							currentGame.updateRankWithWinner(player1,player2);
 							currentGame.set("result_p1","WIN");
-							attributes.put("user",User.findFirst("id=?",user1_id).getString("email"));
-							attributes.put("text","The WINNER is ");
+							//attributes.put("user",User.findFirst("id=?",user1_id).getString("email"));
+							attributes.put("text","CONGRATULATIONS ");
+							attributes.put("user",null);
 							currentGame.saveIt();
 							return new ModelAndView(attributes,"web/finishedGame.mustache");
 						}else{
 							currentGame.updateRankWithWinner(player2,player1);
 							currentGame.set("result_p1","LOOSE");
-							attributes.put("user",User.findFirst("id=?",user2_id).getString("email"));
-							attributes.put("text","The WINNER is ");
+							//attributes.put("user",User.findFirst("id=?",user2_id).getString("email"));
+							attributes.put("text","GAME OVER ");
+							attributes.put("user",null);
 							currentGame.saveIt();
 							return new ModelAndView(attributes,"web/finishedGame.mustache");
 						}
@@ -295,15 +310,17 @@ public class Menu{
 					if(currentGame.thereIsAWinner(turn,c)) {
 						if(turnUser.equals(user1_id)){
 							currentGame.updateRankWithWinner(player1,player2);
-							attributes.put("user",User.findFirst("id=?",user1_id).getString("email"));
-							attributes.put("text","The WINNER is ");
+							//attributes.put("user",User.findFirst("id=?",user1_id).getString("email"));
+							attributes.put("text","CONGRATULATIONS ");
+							attributes.put("user",null);
 							currentGame.saveIt();
 							return new ModelAndView(attributes,"web/finishedGame.mustache");
 						}else{
 							currentGame.updateRankWithWinner(player2,player1);
 							currentGame.set("result_p1","LOOSE");
-							attributes.put("user",User.findFirst("id=?",user2_id).getString("email"));
-							attributes.put("text","The WINNER is ");
+							//attributes.put("user",User.findFirst("id=?",user2_id).getString("email"));
+							attributes.put("text","GAME OVER ");
+							attributes.put("user",null);
 							currentGame.saveIt();
 							return new ModelAndView(attributes,"web/finishedGame.mustache");
 						}
@@ -326,8 +343,8 @@ public class Menu{
 			Integer gameId=request.session().attribute("gameId");
 			Game currentGame=Game.findFirst("id=?",Integer.toString(gameId));
 			currentGame.resumeGame();
-			User player1= User.findFirst("id=?",(String)request.session().attribute("SESSION_NAME"));
-			User player2=User.findFirst("id=?",request.queryParams("player2"));
+			User player1= User.findFirst("id=?",currentGame.get("player1_id"));
+			User player2=User.findFirst("id=?",currentGame.get("player2_id"));
 			currentGame.set("end_date",Game.getDateMysql());
 			currentGame.saveIt();
 			if(currentGame.turnUser() %2==0){	
@@ -336,14 +353,12 @@ public class Menu{
 				currentGame.updateRankWithWinner(player1,player2);
 			}
 			request.session().removeAttribute("gameId");
-			request.session().removeAttribute("PLAYER2");
 			response.redirect("/");
 			return null;
 		},new MustacheTemplateEngine());
 		
 	
 		post("/finishedgame",(request,response)->{
-			request.session().removeAttribute("PLAYER2");
 			request.session().removeAttribute("gameId");
 			response.redirect("/");
 			return null;
@@ -351,7 +366,6 @@ public class Menu{
 
 
 		post("/savegame",(request,response)->{	
-			request.session().removeAttribute("PLAYER2");
 			request.session().removeAttribute("gameId");
 			response.redirect("/");
 			return null;
@@ -367,4 +381,3 @@ public class Menu{
 
 	}	
 }
-

@@ -1,42 +1,46 @@
-<html>
-<HEAD>
-	
-</HEAD> 
-<BODY background="background.jpg" text="#FFFFFF">
+<html >
+  <head>
+	 
+  </head> 
 
-	 <h2>Users : {{user1}}</h2>
+  <body style="background-attachment:fixed;" background="background.jpg"  text="#FFFFFF">
+
+	  <h2 align="center">User: {{user1}}</h2>
 	
-  <table align="center" width="50%" border="1" cellspacing="0" cellpadding="3">
-   
-     <tr>
-          <td width="50%">Opponent</td>
-          <td width="10%">Ranking</td>
-          <td width="5%"></td>
+    <table bgcolor="#1C1C1C" align="center" width="50%" border="1" cellspacing="10" cellpadding="10">
+     
+      <tr>
+            <td align="center" width="50%">Opponent</td>
+            <td align="center" width="10%">Ranking</td>
+            <td width="5%"></td>
       </tr>
 
-    {{#users}}
-        <tr>
-          <td>
-              {{toString2}} 
-          </td>
-          <td>
-              {{toStringRanking}}
-          </td>
-          <td>
-          	<form action="/play" method="POST">
-          		<input type=hidden value={{player1_id}} name="player1_id" >
-          		<input type=hidden value={{toString2}} name="player2">
-          		
-          		<a align="rigth">
-          			<input type="submit" value="Play" >
-          		</a>
-          </form>
-          </td>
-        </tr>
-    {{/users}}
-  </table>
+      {{#users}}
+          <tr>
+            <td bgcolor="#6E6E6E" align="center">
+                {{toString2}} 
+            </td>
+            <td bgcolor="#6E6E6E" align="center">
+                {{toStringRanking}}
+            </td>
+            <td bgcolor="#6E6E6E" align="center">
+            	<form action="/play" method="POST">
+            		<input type=hidden value={{player1_id}} name="player1_id" >
+            		<input type=hidden value={{toString2}} name="player2">
+        
+            		<p align="center">
+            			<input type="submit" value="Play" >
+            		</p>
+            </form>
+            </td>
+          </tr>
+      {{/users}}
+    </table>
 
-	
-  </BODY>
+    <form action="/" method="GET" >
+      <input align="center" type="submit" style="Position:Absolute; left: 13%; top: 3%" value=" < Back" name="back">
+    </form>
+    	
+  </body>
 
 </html>

@@ -43,8 +43,9 @@
 
 	  <h1 align="center">Connect 4 - Smart-team</h1>
 	  <h3 align="center">Playing</h3>
+	  <h4 align="center" type="text" style="Position:Absolute; left: 12%; top: 13%"> Turn player: {{turnUserEmail}} </h4>
 	  <p align="center">
-		<table width="520px" height="440px"  border="1" cellspacing="2" cellpadding="2" bgcolor="#0000FF">
+		<table width="520px" height="440px"  border="1" cellspacing="2" cellpadding="2" bgcolor="#0000FF" >
 	 		<tr align="center">
 		 		<form action="/doMovement" method="POST">
 		 			<input type="hidden" value={{user1}} name="player1" >
@@ -110,13 +111,17 @@
 
 	 	<form action="/savegame" method="POST" >
 	 		<input type="hidden" value={{gameId}} name="gameId">
-	 		<input align="center" type="submit" value="Save game" name="save_game">
+	 		<input align="center" type="submit" style="Position:Absolute; left: 81%; top: 5%" value="Save game" name="save_game">
 	 	</form>
 	 	<form action="/abandonedGame" method="POST" >
 	 		<input type="hidden" value={{user2}} name="player2">
 	 		<input type="hidden" value={{gameId}} name="gameId">
-	 		<input align="center" type="submit" value="Exit game" name="exit_game">
+	 		<input align="center" type="submit" style="Position:Absolute; left: 90%; top: 5%" value="Exit game" name="exit_game">
 	 	</form>
+		
+	 		
+	 	
+
 
 	</body>
 </html>

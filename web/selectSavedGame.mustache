@@ -1,32 +1,38 @@
 <html>
-<HEAD>
-	
-</HEAD> 
-<BODY background="background.jpg" text="#FFFFFF">
+  <head>
+  
+  </head> 
+  <body style="background-attachment:fixed;" background="background.jpg" text="#FFFFFF">
+      
+    <table bgcolor="#1C1C1C" align="center" width="50%" border="1" cellspacing="10" cellpadding="10">
+      <tr>
+        <td align="center" width="5%">Code</td>
+        <td align="center" width="50%">Game</td>
+        <td align="center" width="5%"></td>
+      </tr>
+      {{#games}}
+          <tr>
+            <td bgcolor="#6E6E6E" align="center">
+              {{toString2}}
+            </td>
+            <td bgcolor="#6E6E6E" align="center">
+              {{toStringPlayers}}
+            </td>
+            <td  bgcolor="#6E6E6E" align="center">
+              <form action="/play" method="POST">
+                <input type=hidden value={{player1_id}} name="player1_id" >
+                <input type=hidden value={{toString2}} name="game">
+                <input type="submit" value="Play" >
+              </form>
+            </td>
 
-	 <h2>Users : {{user1}}</h2>
-	
-  <table width="50%" border="1" cellspacing="0" cellpadding="3">
+          </tr>
+      {{/games}}
+    </table>
 
-
-    {{#games}}
-        <tr width="50%">
-          <td>
-          	<form action="/play" method="POST">
-          		<input type=hidden value={{player1_id}} name="player1_id" >
-          		<input type=hidden value={{toString2}} name="game">
-              
-          		{{toString2}} 
-          		<a align="rigth">
-          			<input type="submit" value="Play" >
-          		</a>
-          </form>
-          </td>
-        </tr>
-    {{/games}}
-  </table>
-
-	
-  </BODY>
+    <form action="/" method="GET" >
+      <input align="center" type="submit" style="Position:Absolute; left: 13%; top: 3%" value="< Back" name="back">
+    </form>  
+  </body>
 
 </html>
