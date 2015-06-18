@@ -1,42 +1,36 @@
-
 <html>
-<HEAD>
-	
-</HEAD> 
-<BODY background="background.jpg" text="#FFFFFF">
+  <head>
+  	
+  </head> 
+  <body style="background-attachment:fixed;" background="background.jpg" text="#FFFFFF">
 
-	 <h2 align="center">Ranking  </h2>
-
-
-
-  <table align="center" width="50%" border="1" cellspacing="10" cellpadding="10">
+    <h2 align="center">Ranking  </h2>
+    <table bgcolor="#1C1C1C" align="center" width="50%" border="1" cellspacing="10" cellpadding="10">
  
         <tr>
-          <td width="5%">Pos</td>
-          <td width="40%">Name</td>
-          <td width="40%">Score</td>
+          <td align="center" width="5%">Pos</td>
+          <td align="center" width="40%">Name</td>
+          <td align="center" width="40%">Score</td>
         </tr>
-    {{#ranks}}
-        
+      {{#ranks}}
         <tr>
           <form action="/ranking" method="POST">
-           <td width="5%">
+            <td align="center" bgcolor="#6E6E6E" width="5%">
               {{toStringPos}}
-          </td>
-          <td width="40%">
+            </td>
+            <td align="center" bgcolor="#6E6E6E" width="40%">
               {{toStringName}}
-          </td>
-          <td width ="40%">
+            </td>
+            <td align="center" bgcolor="#6E6E6E" width ="40%">
           		{{toStringScore}}
-          </td>
+            </td>
           </form>
         </tr>
-    {{/ranks}}
-  </table>
+      {{/ranks}}
+    </table>
 
-  <form action="/" method="GET" >
-      <input align="center" type="submit" style="Position:Absolute; left: 87%; top: 3%" value="Back" name="back">
+    <form action="/" method="GET" >
+      <input align="center" type="submit" style="Position:Absolute; left: 13%; top: 3%" value="< Back" name="back">
     </form>
-	
-  </BODY>
+  </body>
 </html>
