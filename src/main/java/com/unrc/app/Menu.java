@@ -1,4 +1,3 @@
-
 package com.unrc.app;
 
 import org.javalite.activejdbc.Base;
