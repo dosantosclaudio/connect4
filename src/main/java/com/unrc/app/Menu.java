@@ -7,15 +7,14 @@ import com.unrc.app.User;
 import java.lang.Exception;
 import java.io.Console;
 import java.util.*;
-
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
-
 import static spark.Spark.get;
 import static spark.Spark.post;
 import static spark.Spark.before;
 import static spark.Spark.after;
+
 
 public class Menu{
 	public static final String driver = "com.mysql.jdbc.Driver";
@@ -26,6 +25,7 @@ public class Menu{
 	public Menu(){}
 
 	public static void showWebApp(){
+
 
 		//	Open database before execute a rote
 		before((request, response) -> {
@@ -53,8 +53,7 @@ public class Menu{
 			}else{
 				attributes.put("currentUser",User.findFirst("id=?",usr).get("email"));
 				attributes.put("stateSignUp","disabled");
-				attributes.put("nameButton",'"'+"Sign Out"+'"');
-				
+				attributes.put("nameButton",'"'+"Sign Out"+'"');	
 			}
          	return new ModelAndView(attributes, "web/initPage.mustache");
 		}, new MustacheTemplateEngine());
@@ -72,7 +71,6 @@ public class Menu{
 
 		
 		post("/signin",(request,response)-> {
-
 			String usr=request.session().attribute("SESSION_NAME");  
 			if(usr!=null){
 				request.session().removeAttribute("SESSION_NAME");
@@ -123,11 +121,8 @@ public class Menu{
 				response.redirect("/");
 				return null;
 			}catch(UserException e){
-
-		 	return new ModelAndView(null,"web/signIn.mustache");
-
+		 		return new ModelAndView(null,"web/signIn.mustache");
 			}
-		 			
 		},new MustacheTemplateEngine());
 
 
@@ -138,8 +133,9 @@ public class Menu{
 				return null;
 			}else{
 				Map<String, Object> attributes = new HashMap<String,Object>();
-				List<Game> game=Game.where("(player1_id=? or player2_id=?)and end_date is null",user1,user1);
 				attributes.put("player1_id",user1);
+				attributes.put("user1",User.findFirst("id=?",user1).get("email"));
+				List<Game> game=Game.where("(player1_id=? or player2_id=?)and end_date is null",user1,user1);
 				attributes.put("games",game);
 				return new ModelAndView(attributes,"web/selectSavedGame.mustache");
 			}
@@ -164,7 +160,7 @@ public class Menu{
 
 		post("/play",(request,response)->{	//inicio de juego.
 			String user1_id=request.session().attribute("SESSION_NAME");
-			String rGame=request.queryParams("game");
+			String rGame=request.queryParams("game");													
 			Map<String, Object> attributes = new HashMap<>();
 			Game currentGame;
 			if (rGame!=null){
@@ -235,15 +231,12 @@ public class Menu{
 				switch (f.getCode()){
 					case "000":
 						System.out.println("Has been detected some problems in this aplication ");
-						//c=null;
 						break;
 					case "001":
 						System.out.println(f.getMessage());
-						
 						break;
 					case "002":
 						System.out.println(f.getMessage());
-						
 						break;
 					}
 			}
@@ -253,10 +246,8 @@ public class Menu{
 				attributes.put("user2",user2_id);
 				if (turnUser.equals(user1_id)){
 					attributes.put("turnUser",user2_id);
-					
 				}else{
 					attributes.put("turnUser",user1_id);
-				
 				}
 				Integer count=0;
 				for (int i=0;i<7;i++){
@@ -279,23 +270,26 @@ public class Menu{
 						if(turnUser.equals(user1_id)){
 							currentGame.updateRankWithWinner(player1,player2);
 							currentGame.set("result_p1","WIN");
-							attributes.put("user",User.findFirst("id=?",user1_id).getString("email"));
-							attributes.put("text","The WINNER is ");
+							//attributes.put("user",User.findFirst("id=?",user1_id).getString("email"));
+							attributes.put("text","CONGRATULATIONS ");
+							attributes.put("user",null);
 							currentGame.saveIt();
 							return new ModelAndView(attributes,"web/finishedGame.mustache");
 						}else{
 							currentGame.updateRankWithWinner(player2,player1);
 							currentGame.set("result_p1","LOOSE");
-							attributes.put("user",User.findFirst("id=?",user2_id).getString("email"));
-							attributes.put("text","The WINNER is ");
+							//attributes.put("user",User.findFirst("id=?",user2_id).getString("email"));
+							attributes.put("text","GAME OVER ");
+							attributes.put("user",null);
 							currentGame.saveIt();
 							return new ModelAndView(attributes,"web/finishedGame.mustache");
 						}
 					}else{
 						currentGame.updateRankWithDraw(player1,player2);
-						currentGame.set("result_p1","TIE GAME"); 
+						currentGame.set("result_p1","TIE"); 
 						attributes.put("text","TIE");
-						attributes.put("user",null);
+						attributes.put("user",null);	
+						currentGame.saveIt();
 						return new ModelAndView(attributes,"web/finishedGame.mustache");
 					}
 					
@@ -303,16 +297,17 @@ public class Menu{
 					if(currentGame.thereIsAWinner(turn,c)) {
 						if(turnUser.equals(user1_id)){
 							currentGame.updateRankWithWinner(player1,player2);
-							attributes.put("user",User.findFirst("id=?",user1_id).getString("email"));
-							attributes.put("text","The WINNER is ");
-							
+							//attributes.put("user",User.findFirst("id=?",user1_id).getString("email"));
+							attributes.put("text","CONGRATULATIONS ");
+							attributes.put("user",null);
 							currentGame.saveIt();
 							return new ModelAndView(attributes,"web/finishedGame.mustache");
 						}else{
 							currentGame.updateRankWithWinner(player2,player1);
 							currentGame.set("result_p1","LOOSE");
-							attributes.put("user",User.findFirst("id=?",user2_id).getString("email"));
-							attributes.put("text","The WINNER is ");
+							//attributes.put("user",User.findFirst("id=?",user2_id).getString("email"));
+							attributes.put("text","GAME OVER ");
+							attributes.put("user",null);
 							currentGame.saveIt();
 							return new ModelAndView(attributes,"web/finishedGame.mustache");
 						}
@@ -376,4 +371,3 @@ public class Menu{
 
 	}	
 }
-

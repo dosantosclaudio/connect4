@@ -22,15 +22,15 @@ public class Board extends Model{
 			for (int j=0;j<=6;j++){
 				current=boardM[i][j];
 				if (current.get("user_id")==null){
-					res.add("<td bgcolor="+'"'+"#FFFFFF"+'"'+">");
+					res.add("<td class="+'"'+"p0"+'"'+" bgcolor="+'"'+"#FFFFFF"+'"'+">");
 					res.add("</td>");
 
 				}else{
 					if(isPlayer1(g,current)){
-						res.add("<td bgcolor="+'"'+"#FF0000"+'"'+">");
+						res.add("<td class="+'"'+"p1"+'"'+"bgcolor="+'"'+"#FF0000"+'"'+">");
 						res.add("</td>");
 					}else{
-						res.add("<td bgcolor="+'"'+"#0004FF"+'"'+">");
+						res.add("<td class="+'"'+"p2"+'"'+" bgcolor="+'"'+"#0004FF"+'"'+">");
 						res.add("</td>");
 					}
 					
@@ -87,22 +87,6 @@ public class Board extends Model{
 			}
 		}
 		return count;
-	}
-
-	public void saveBoard(Game g){
-		Board board=Board.findFirst("game_id=?",g.get("id"));
-		List<Cell> aux=Cell.where("board_id=? order by col,row",board.get("id"));
-		int count=0;
-		for(int i=0;i<7;i++){
-			for (int j=0;j<6;j++){
-				Cell a=aux.get(count);
-				Cell b=boardM[j][i];
-				count++;
-				a.set("user_id",b.get("user_id"));
-				a.saveIt();
-			}
-		}
-
 	}
 
 	public Cell fillCellMemory(User u,int colum) throws BoardException{

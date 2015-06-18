@@ -13,6 +13,11 @@ public class User extends Model {
 		return this.getString("email");
 	}
 
+	public String toStringRanking(){
+		Rank userRank=Rank.findFirst("user_id=?",this.get("id"));
+		return userRank.toStringPos();
+	}
+
 	static {
 		validatePresenceOf("email","password");
 	}
@@ -34,4 +39,8 @@ public class User extends Model {
 	  	u=findFirst("email = ?",email);
 	  	Rank.createIt("user_id",u.get("id"));	//Crear Ranking para usuario recien creado. 
 	}
+
+
+
+	//Falta el eliminar usuario?
 }

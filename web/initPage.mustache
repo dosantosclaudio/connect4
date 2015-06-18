@@ -4,50 +4,50 @@
 
 		<style>
 			.tim{
-			font-size: 25px;
+			font-size: 15px;
 			text-decoration: #FFFFFF;
 			border: 2px solid #AD235E;
 			border-radius: 50px;
 			width: 100px;
-			height: 100px; background-image: url(https://lh6.ggpht.com/fNbGHxtPE8gOA4Ty5S1TLng0XpPwEN7OstBiTPIi480kMX7Ks_tCJheBkuV6Pap7W7NM=w300);
+			height: 100px; background-color: #FF0000;
 			}
 		</style> 
 		
 			<style>
 			.tim1{
-			font-size: 25px;
+			font-size: 15px;
 
 			border: 2px solid #AD235E;
 			border-radius: 50px;
 			width: 100px;
-			height: 100px; background-image: url(http://binjiesun.com/images/signupIcon.png);
+			height: 100px; background-color: #F7FE2E;
 			}
 		</style> 
 
 			<style>
 			.tim2{
-			font-size: 25px;
+			font-size: 15px;
 
 			border: 2px solid #AD235E;
 			border-radius: 50px;
 			width: 100px;
-			height: 100px; background-image: url("login-icon.png");
+			height: 100px; background-color: #FF0000;
 );
 			}
 		</style> 
 	</head>
-	<body bgcolor="#000000" text="#FFFFFF" >
+	<body background="background.jpg" text="#FFFFFF" >
 		<p align="center">
 			<font  size=20> Welcome to Connect 4! Play now!</font>
 			
 				<form action="/signin" method="POST">
 					<input type=hidden value={{{nameButton}}}>
-					<input type="submit" value={{{nameButton}}}  name="signin"  >
+					<input type="submit" style="Position:Absolute; left: 83%; top: 5%" value={{{nameButton}}}  name="signin"  >
 				</form>
 
 				<form action="/signup" method="POST">
 
-						<input type="submit" value="Sign Up" name="signup"  {{{stateSignUp}}}>
+						<input type="submit" style="Position:Absolute; left: 90%; top: 5%" value="Sign Up" name="signup"  {{{stateSignUp}}}>
 				</form>
 			
 		</p>
@@ -60,13 +60,13 @@
 		<form action="/selectOpponent" method="POST">
 			<input type=hidden value={{currentUser}} name="player1" >
 			<p align="center" >
-				<input type="submit" value="New Play" name="newplay" class="tim">
+				<input type="submit" value="New Game" name="newgame" class="tim">
 			</p>	
 		</form>	
 		<form action="/selectSavedGame" method="POST">
 			<input type=hidden value={{currentUser}} name="player1" >
 			<p align="center" >
-				<input type="submit" value="Resume Play" name="resumeplay" class="tim">
+				<input type="submit" value="Resume Game" name="resumegame" class="tim1">
 			</p>	
 		</form>	
 	
