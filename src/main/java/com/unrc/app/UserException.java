@@ -21,7 +21,7 @@ public class UserException extends Exception{
 }
 
 /*codigos
-	"001"=Email is sing up.
+	"001"=Email is sign up.
 	"002"=Password's length is smaller than 8 characters.
 	"003"=Email is incorrect.
 	"004"=Password is incorrect.

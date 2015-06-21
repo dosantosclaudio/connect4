@@ -11,10 +11,8 @@ public class Rank extends Model{
 	}
 
 	public String toStringPos(){
-		
 		long i=Rank.count("score> ?",this.get("score"));
 		i++;
-		
 		return Long.toString(i);
 	}
 

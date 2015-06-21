@@ -28,16 +28,47 @@ public class RankTest {
 
 
     @Test
-    public void testPlayedGames(){
+    public void testRankingInitialization(){
     
-   		User user = new User();
-    	user.set("email", "juan@hotmail.coms");
-    	user.set("password", "pass");
-    	user.save();
-    	Rank.userWin(user);
+    	try{
+            User.insert("francotagro@gmail.com","francotagro","","contraseña");
+    	}catch(UserException e){
+            System.out.println(e.getCode());
+        }
+        User user = User.findFirst("email=?", "francotagro@gmail.com");
+        Rank.userWin(user);
+
         Rank ranking = Rank.findFirst("user_id = ?", user.get("id"));
     	assertEquals(ranking.get("played_games"), 1);
-        System.out.println("TEST 1");
+        assertEquals(ranking.get("won_games"), 1);
+        assertEquals(ranking.get("score"), 100);    
+
+    }
+
+
+    @Test
+    public void testRankingUpdate(){
+    
+        try{
+            User.insert("francotagro@gmail.com","francotagro","","contraseña");
+        }catch(UserException e){
+            System.out.println(e.getCode());
+        }
+        User user = User.findFirst("email=?", "francotagro@gmail.com");
+        Rank.userWin(user);
+
+        Rank.userDraw(user);
+        Rank ranking = Rank.findFirst("user_id = ?", user.get("id"));
+        assertEquals(ranking.get("played_games"), 2);
+        assertEquals(ranking.get("won_games"), 1);
+        assertEquals(ranking.get("tie_games"), 1);        
+        assertEquals(ranking.get("score"), 150); 
+
+        Rank.userLose(user);
+        ranking = Rank.findFirst("user_id = ?", user.get("id"));
+        assertEquals(ranking.get("played_games"), 3);
+        assertEquals(ranking.get("won_games"), 1);
+        assertEquals(ranking.get("score"), 90);      
 
     }
 

@@ -26,8 +26,8 @@ public class App{
 	}
 
     public static void main( String[] args ){
-    externalStaticFileLocation("./web/Images");
-    App a=new App();
+	    externalStaticFileLocation("./web/Images");
+	    App a=new App();
     
     }
 	
