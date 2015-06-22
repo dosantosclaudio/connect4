@@ -109,11 +109,11 @@
 	 		{{/board}}
 	 	</table>
 
-	 	<form action="/savegame" method="POST" >
+	 	<form action="/savegame" method="GET" >
 	 		<input type="hidden" value={{gameId}} name="gameId">
 	 		<input align="center" type="submit" style="Position:Absolute; left: 81%; top: 5%" value="Save game" name="save_game">
 	 	</form>
-	 	<form action="/abandonedGame" method="POST" >
+	 	<form action="/abandonedGame" method="GET" >
 	 		<input type="hidden" value={{user2}} name="player2">
 	 		<input type="hidden" value={{gameId}} name="gameId">
 	 		<input align="center" type="submit" style="Position:Absolute; left: 90%; top: 5%" value="Exit game" name="exit_game">

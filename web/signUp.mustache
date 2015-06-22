@@ -1,24 +1,26 @@
 <html>
 	<body style="background-attachment:fixed;" background="background.jpg" text="#FFFFFF" >
 
-	<form action="/signingup" method="POST" >
+	<form action="/signingup" method="GET" >
 	  <h1 align="center">Connect 4 - Smart-team</h1>
 	  <h3 align="center">Sign Up</h3>
 	  <fieldset align="center">
 	    <label for ="email"> E-mail *:<br> <input  type="text" name="email" /> </label>
 	    <br><label for="first_name"> First name:<br>  <input type="text" name="first_name"/> </label>
 	    <br><label for="last_name"> Last name:<br> <input type="text" name="last_name"  /> </label>
-	    <br><label for="password"> Password *:<br> <input type="password"  name="password"  /> </label>
+	    <br><label for="password"> Password *:<br> <input type="password"  name="password"  /> 		Min 8 characters </label>
 	    <br><label for="passwordcheck"> Password check *:<br> <input type="password" name="passwordcheck" /> </label>
-	  </fieldset>
-
-	 <p  align="center">
+	  	<p align="center">{{message}}</p>
+		</fieldset>
+		<p  align="center">
 	  		<input type="submit"  value="Confirm"></input>
-	</p>
+		</p>
 	</form>
-
+	
 	<form action="/" method="GET" >
-      <input align="center" type="submit" value="Back" name="back">
+	      <p align="center">
+	     	<input  type="submit" value="Back" >
+	     </p>
     </form>
 
 	
