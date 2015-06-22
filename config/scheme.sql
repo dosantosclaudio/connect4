@@ -21,8 +21,8 @@ CREATE TABLE ranks(
 	id INT NOT NULL AUTO_INCREMENT,
 	won_games INT NOT NULL DEFAULT 0,
 	tie_games INT NOT NULL DEFAULT 0,
-	played_games INT NOT NULL DEFAULT 0,
-	score FLOAT NOT NULL DEFAULT 0,           
+	played_games INT NOT NULL DEFAULT 0,   
+	score INT NOT NULL DEFAULT 0,           
 	user_id INT NOT NULL,
   CONSTRAINT ranks_pk PRIMARY KEY (id)
  );

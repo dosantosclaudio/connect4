@@ -45,7 +45,6 @@ public class GameTest {
         assertEquals(u2.get("id"),g.get("player2_id"));
         Board board=Board.findFirst("game_id=?",g.get("id"));
         the(board).shouldNotBeNull();
-        System.out.println("TEST 1");
     }
 
     @Test
@@ -64,9 +63,8 @@ public class GameTest {
         Game game=new Game(players);
         Board board=game.getBoard();
         Cell cell=null;
-       //User 1 must win. He'll put 4 chips in horizontal way;
-       try{ 
-
+        //User 1 must win. He'll put 4 chips in horizontal way;
+        try{ 
             cell=board.fillCellMemory(u1,0);
             cell=board.fillCellMemory(u1,1);
             the(game.thereIsAWinner(u1,cell)).shouldBeFalse();

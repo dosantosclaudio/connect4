@@ -1,4 +1,3 @@
-
 package com.unrc.app;
 
 import org.javalite.activejdbc.Base;
@@ -236,6 +235,7 @@ public class Menu{
 		post("/doMovement",(request,response)->{
 			Cell c=null;
 			String turnUser;
+			String sessionUser = request.session().attribute("SESSION_NAME");
 			Integer gameId=request.session().attribute("gameId");
 			Game currentGame=Game.findFirst("id=?",Integer.toString(gameId));
 			currentGame.resumeGame();
@@ -298,17 +298,23 @@ public class Menu{
 					if(currentGame.thereIsAWinner(turn,c)) {		
 						if(turnUser.equals(user1_id)){
 							currentGame.updateRankWithWinner(player1,player2);
+							if (user1_id.equals(sessionUser)){
+								attributes.put("text","CONGRATULATIONS ");
+							}else{
+								attributes.put("text","GAME OVER ");	
+							}
 							currentGame.set("result_p1","WIN");
-							//attributes.put("user",User.findFirst("id=?",user1_id).getString("email"));
-							attributes.put("text","CONGRATULATIONS ");
 							attributes.put("user",null);
 							currentGame.saveIt();
 							return new ModelAndView(attributes,"web/finishedGame.mustache");
 						}else{
 							currentGame.updateRankWithWinner(player2,player1);
 							currentGame.set("result_p1","LOOSE");
-							//attributes.put("user",User.findFirst("id=?",user2_id).getString("email"));
-							attributes.put("text","GAME OVER ");
+							if (user2_id.equals(sessionUser)){
+								attributes.put("text","GAME OVER ");
+							}else{
+								attributes.put("text","CONGRATULATIONS ");	
+							}
 							attributes.put("user",null);
 							currentGame.saveIt();
 							return new ModelAndView(attributes,"web/finishedGame.mustache");
@@ -327,7 +333,13 @@ public class Menu{
 						if(turnUser.equals(user1_id)){
 							currentGame.updateRankWithWinner(player1,player2);
 							//attributes.put("user",User.findFirst("id=?",user1_id).getString("email"));
-							attributes.put("text","CONGRATULATIONS ");
+							if (user1_id.equals(sessionUser)){
+								attributes.put("text","CONGRATULATIONS");
+							}else{
+								attributes.put("text","GAME OVER ");	
+							}
+							
+							currentGame.set("result_p1","WIN");
 							attributes.put("user",null);
 							currentGame.saveIt();
 							return new ModelAndView(attributes,"web/finishedGame.mustache");
@@ -335,7 +347,11 @@ public class Menu{
 							currentGame.updateRankWithWinner(player2,player1);
 							currentGame.set("result_p1","LOOSE");
 							//attributes.put("user",User.findFirst("id=?",user2_id).getString("email"));
-							attributes.put("text","GAME OVER ");
+							if (user2_id.equals(sessionUser)){
+								attributes.put("text","CONGRATULATIONS ");
+							}else{
+								attributes.put("text","GAME OVER ");	
+							}
 							attributes.put("user",null);
 							currentGame.saveIt();
 							return new ModelAndView(attributes,"web/finishedGame.mustache");
