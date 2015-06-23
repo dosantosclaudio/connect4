@@ -63,8 +63,7 @@ public class RankTest {
         assertEquals(ranking.get("won_games"), 1);
         assertEquals(ranking.get("tie_games"), 1);        
         assertEquals(ranking.get("score"), 150); 
-
-        Rank.userLose(user);
+        Rank.userLoose(user);
         ranking = Rank.findFirst("user_id = ?", user.get("id"));
         assertEquals(ranking.get("played_games"), 3);
         assertEquals(ranking.get("won_games"), 1);

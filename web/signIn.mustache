@@ -1,12 +1,13 @@
 <html>
 	<body  style="background-attachment:fixed;" background="background.jpg" text="#FFFFFF">
 
-	<form action="/signingin" method="POST" >
+	<form action="/signingin" method="GET" >
 	  <h1 align="center">Connect 4 - Smart-team</h1>
 	  <h3 align="center">Sign In</h3>
 	  <fieldset align="center">
 	    <label for ="email"> E-mail *:<br> <input  type="text" name="email" /> </label>
 	    <br><label for="password"> Password *:<br> <input type="password"  name="password"  /> </label>
+	    <p align="center">{{message}}</p>
 	  </fieldset>
 	 <p  align="center">
 	  		<input type="submit"  value="Confirm"></input>

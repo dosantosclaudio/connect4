@@ -10,10 +10,30 @@ public class Board extends Model{
 	
 	private Cell [] [] boardM;	
 	
+	// Constructor1
 	public Board(){
 		boardM=new Cell[6][7];
 	}
+
+	// Constructor2
+	public Board(Game g){
+		boardM=new Cell[6] [7];
+		this.set("game_id",g.get("id"));
+		this.saveIt();
+		for (int i=0; i<7; i++) {
+			for (int j=0; j<6; j++) {
+				Cell aux= new Cell();
+				aux.set("board_id",this.get("id"));
+				aux.set("user_id",null);
+				aux.set("col",i);
+				aux.set("row",j);
+				aux.saveIt();
+				boardM [j] [i] = aux;
+			}
+		}
+	}
 	
+	// Pasa el tablero de juego a una lista
 	public List<String>  toList(Game g){
 		List<String> res=new LinkedList<String>();
 		Cell current;
@@ -41,29 +61,13 @@ public class Board extends Model{
 		res.add("</table>");
 		return res;
 	}
-
-	public Board(Game g){
-		boardM=new Cell[6] [7];
-		this.set("game_id",g.get("id"));
-		this.saveIt();
-		for (int i=0; i<7; i++) {
-			for (int j=0; j<6; j++) {
-				Cell aux= new Cell();
-				aux.set("board_id",this.get("id"));
-				aux.set("user_id",null);
-				aux.set("col",i);
-				aux.set("row",j);
-				aux.saveIt();
-				boardM [j] [i] = aux;
-			}
-		}
-	}
 	
+	// Retorna True en el caso que la celda del juego sea del player1 
 	private Boolean isPlayer1(Game g,Cell c){
-		System.out.println(this.get("game_id"));
 		return (Game.findFirst("id=?",g.get("id")).get("player1_id").equals(c.get("user_id")));
 	}
 
+	// Actualiza el tablero teniendo en cuenta las celdas correspondientes al mismo
 	public void updateBoard(Game g){
 		Board b=Board.findFirst("game_id=?",g.get("id"));
 		List<Cell> aux=Cell.where("board_id=? order by col,row", b.get("id") );
@@ -77,6 +81,7 @@ public class Board extends Model{
 		}
 	}
 
+	// Retorna la cantidad de celdas vacias
 	public int counterCellNull(){
 		int count=0;
 		for(int i=0;i<7;i++){
@@ -89,6 +94,7 @@ public class Board extends Model{
 		return count;
 	}
 
+	// Retorna la celda en la que jugo el usuario
 	public Cell fillCellMemory(User u,int colum) throws BoardException{
 		int i=0;
 		if (colum<0 || colum>=7){
@@ -111,7 +117,7 @@ public class Board extends Model{
 		return boardM[i][colum];	
 	}
 
-	//	Initializes the board, all the cells are empty.
+	//	Inicializa el tablero, todas las celdas vacias
 	public void emptyBoard(){
 		for (int i=0; i<7; i++) {
 			for (int j=0; j<6; j++) {
@@ -121,6 +127,7 @@ public class Board extends Model{
 		}
 	}
 
+	// Retorna True cuando el tablero esta lleno
 	public Boolean fullBoard(){
 		Boolean result=true;
 		for (int i=0;i<7;i++){
@@ -131,14 +138,17 @@ public class Board extends Model{
 		return result;
 	}
 
+	// Retorna True cuando la columna i esta llena
 	public Boolean fullCol(Integer i){
 		return (boardM[5][i].get("user_id")!=null);
 	}
 	
+	// Retorna el tablero
 	public Cell[] [] getBoard(){
 		return this.boardM;
 	}
 
+	// Asigna un tablero
 	public void setBoard(Cell [] [] board){
 		this.boardM=board;
 	}

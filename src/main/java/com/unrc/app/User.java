@@ -22,7 +22,6 @@ public class User extends Model {
 		validatePresenceOf("email","password");
 	}
 
-	
 	//Metodo que permite loguearse. 
 	public static User signIn(String email,String pass) throws UserException{
 	  	UserValidate helper=new UserValidate();
@@ -41,6 +40,17 @@ public class User extends Model {
 	}
 
 
+	public void win(){
+		Rank.userWin(this);
+	}
 
-	//Falta el eliminar usuario?
+	public void loose(){
+		Rank.userLoose(this);
+	}
+
+	public void tie(){
+		Rank.userDraw(this);
+	}
+
+
 }

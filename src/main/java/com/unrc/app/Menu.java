@@ -59,7 +59,7 @@ public class Menu{
 		}, new MustacheTemplateEngine());
 
 
-		post("/signup",(request,response)-> {	
+		get("/signup",(request,response)-> {	
 			String usr=request.session().attribute("SESSION_NAME");  
 			if(usr!=null){
 				response.redirect("/");
@@ -70,7 +70,7 @@ public class Menu{
 		},new MustacheTemplateEngine());
 
 		
-		post("/signin",(request,response)-> {
+		get("/signin",(request,response)-> {
 			String usr=request.session().attribute("SESSION_NAME");  
 			if(usr!=null){
 				request.session().removeAttribute("SESSION_NAME");
@@ -82,26 +82,35 @@ public class Menu{
 		},new MustacheTemplateEngine());
 
 
-		post("/signingup",(request,response)-> {
+		get("/signingup",(request,response)-> {
 			// Obtengo datos del formulario
 			 String email=request.queryParams("email");
 			 String f_name=request.queryParams("first_name");
 			 String l_name=request.queryParams("last_name");
 			 String pass=request.queryParams("password");
 			 String pass_check=request.queryParams("passwordcheck");
+			 HashMap<String,Object> attributes=new HashMap<String,Object>();
 			 if (!pass.equals(pass_check)){
-			 	return new ModelAndView(null,"web/signUp.mustache");
+			 		attributes.put("message","The passwords aren't equals");
+			 	return new ModelAndView(attributes,"web/signUp.mustache");
 			 }else{
 			 	 try{
 					User.insert(email,f_name,l_name,pass);	
-				 	HashMap<String,Object> attributes=new HashMap<String,Object>();
 				 	String user=User.findFirst("email=?",email).getString("id");
 				 	request.session().attribute("SESSION_NAME",user);
 				 	attributes.put("currentUser",user);
 					response.redirect("/");
 				 	return null;
 				 }catch(UserException e){
-				 	return new ModelAndView(null,"web/signUp.mustache");
+				 	if (e.getCode().equals("001")){
+				 		attributes.put("message",e.getMessage());
+				 	}
+				 	if (e.getCode().equals("002")){
+				 		attributes.put("message",e.getMessage());
+				 	}
+
+
+				 	return new ModelAndView(attributes,"web/signUp.mustache");
 				 }
 
 			 }
@@ -109,24 +118,31 @@ public class Menu{
 
 
 
-		post("/signingin",(request,response)-> {
+		get("/signingin",(request,response)-> {
 			String email=request.queryParams("email");			
 			String pass=request.queryParams("password");
+			HashMap<String,Object> attributes=new HashMap<String,Object> ();
 		 	try{
 				User current_user=User.signIn(email,pass);			
-				HashMap<String,Object> attributes=new HashMap<String,Object> ();
 				attributes.put("currentUser",current_user.get("id"));
 				String user=current_user.getString("id");
 				request.session().attribute("SESSION_NAME",user);
 				response.redirect("/");
 				return null;
 			}catch(UserException e){
-		 		return new ModelAndView(null,"web/signIn.mustache");
+				if (e.getCode().equals("003")){
+					attributes.put("message",e.getMessage());
+				}
+				if (e.getCode().equals("004")){
+					attributes.put("message",e.getMessage());
+				}
+
+		 		return new ModelAndView(attributes,"web/signIn.mustache");
 			}
 		},new MustacheTemplateEngine());
 
 
-		post("/selectSavedGame",(request,response)->{
+		get("/selectSavedGame",(request,response)->{
 			String user1=request.session().attribute("SESSION_NAME");
 			if(user1==null){
 				response.redirect("/");
@@ -142,7 +158,7 @@ public class Menu{
 		},new MustacheTemplateEngine());
 
 
-		post("/selectOpponent",(request,response)->{
+		get("/selectOpponent",(request,response)->{
 			String user1=request.session().attribute("SESSION_NAME");
 			if(user1==null){
 				response.redirect("/");
@@ -219,6 +235,7 @@ public class Menu{
 		post("/doMovement",(request,response)->{
 			Cell c=null;
 			String turnUser;
+			String sessionUser = request.session().attribute("SESSION_NAME");
 			Integer gameId=request.session().attribute("gameId");
 			Game currentGame=Game.findFirst("id=?",Integer.toString(gameId));
 			currentGame.resumeGame();
@@ -281,17 +298,23 @@ public class Menu{
 					if(currentGame.thereIsAWinner(turn,c)) {		
 						if(turnUser.equals(user1_id)){
 							currentGame.updateRankWithWinner(player1,player2);
+							if (user1_id.equals(sessionUser)){
+								attributes.put("text","CONGRATULATIONS ");
+							}else{
+								attributes.put("text","GAME OVER ");	
+							}
 							currentGame.set("result_p1","WIN");
-							//attributes.put("user",User.findFirst("id=?",user1_id).getString("email"));
-							attributes.put("text","CONGRATULATIONS ");
 							attributes.put("user",null);
 							currentGame.saveIt();
 							return new ModelAndView(attributes,"web/finishedGame.mustache");
 						}else{
 							currentGame.updateRankWithWinner(player2,player1);
 							currentGame.set("result_p1","LOOSE");
-							//attributes.put("user",User.findFirst("id=?",user2_id).getString("email"));
-							attributes.put("text","GAME OVER ");
+							if (user2_id.equals(sessionUser)){
+								attributes.put("text","GAME OVER ");
+							}else{
+								attributes.put("text","CONGRATULATIONS ");	
+							}
 							attributes.put("user",null);
 							currentGame.saveIt();
 							return new ModelAndView(attributes,"web/finishedGame.mustache");
@@ -310,7 +333,13 @@ public class Menu{
 						if(turnUser.equals(user1_id)){
 							currentGame.updateRankWithWinner(player1,player2);
 							//attributes.put("user",User.findFirst("id=?",user1_id).getString("email"));
-							attributes.put("text","CONGRATULATIONS ");
+							if (user1_id.equals(sessionUser)){
+								attributes.put("text","CONGRATULATIONS");
+							}else{
+								attributes.put("text","GAME OVER ");	
+							}
+							
+							currentGame.set("result_p1","WIN");
 							attributes.put("user",null);
 							currentGame.saveIt();
 							return new ModelAndView(attributes,"web/finishedGame.mustache");
@@ -318,7 +347,11 @@ public class Menu{
 							currentGame.updateRankWithWinner(player2,player1);
 							currentGame.set("result_p1","LOOSE");
 							//attributes.put("user",User.findFirst("id=?",user2_id).getString("email"));
-							attributes.put("text","GAME OVER ");
+							if (user2_id.equals(sessionUser)){
+								attributes.put("text","CONGRATULATIONS ");
+							}else{
+								attributes.put("text","GAME OVER ");	
+							}
 							attributes.put("user",null);
 							currentGame.saveIt();
 							return new ModelAndView(attributes,"web/finishedGame.mustache");
@@ -332,13 +365,13 @@ public class Menu{
 		},new MustacheTemplateEngine());
 
 		
-		post("/revenge",(request,response)->{
+		get("/revenge",(request,response)->{
 			response.redirect("/play");
 			return null;
 		},new MustacheTemplateEngine());
 
 		
-		post("/abandonedGame",(request,response)->{
+		get("/abandonedGame",(request,response)->{
 			Integer gameId=request.session().attribute("gameId");
 			Game currentGame=Game.findFirst("id=?",Integer.toString(gameId));
 			currentGame.resumeGame();
@@ -357,21 +390,21 @@ public class Menu{
 		},new MustacheTemplateEngine());
 		
 	
-		post("/finishedgame",(request,response)->{
+		get("/finishedgame",(request,response)->{
 			request.session().removeAttribute("gameId");
 			response.redirect("/");
 			return null;
 		},new MustacheTemplateEngine());
 
 
-		post("/savegame",(request,response)->{	
+		get("/savegame",(request,response)->{	
 			request.session().removeAttribute("gameId");
 			response.redirect("/");
 			return null;
 		},new MustacheTemplateEngine());
 
 
-		post("/ranking",(request,response)->{
+		get("/ranking",(request,response)->{
 			Map<String, Object> attributes = new HashMap<String,Object>();
 			List<Rank> usersRank=Rank.where("true order by score DESC");
 			attributes.put("ranks",usersRank);
