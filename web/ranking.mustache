@@ -10,6 +10,9 @@
         <tr>
           <td align="center" width="5%">Pos</td>
           <td align="center" width="40%">Name</td>
+          <td align="center" width="5%">Win</td>
+          <td align="center" width="5%">Tie</td>
+          <td align="center" width="5%">Lose</td>
           <td align="center" width="40%">Score</td>
         </tr>
       {{#ranks}}
@@ -21,6 +24,15 @@
             <td align="center" bgcolor="#6E6E6E" width="40%">
               {{toStringName}}
             </td>
+            <td align="center" bgcolor="#6E6E6E" width="5%">
+              {{toStringWin}}
+            </td>
+            <td align="center" bgcolor="#6E6E6E" width="5%">
+              {{toStringTie}}
+            </td>
+            <td align="center" bgcolor="#6E6E6E" width="5%">
+              {{toStringLoose}}
+            </td>
             <td align="center" bgcolor="#6E6E6E" width ="40%">
           		{{toStringScore}}
             </td>
@@ -30,7 +42,7 @@
     </table>
 
     <form action="/" method="GET" >
-      <input align="center" type="submit" style="Position:Absolute; left: 13%; top: 3%" value="< Back" name="back">
+      <input align="center" type="submit" style="Position:Absolute; left: 13%; top: 3%" value="< Back">
     </form>
   </body>
 </html>

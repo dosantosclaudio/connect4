@@ -35,7 +35,6 @@ public class BoardTest {
         User u2= User.createIt("email","otra_direccion@gmail.com","password","password","first_name","nombre2");
         Game g1= new Game(new Pair<User,User>(u1,u2));
         Board b1= Board.findFirst("game_id =?", g1.get("id"));
-        b1.saveIt();
         the(b1).shouldNotBeNull();    
     }
 

@@ -20,8 +20,8 @@ import java.util.*;
 })
 
 public class Game extends Model{ 	
-	private Board b;
 	
+	Board b;
 	public Game(){
 	}
 
@@ -204,14 +204,14 @@ public class Game extends Model{
 
 	// Update statistics of the 
 	public void updateRankWithWinner(User winner,User looser){
-		Rank.userWin(winner);
-		Rank.userLose(looser);
+		winner.win();
+		looser.loose();
 	}
 
 	//Actualiza rank luego de que ha ocurrido un empate. Utiliza metodo de Rank.
 	public void updateRankWithDraw(User u1, User u2){
-		Rank.userDraw(u1);
-		Rank.userDraw(u2);
+		u1.tie();
+		u2.tie();
 	}
 
 	public boolean full(){

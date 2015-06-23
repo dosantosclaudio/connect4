@@ -11,15 +11,25 @@ public class Rank extends Model{
 	}
 
 	public String toStringPos(){
-		
 		long i=Rank.count("score> ?",this.get("score"));
 		i++;
-		
 		return Long.toString(i);
 	}
 
 	public String toStringScore(){
 		return this.getString("score");
+	}
+
+	public String toStringWin(){
+		return this.getString("won_games");
+	}
+
+	public String toStringTie(){
+		return this.getString("tie_games");
+	}
+
+	public String toStringLoose(){
+		return Integer.toString(this.getInteger("played_games") - this.getInteger("tie_games") - this.getInteger("won_games"));
 	}
 
 	// register a win game 
@@ -61,7 +71,7 @@ public class Rank extends Model{
 	}
 
 	// register a lose game 
-	public static void userLose(User player){
+	public static void userLoose(User player){
 		Rank ranking = Rank.findFirst("user_id = ?", player.get("id"));
 		if (ranking == null) {
 			Rank r = new Rank();
