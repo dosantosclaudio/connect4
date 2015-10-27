@@ -233,6 +233,8 @@ public class Menu{
 
 
 		post("/doMovement",(request,response)->{
+														//ACORTAR METODO!!!!!!!!1 NO PUEDE TENER 130 LINEAS 
+			
 			Cell c=null;
 			String turnUser;
 			String sessionUser = request.session().attribute("SESSION_NAME");
@@ -267,7 +269,6 @@ public class Menu{
 						break;
 					}
 			}
-
 			if (!currentGame.thereIsAWinner(turn,c) && !currentGame.full()){		
 				attributes.put("user1",user1_id);
 				attributes.put("user2",user2_id);
@@ -346,7 +347,7 @@ public class Menu{
 						}else{
 							currentGame.updateRankWithWinner(player2,player1);
 							currentGame.set("result_p1","LOOSE");
-							//attributes.put("user",User.findFirst("id=?",user2_id).getString("email"));
+							//attributes.put(" user",User.findFirst("id=?",user2_id).getString("email"));
 							if (user2_id.equals(sessionUser)){
 								attributes.put("text","CONGRATULATIONS ");
 							}else{

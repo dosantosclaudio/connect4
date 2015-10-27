@@ -22,24 +22,12 @@ import java.util.*;
 public class Game extends Model{ 	
 	
 	Board b;
+	
+	// Constructor1
 	public Game(){
 	}
 
-
-	public String toStringPlayers(){
-		User u1=User.findFirst("id=?", this.get("player1_id"));
-		User u2=User.findFirst("id=?", this.get("player2_id"));
-		
-		
-		return (u1.toString2() + "   VS   " + u2.toString2());
-	}
-
-	public String toString2(){
-		return this.getString("id");
-	}
-
-
-
+	// Constructor2
 	public Game(Pair<User,User> p){
 		this.set("player1_id",p.getFst().get("id"));
 		this.set("player2_id",p.getSnd().get("id"));
@@ -49,6 +37,20 @@ public class Game extends Model{
 	}
 
 
+	// Retorna un string con los jugadores de un juego
+	public String toStringPlayers(){
+		User u1=User.findFirst("id=?", this.get("player1_id"));
+		User u2=User.findFirst("id=?", this.get("player2_id"));
+		
+		return (u1.toString2() + "   VS   " + u2.toString2());
+	}
+
+	// Retorna el codigo del juego
+	public String toString2(){
+		return this.getString("id");
+	}
+
+	// Retorna fecha actual
 	public static String getDateMysql(){
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date today = Calendar.getInstance().getTime();
@@ -56,21 +58,23 @@ public class Game extends Model{
 		return reportDate;	
 	}
 
+	// Retorna un numero entero que nos permite saber de quien es el turno viendo si es par o impar
 	public int turnUser(){
 		return b.counterCellNull();
 	}
 
-	
+	// Carga el tablero de acuerdo al juego
 	public void resumeGame(){
 		b=new Board();
 		b.updateBoard(this);
 	}
 
-	//	Insert chip on the board
+	//	Inserta una ficha en el tablero
 	public Cell doMovement(User p,Integer col) throws BoardException{
 		return b.fillCellMemory(p,col);
 	}
 
+	// 
 	private String requestCol() throws Exception{
 		System.out.print("Put the number of the column to complete or press 'S' to save the game: ");
 		Scanner s = new Scanner(System.in);
