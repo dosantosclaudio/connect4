@@ -1,9 +1,8 @@
 <html>
 	<head>
 		<!--INSTALANDO JQUERY-->  
-		<!-- script src="jquery-2.1.4.js"></script -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-
+		<!--script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script-->
+		<script src="jquery-2.1.4.js"></script> 
 		<script>	
 
 		function reload(){
@@ -19,7 +18,24 @@
 					data: {player1:{{user1}},player2:{{user2}},turnUser:{{turnUser}},game:{{gameId}},col: "0"},
 					method:"POST"
 				}).done(function(data){
-					reload();
+					//reload();
+					$("html").html(data);
+					console.log(data);
+					alert("chau");
+				});
+				e.defaultPrevented;
+				return false;
+			}); 
+			
+			$("#2col").on("click", function(e){
+				$.ajax({
+					url:"/doMovement",
+					data: {player1:{{user1}},player2:{{user2}},turnUser:{{turnUser}},game:{{gameId}},col: "1"},
+					method:"POST"
+				}).done(function(data){
+					//reload();
+					$("html").html(data);
+					console.log(data);
 					alert("chau");
 				});
 				e.defaultPrevented;
@@ -86,7 +102,7 @@
 			 			<input type="hidden" value={{turnUser}} name="turnUser" >
 			 			<input type="hidden" value={{gameId}} name="game">
 			 			<input type="hidden" value="1"        name="col">
-			 			<input type="submit" value="Put here!" name="2col" {{{stateButton1}}}>
+			 			<input type="submit" value="Put here!" id="2col" {{{stateButton1}}}>
 			 		</form>
 			 		<form action="/doMovement" method="POST" id="form3">
 			 			<input type="hidden" value={{user1}} name="player1" >
@@ -94,7 +110,7 @@
 			 			<input type="hidden" value={{turnUser}} name="turnUser" >
 			 			<input type="hidden" value={{gameId}} name="game">
 			 			<input type="hidden" value="2"        name="col">
-			 			<input type="submit" value="Put here!" name="3col" {{{stateButton2}}}>
+			 			<input type="submit" value="Put here!" id="3col" {{{stateButton2}}}>
 			 		</form>
 			 		<form action="/doMovement" method="POST" id="form4"> 
 			 			<input type="hidden" value={{user1}} name="player1" >
@@ -102,7 +118,7 @@
 			 			<input type="hidden" value={{turnUser}} name="turnUser" >
 			 			<input type="hidden" value={{gameId}} name="game">
 			 			<input type="hidden" value="3"        name="col">
-			 			<input type="submit" value="Put here!" name="4col"  {{{stateButton3}}}>
+			 			<input type="submit" value="Put here!" id="4col"  {{{stateButton3}}}>
 			 		</form>
 			 		<form action="/doMovement" method="POST" id="form5">
 			 			<input type="hidden" value={{user1}} name="player1" >
@@ -110,7 +126,7 @@
 			 			<input type="hidden" value={{turnUser}} name="turnUser" >
 			 			<input type="hidden" value={{gameId}} name="game">
 			 			<input type="hidden" value="4"        name="col">
-			 			<input type="submit" value="Put here!" name="5col" {{{stateButton4}}}>
+			 			<input type="submit" value="Put here!" id="5col" {{{stateButton4}}}>
 			 		</form>
 			 		<form action="/doMovement" method="POST" id="form6">
 			 			<input type="hidden" value={{user1}} name="player1" >
@@ -118,7 +134,7 @@
 			 			<input type="hidden" value={{turnUser}} name="turnUser" >
 			 			<input type="hidden" value={{gameId}} name="game">
 			 			<input type="hidden" value="5"        name="col">
-			 			<input type="submit" value="Put here!" name="6col" {{{stateButton5}}}>
+			 			<input type="submit" value="Put here!" id="6col" {{{stateButton5}}}>
 			 		</form>
 			 		<form action="/doMovement" method="POST" id="form7">
 			 			<input type="hidden" value={{user1}} name="player1" >
@@ -126,7 +142,7 @@
 			 			<input type="hidden" value={{turnUser}} name="turnUser" >
 			 			<input type="hidden" value={{gameId}} name="game">
 			 			<input type="hidden" value="6"        name="col">
-			 			<input type="submit" value="Put here!" name="7col" {{{stateButton6}}}>
+			 			<input type="submit" value="Put here!" id="7col" {{{stateButton6}}}>
 			 		</form>
 			 	</tr>
 		 		{{#board}}
