@@ -3,167 +3,67 @@
 		<!--INSTALANDO JQUERY-->  
 		<!--script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script-->
 		<script src="jquery-2.1.4.js"></script> 
-		<script>	
-
-		function reload(){
-			$("#container").load("#table1");
-		}
 		
-		$("document").ready(function(){
-			console.log($("#1col"));
+		<script>	
+/*
+			function reload(){
+				$("#container").load("#table1");
+			}
+*/			
 
-			$("#1col").on("click", function(e){
-				$.ajax({
-					url:"/doMovement",
-					data: {player1:{{user1}},player2:{{user2}},turnUser:{{turnUser}},game:{{gameId}},col: "0"},
-					method:"POST"
-				}).done(function(data){
-					//reload();
-					$("html").html(data);
-					console.log(data);
-					alert("chau");
-				});
-				e.defaultPrevented;
-				return false;
-			}); 
-			
-			$("#2col").on("click", function(e){
-				$.ajax({
-					url:"/doMovement",
-					data: {player1:{{user1}},player2:{{user2}},turnUser:{{turnUser}},game:{{gameId}},col: "1"},
-					method:"POST"
-				}).done(function(data){
-					//reload();
-					$("html").html(data);
-					console.log(data);
-					alert("chau");
-				});
-				e.defaultPrevented;
-				return false;
+			function listeningMovement(x,y){
+				$(x).on("click", function(e){
+					$.ajax({
+						url:"/doMovement",
+						data: {	player1:{{user1}},
+								player2:{{user2}},
+								turnUser:{{turnUser}},
+								game:{{gameId}},
+								col: y},
+						method:"POST"
+					}).done(function(data){
+						$("#cuerpo1").html(data);
+						
+					});
+					e.defaultPrevented;
+					return false;
+				});		
+			}
+
+			$("document").ready(function(){
+				listeningMovement("#1col","0");
+				listeningMovement("#2col","1");
+				listeningMovement("#3col","2");
+				listeningMovement("#4col","3");
+				listeningMovement("#5col","4");
+				listeningMovement("#6col","5");
+				listeningMovement("#7col","6");
 			});
-		});
 
 		</script>
 
+	<body id="cuerpo1" background="background.jpg" text="#FFFFFF" >
 
-		<style>
-			.p0{
-			font-size: 25px;
-
-			border: 2px solid #000000;
-			border-radius: 50px;
-			width: 70px;
-			height: 70px; background-color: #FFFFFF;
-			}
-		</style> 
-		<style>
-			.p1{
-			font-size: 25px;
-
-			border: 2px solid #000000;
-			border-radius: 50px;
-			width: 70px;
-			height: 70px; background-color: #F7FE2E;
-			}
-		</style> 
-		<style>
-			.p2{
-			font-size: 25px;
-
-			border: 2px solid #000000;
-			border-radius: 50px;
-			width: 70px;
-			height: 70px; background-color:#FF0000;
-			}
-		</style> 
-
-	<body 
-	
-		background="background.jpg" text="#FFFFFF" >
-
-	  <div id="container">
-	  <h1 align="center">Connect 4 - Smart-team</h1>
-	  <h3 align="center">Playing</h3>
-	  <h4 align="center" type="text" style="Position:Absolute; left: 12%; top: 13%"> Turn player: {{turnUserEmail}} </h4>
-	  <p align="center">
-			<table width="520px" height="440px"  border="1" cellspacing="2" cellpadding="2" bgcolor="#0000FF" id="table1" >
-		 		<tr align="center">
-			 		<form action="/doMovement" method="POST" id="form1">
-			 			<input type="hidden" value={{user1}} name="player1" >
-			 			<input type="hidden" value={{user2}} name="player2" >
-			 			<input type="hidden" value={{turnUser}} name="turnUser" >
-			 			<input type="hidden" value={{gameId}} name="game">
-			 			<input type="hidden" value="0"        name="col">
-			 			<input type="submit" value="Put here!" id="1col" {{{stateButton0}}}>
-			 		</form>
-			 		<form action="/doMovement" method="POST" id="form2">
-			 			<input type="hidden" value={{user1}} name="player1" >
-			 			<input type="hidden" value={{user2}} name="player2" >
-			 			<input type="hidden" value={{turnUser}} name="turnUser" >
-			 			<input type="hidden" value={{gameId}} name="game">
-			 			<input type="hidden" value="1"        name="col">
-			 			<input type="submit" value="Put here!" id="2col" {{{stateButton1}}}>
-			 		</form>
-			 		<form action="/doMovement" method="POST" id="form3">
-			 			<input type="hidden" value={{user1}} name="player1" >
-			 			<input type="hidden" value={{user2}} name="player2" >
-			 			<input type="hidden" value={{turnUser}} name="turnUser" >
-			 			<input type="hidden" value={{gameId}} name="game">
-			 			<input type="hidden" value="2"        name="col">
-			 			<input type="submit" value="Put here!" id="3col" {{{stateButton2}}}>
-			 		</form>
-			 		<form action="/doMovement" method="POST" id="form4"> 
-			 			<input type="hidden" value={{user1}} name="player1" >
-			 			<input type="hidden" value={{user2}} name="player2" >
-			 			<input type="hidden" value={{turnUser}} name="turnUser" >
-			 			<input type="hidden" value={{gameId}} name="game">
-			 			<input type="hidden" value="3"        name="col">
-			 			<input type="submit" value="Put here!" id="4col"  {{{stateButton3}}}>
-			 		</form>
-			 		<form action="/doMovement" method="POST" id="form5">
-			 			<input type="hidden" value={{user1}} name="player1" >
-			 			<input type="hidden" value={{user2}} name="player2" >
-			 			<input type="hidden" value={{turnUser}} name="turnUser" >
-			 			<input type="hidden" value={{gameId}} name="game">
-			 			<input type="hidden" value="4"        name="col">
-			 			<input type="submit" value="Put here!" id="5col" {{{stateButton4}}}>
-			 		</form>
-			 		<form action="/doMovement" method="POST" id="form6">
-			 			<input type="hidden" value={{user1}} name="player1" >
-			 			<input type="hidden" value={{user2}} name="player2" >
-			 			<input type="hidden" value={{turnUser}} name="turnUser" >
-			 			<input type="hidden" value={{gameId}} name="game">
-			 			<input type="hidden" value="5"        name="col">
-			 			<input type="submit" value="Put here!" id="6col" {{{stateButton5}}}>
-			 		</form>
-			 		<form action="/doMovement" method="POST" id="form7">
-			 			<input type="hidden" value={{user1}} name="player1" >
-			 			<input type="hidden" value={{user2}} name="player2" >
-			 			<input type="hidden" value={{turnUser}} name="turnUser" >
-			 			<input type="hidden" value={{gameId}} name="game">
-			 			<input type="hidden" value="6"        name="col">
-			 			<input type="submit" value="Put here!" id="7col" {{{stateButton6}}}>
-			 		</form>
-			 	</tr>
-		 		{{#board}}
-		 			{{{toString}}}
-		 		{{/board}}
-		 	</table>
-		</div>
+		<h1 align="center">Connect 4 - Smart-team</h1>
+	  	<h3 align="center">Playing</h3>
+	  	<h4 align="center" type="text" style="Position:Absolute; left: 12%; top: 13%"> Turn player: {{turnUserEmail}} </h4>
+	  	<p align="center">
+	  
+	  	<div id="container">
+	   		{{> board}}
+	  	</div>
+	   
 
 	 	<form action="/savegame" method="GET" >
 	 		<input type="hidden" value={{gameId}} name="gameId">
 	 		<input align="center" type="submit" style="Position:Absolute; left: 81%; top: 5%" value="Save game" name="save_game">
 	 	</form>
+	 	
 	 	<form action="/abandonedGame" method="GET" >
 	 		<input type="hidden" value={{user2}} name="player2">
 	 		<input type="hidden" value={{gameId}} name="gameId">
 	 		<input align="center" type="submit" style="Position:Absolute; left: 90%; top: 5%" value="Exit game" name="exit_game">
 	 	</form>
-		
-	 		
-	 	
-
 
 	</body>
 </html>
