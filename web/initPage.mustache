@@ -48,30 +48,28 @@
 	<body style="background-attachment:fixed;" background="background.jpg" text="#FFFFFF" >
 		<p align="center">
 			<font  size=20> Welcome to Connect 4! Play now!</font>
-				<a href="https://en.wikipedia.org/wiki/Connect_Four" target="_blank"> <input type="submit" value="Help"  style="Position:Absolute; left: 10%; top: 5%" /> </a> 			
+				<a href="https://en.wikipedia.org/wiki/Connect_Four" target="_blank"> 
+					<input type="submit" value="Help"  style="Position:Absolute; left: 10%; top: 5%" /> 
+				</a> 			
 				<form action="/signin" method="GET">
 					<input type=hidden value={{{nameButton}}}>
-					<input type="submit" style="Position:Absolute; left: 83%; top: 5%" value={{{nameButton}}}  name="signin"  >
+					<input type="submit" style="Position:Absolute; left: 83%; top: 5%" value={{{nameButton}}} name="signin">
 				</form>
 
 				<form action="/signup" method="GET">
-
 						<input type="submit" style="Position:Absolute; left: 90%; top: 5%" value="Sign Up" name="signup"  {{{stateSignUp}}}>
 				</form>
-			
 		</p>
-
 		<h2 align="center"> The most popular connect 4 of the world</h2>
-		
 		<h3 align="center">{{currentUser}}</h3>
-		<br>
-		
+
 		<form action="/selectOpponent" method="GET">
 			<input type=hidden value={{currentUser}} name="player1" >
 			<p align="center" >
 				<input type="submit" value="New Game" name="newgame" class="tim">
 			</p>	
 		</form>	
+		
 		<form action="/selectSavedGame" method="GET">
 			<input type=hidden value={{currentUser}} name="player1" >
 			<p align="center" >
