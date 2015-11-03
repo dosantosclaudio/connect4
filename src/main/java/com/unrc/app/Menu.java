@@ -228,6 +228,7 @@ public class Menu{
 			}
 			request.session().attribute("gameId",currentGame.getInteger("id"));
 			attributes.put("board",currentGame.getBoard().toList(currentGame));
+			attributes.put("gameId",currentGame.getInteger("id"));
 			return new ModelAndView(attributes,"web/play.mustache");			
 		},new MustacheTemplateEngine());
 

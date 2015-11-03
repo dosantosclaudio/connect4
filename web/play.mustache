@@ -13,6 +13,7 @@
 
 			function listeningMovement(x,y){
 				$(x).on("click", function(e){
+					console.log({{user1}});
 					$.ajax({
 						url:"/doMovement",
 						data: {	player1:{{user1}},
