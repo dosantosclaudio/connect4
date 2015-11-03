@@ -3,54 +3,15 @@
 		<!--INSTALANDO JQUERY-->  
 		<!--script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script-->
 		<script src="jquery-2.1.4.js"></script> 
-		
-		<script>	
-/*
-			function reload(){
-				$("#container").load("#table1");
-			}
-*/			
-
-			function listeningMovement(x,y){
-				$(x).on("click", function(e){
-					console.log({{user1}});
-					$.ajax({
-						url:"/doMovement",
-						data: {	player1:{{user1}},
-								player2:{{user2}},
-								turnUser:{{turnUser}},
-								game:{{gameId}},
-								col: y},
-						method:"POST"
-					}).done(function(data){
-						$("#cuerpo1").html(data);
-						
-					});
-					e.defaultPrevented;
-					return false;
-				});		
-			}
-
-			$("document").ready(function(){
-				listeningMovement("#1col","0");
-				listeningMovement("#2col","1");
-				listeningMovement("#3col","2");
-				listeningMovement("#4col","3");
-				listeningMovement("#5col","4");
-				listeningMovement("#6col","5");
-				listeningMovement("#7col","6");
-			});
-
-		</script>
 	</head>
 
 	<body id="cuerpo1" background="background.jpg" text="#FFFFFF" >
 
 		<h1 align="center">Connect 4 - Smart-team</h1>
 	  	<h3 align="center">Playing</h3>
-	  	<h4 align="center" type="text" style="Position:Absolute; left: 12%; top: 13%"> Turn player: {{turnUserEmail}} </h4>
 	  
 	  	<div id="container" align="center">
+	  		<h4 align="center" type="text" style="Position:Absolute; left: 12%; top: 13%"> Turn player: {{turnUserEmail}} </h4>
 	   		{{> board}}
 	  	</div>
 	   

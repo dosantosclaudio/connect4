@@ -291,7 +291,7 @@ public class Menu{
 				}
 				attributes.put("gameId",currentGame.get("id"));
 				attributes.put("board",currentGame.getBoard().toList(currentGame));
-				return new ModelAndView(attributes,"web/play.mustache");
+				return new ModelAndView(attributes,"web/board.mustache");
 			}else{
 					
 					currentGame.set("end_date",Game.getDateMysql());

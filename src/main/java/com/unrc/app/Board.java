@@ -58,7 +58,6 @@ public class Board extends Model{
 			
 			}
 		}
-		res.add("</table>");
 		return res;
 	}
 	
