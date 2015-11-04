@@ -58,9 +58,10 @@ public class Game extends Model{
 		return reportDate;	
 	}
 
-	// Retorna un numero entero que nos permite saber de quien es el turno viendo si es par o impar
-	public int turnUser(){
-		return b.counterCellNull();
+	// Retorna True si es el turno del jugador 1 
+	//retorna False si es el turno del jugador 2
+	public boolean turnUser(){
+		return (b.counterCellNull() %2==0);
 	}
 
 	// Carga el tablero de acuerdo al juego

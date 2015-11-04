@@ -1,8 +1,4 @@
 <html>
-	<head>
-	<!--INSTALANDO JQUERY-->  
-		<script src="jquery-2.1.4.js"></script> 
-		<title>Welcome to Connect 4!</title>
 
 		<style>
 			.tim{
@@ -34,10 +30,13 @@
 			border-radius: 50px;
 			width: 100px;
 			height: 100px; background-color: #FF0000;
-);
 			}
 		</style> 
-	</head>
+		
+	{{> jqueryconfig}}
+	
+	<title>Welcome to Connect 4!</title>
+	
 	<body style="background-attachment:fixed;" background="background.jpg" text="#FFFFFF" >
 		<p align="center">
 			<font  size=20> Welcome to Connect 4! Play now!</font>
@@ -55,6 +54,13 @@
 		</p>
 		<h2 align="center"> The most popular connect 4 of the world</h2>
 		<h3 align="center">{{currentUser}}</h3>
+
+		<form action="/selectOnlineOpponent" method="GET">
+			<input type=hidden value={{currentUser}} name="player1" >
+			<p align="center" >
+				<input type="submit" value="Play Online" name="playonline" class="tim1">
+			</p>	
+		</form>	
 
 		<form action="/selectOpponent" method="GET">
 			<input type=hidden value={{currentUser}} name="player1" >

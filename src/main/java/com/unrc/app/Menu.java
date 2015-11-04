@@ -43,6 +43,7 @@ public class Menu{
 		});
 		
 		//	Show init page 
+		//  the user must signin for execute an option
 		get("/", (request, response) -> {
 			HashMap<String,Object> attributes=new HashMap<String,Object> ();
 			request.session(true);   
@@ -58,7 +59,6 @@ public class Menu{
          	return new ModelAndView(attributes, "web/initPage.mustache");
 		}, new MustacheTemplateEngine());
 
-
 		get("/signup",(request,response)-> {	
 			String usr=request.session().attribute("SESSION_NAME");  
 			if(usr!=null){
@@ -68,7 +68,6 @@ public class Menu{
 				return new ModelAndView(null,"web/signUp.mustache");
 			}
 		},new MustacheTemplateEngine());
-
 		
 		get("/signin",(request,response)-> {
 			String usr=request.session().attribute("SESSION_NAME");  
@@ -81,42 +80,39 @@ public class Menu{
 			}
 		},new MustacheTemplateEngine());
 
-
 		get("/signingup",(request,response)-> {
 			// Obtengo datos del formulario
-			 String email=request.queryParams("email");
-			 String f_name=request.queryParams("first_name");
-			 String l_name=request.queryParams("last_name");
-			 String pass=request.queryParams("password");
-			 String pass_check=request.queryParams("passwordcheck");
-			 HashMap<String,Object> attributes=new HashMap<String,Object>();
-			 if (!pass.equals(pass_check)){
-			 		attributes.put("message","The passwords aren't equals");
-			 	return new ModelAndView(attributes,"web/signUp.mustache");
-			 }else{
-			 	 try{
+			String email=request.queryParams("email");
+			String f_name=request.queryParams("first_name");
+			String l_name=request.queryParams("last_name");
+			String pass=request.queryParams("password");
+			String pass_check=request.queryParams("passwordcheck");
+			HashMap<String,Object> attributes=new HashMap<String,Object>();
+			if (!pass.equals(pass_check)){
+					attributes.put("message","The passwords aren't equals");
+				return new ModelAndView(attributes,"web/signUp.mustache");
+			}else{
+				try{
 					User.insert(email,f_name,l_name,pass);	
-				 	String user=User.findFirst("email=?",email).getString("id");
-				 	request.session().attribute("SESSION_NAME",user);
-				 	attributes.put("currentUser",user);
+					String user=User.findFirst("email=?",email).getString("id");
+					request.session().attribute("SESSION_NAME",user);
+					attributes.put("currentUser",user);
 					response.redirect("/");
-				 	return null;
-				 }catch(UserException e){
+					return null;
+				}catch(UserException e){
 				 	if (e.getCode().equals("001")){
-				 		attributes.put("message",e.getMessage());
-				 	}
-				 	if (e.getCode().equals("002")){
-				 		attributes.put("message",e.getMessage());
-				 	}
+						attributes.put("message",e.getMessage());
+					}
+					if (e.getCode().equals("002")){
+						attributes.put("message",e.getMessage());
+					}
 
 
-				 	return new ModelAndView(attributes,"web/signUp.mustache");
-				 }
+					return new ModelAndView(attributes,"web/signUp.mustache");
+				}
 
-			 }
+			}
 		},new MustacheTemplateEngine());
-
-
 
 		get("/signingin",(request,response)-> {
 			String email=request.queryParams("email");			
@@ -186,7 +182,7 @@ public class Menu{
 				user2_id=Integer.toString((Integer)currentGame.get("player2_id"));
 				attributes.put("user1",user1_id);
 				attributes.put("user2",user2_id);
-				if(currentGame.turnUser() %2==0){
+				if(currentGame.turnUser()){
 					attributes.put("turnUser",user1_id);
 					attributes.put("turnUserEmail",User.findFirst("id=?",user1_id).getString("email"));
 				}else{
@@ -242,7 +238,7 @@ public class Menu{
 			Integer gameId=request.session().attribute("gameId");
 			Game currentGame=Game.findFirst("id=?",Integer.toString(gameId));
 			currentGame.resumeGame();
-			if(currentGame.turnUser() %2==0){
+			if(currentGame.turnUser()){
 					turnUser=request.queryParams("player1");
 			}else{
 					turnUser=request.queryParams("player2");
@@ -381,7 +377,7 @@ public class Menu{
 			User player2=User.findFirst("id=?",currentGame.get("player2_id"));
 			currentGame.set("end_date",Game.getDateMysql());
 			currentGame.saveIt();
-			if(currentGame.turnUser() %2==0){	
+			if(currentGame.turnUser()){	
 				currentGame.updateRankWithWinner(player2,player1);
 			}else{
 				currentGame.updateRankWithWinner(player1,player2);
