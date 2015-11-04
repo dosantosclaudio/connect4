@@ -1,0 +1,7 @@
+<html>
+	{{> jqueryconfig}}
+	<body background="background.jpg" text="#FFFFFF">
+
+	  
+	</body>
+</html>
