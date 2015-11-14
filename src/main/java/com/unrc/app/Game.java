@@ -23,20 +23,22 @@ public class Game extends Model{
 	
 	Board b;
 	
-	// Constructor1
 	public Game(){
-	}
 
+	}
 	// Constructor2
 	public Game(Pair<User,User> p){
 		this.set("player1_id",p.getFst().get("id"));
-		this.set("player2_id",p.getSnd().get("id"));
+		if (p.getSnd()!=null)
+			this.set("player2_id",p.getSnd().get("id"));
+		else{
+			this.set("player2_id",0);
+		}
+
 		this.set ("init_date",getDateMysql());
 		this.saveIt();
 		b= new Board(this);
 	}
-
-
 	// Retorna un string con los jugadores de un juego
 	public String toStringPlayers(){
 		User u1=User.findFirst("id=?", this.get("player1_id"));

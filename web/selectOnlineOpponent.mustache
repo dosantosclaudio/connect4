@@ -1,0 +1,24 @@
+<html>
+	{{> jqueryconfig}}
+	<body background="background.jpg" text="#FFFFFF">
+
+		<form action="/createTable" method="POST">  	
+			<p>		
+				<input type="submit" id="btn1" value="Create a table" name="createTable">
+			</p>
+		</form>
+	
+		<form action="/searchTable" method="GET">  	
+			<p>		
+				<input type="submit" id="btn2" value="Search a table" name="createTable">
+			</p>
+		</form>
+
+
+		<script src="https://cdn.socket.io/socket.io-1.3.7.js"></script>
+		<script>
+  			var socket = io.connect('http://localhost:3000');
+		</script>
+  
+	</body>
+</html>

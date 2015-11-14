@@ -22,6 +22,7 @@ public class Menu{
     public static final String userdb = "root";
     public static final String passdb = "root";
 
+
 	public Menu(){}
 
 	public static void showWebApp(){
@@ -385,5 +386,26 @@ public class Menu{
 			return new ModelAndView(attributes,"web/ranking.mustache");
 		},new MustacheTemplateEngine());
 
+		//************ PLAY ONLINE ******************
+		
+		get("/selectOnlineOpponent",(request,response)->{
+			String usr=request.session().attribute("SESSION_NAME");  
+			if(usr==null){
+				response.redirect("/");
+				return null;
+			}else{
+				return new ModelAndView(null, "web/selectOnlineOpponent.mustache");
+			}
+		},new MustacheTemplateEngine());
+
+
+		post("/createTable",(request,response)->{
+			String usr=request.session().attribute("SESSION_NAME");  
+			return new ModelAndView(null,"web/createTable.mustache");
+		},new MustacheTemplateEngine());
+
+		
 	}	
+
+
 }
