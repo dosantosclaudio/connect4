@@ -443,6 +443,7 @@ public class Menu{
 			currentGame.set("channel",request.queryParams("channel")).saveIt();
 			System.out.println(currentGame.getString("channel"));
 			attributes.put("channel",request.queryParams("channel"));
+			attributes.put("ip",Menu.getServerIp());
 			return new ModelAndView(attributes,"web/createTable.mustache");
 		},new MustacheTemplateEngine());
 
@@ -459,6 +460,7 @@ public class Menu{
 			currentGame.set("player2_id",request.session().attribute("SESSION_NAME")).saveIt();
 			attributes.put("channel",request.queryParams("channel"));
 			attributes.put("game",currentGame);
+			attributes.put("ip",Menu.getServerIp());
 			return new ModelAndView(attributes,"web/startingGame.mustache");
 		},new MustacheTemplateEngine());
 	}	
