@@ -7,9 +7,7 @@ import com.unrc.app.User;
 import java.lang.Exception;
 import java.io.Console;
 import java.util.*;
-import java.net.UnknownHostException;
-import java.net.Inet4Address;
-import java.net.InetAddress;
+import java.net.*;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
@@ -28,6 +26,29 @@ public class Menu{
 
 
 	public Menu(){}
+
+	private static String getServerIp(){
+	    String ip="";
+	    try {
+	        Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+	        while (interfaces.hasMoreElements()) {
+	            NetworkInterface iface = interfaces.nextElement();
+	            // filters out 127.0.0.1 and inactive interfaces
+	            if (iface.isLoopback() || !iface.isUp())
+	                continue;
+
+	            Enumeration<InetAddress> addresses = iface.getInetAddresses();
+	            while(addresses.hasMoreElements()) {
+	                InetAddress addr = addresses.nextElement();
+	                ip = addr.getHostAddress();
+	                System.out.println(iface.getDisplayName() + " " + ip);
+	            }
+	        }
+	    } catch (SocketException e) {
+	        throw new RuntimeException(e);
+	    }
+		return ip;
+	}
 
 	public static void showWebApp(){
 
@@ -152,7 +173,7 @@ public class Menu{
 				Map<String, Object> attributes = new HashMap<String,Object>();
 				attributes.put("player1_id",user1);
 				attributes.put("user1",User.findFirst("id=?",user1).get("email"));
-				List<Game> game=Game.where("(player1_id=? or player2_id=?)and end_date is null",user1,user1);
+				List<Game> game=Game.where("(player1_id=? xor player2_id=?)and end_date is null",user1,user1);
 				attributes.put("games",game);
 				return new ModelAndView(attributes,"web/selectSavedGame.mustache");
 			}
@@ -399,12 +420,15 @@ public class Menu{
 				return null;
 			}else{
 				Map<String, Object> attr = new HashMap<String,Object>();
-				try {
-					attr.put("ip",Inet4Address.getLocalHost().getHostAddress().toString());
-					//attr.put("ip", InetAddress.getLocalHost().getHostAddress().toString());
+				/*try {
+					InetAddress ip =InetAddress.getLocalHost();
+					//attr.put("ip",Inet4Address.getLocalHost().getHostAddress().toString());
+					
+					attr.put("ip",ip.getHostAddress());
 				}catch(UnknownHostException e){
 					e.printStackTrace();
-				}
+				}*/
+				attr.put("ip",Menu.getServerIp().toString());
 				return new ModelAndView(attr, "web/selectOnlineOpponent.mustache");
 			}
 		},new MustacheTemplateEngine());
@@ -412,9 +436,16 @@ public class Menu{
 
 		post("/createTable",(request,response)->{
 			String usr=request.session().attribute("SESSION_NAME");  
+			Game currentGame= new Game(new Pair(User.findFirst("id=?",usr),User.findFirst("id=?",usr)));
 			return new ModelAndView(null,"web/createTable.mustache");
 		},new MustacheTemplateEngine());
 
+		get("/searchTable", (request,response)->{
+			Map<String, Object> attributes = new HashMap<String,Object>();
+			List<Game> sleepingGame = Game.where("player1_id=player2_id");
+			attributes.put("games",sleepingGame);
+			return new ModelAndView(attributes,"web/searchTable.mustache");
+		},new MustacheTemplateEngine());
 		
 	}	
 
