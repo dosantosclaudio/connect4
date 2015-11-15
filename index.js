@@ -1,7 +1,7 @@
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var i =1;
+var i =0;
 var ch1,ch2,ch3,ch4,ch5,ch6,ch7,ch8,ch9,ch10;
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
@@ -12,13 +12,27 @@ io.on('connection', function(socket){
 	socket.on('publisher',function(msg){
 		console.log("Entro a publisher");
 		console.log(msg);
-		if (i<=10){
-			io.emit("publisher",i);
+		if (i<=9){
 			i++;
+			io.emit("publisher",i.toString()+':'+msg);
+			console.log(i.toString()+':'+msg);
 		}else{
 			io.emit("publisher",0);
 		}
 	});
+
+
+
+	socket.on('waitingSuscriber',function(msg){
+		console.log("Entro a waitingsuscriber");
+		console.log(msg);
+		if (i>0){
+			io.emit('waitingSuscriber',msg);
+		}else{
+			io.emit('waitingSuscriber',0);
+		}
+	});
+
 
 	socket.on('suscriber',function(msg){
 		console.log("Entro a suscriber");
@@ -30,6 +44,7 @@ io.on('connection', function(socket){
 		}
 	});
 
+
 socket.on('chn1', function(msg){
   	console.log(msg);
     io.emit('chn1', msg);
@@ -39,8 +54,6 @@ socket.on('chn2', function(msg){
   	console.log(msg);
     io.emit('chn2', msg);
   });
-
-
 
 socket.on('chn3', function(msg){
   	console.log(msg);
