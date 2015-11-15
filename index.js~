@@ -25,6 +25,7 @@ io.on('connection', function(socket){
 		console.log(msg);
 		if (i>0){
 			io.emit('suscriber',msg);
+			i--;
 		}else{
 			io.emit('suscriber',0);
 		}

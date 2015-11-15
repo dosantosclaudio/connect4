@@ -400,9 +400,15 @@ public class Menu{
 
 
 		post("/createTable",(request,response)->{
+			Map<String, Object> attributes = new HashMap<String,Object>();
 			String usr=request.session().attribute("SESSION_NAME");  
 			Game currentGame= new Game(new Pair(User.findFirst("id=?",usr),User.findFirst("id=?",usr)));
-			return new ModelAndView(null,"web/createTable.mustache");
+			System.out.println("****************************************************");
+			System.out.println(request.queryParams("channel"));
+			currentGame.set("channel",request.queryParams("channel")).saveIt();
+			System.out.println(currentGame.getString("channel"));
+			attributes.put("channel",request.queryParams("channel"));
+			return new ModelAndView(attributes,"web/createTable.mustache");
 		},new MustacheTemplateEngine());
 
 		get("/searchTable", (request,response)->{
@@ -412,6 +418,14 @@ public class Menu{
 			return new ModelAndView(attributes,"web/searchTable.mustache");
 		},new MustacheTemplateEngine());
 		
+		post("/startingGame",(request,response)->{
+			Map<String, Object> attributes = new HashMap<String,Object>();
+			Game currentGame= Game.findFirst("id=?",request.queryParams("game"));
+			currentGame.set("player2_id",request.session().attribute("SESSION_NAME")).saveIt();
+			attributes.put("channel",request.queryParams("channel"));
+			attributes.put("game",currentGame);
+			return new ModelAndView(attributes,"web/startingGame.mustache");
+		},new MustacheTemplateEngine());
 	}	
 
 

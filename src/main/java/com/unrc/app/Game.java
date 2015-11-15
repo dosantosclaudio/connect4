@@ -34,7 +34,7 @@ public class Game extends Model{
 		else{
 			this.set("player2_id",0);
 		}
-
+		this.set("channel",0);
 		this.set ("init_date",getDateMysql());
 		this.saveIt();
 		b= new Board(this);
@@ -47,6 +47,9 @@ public class Game extends Model{
 		return (u1.toString2() + "   VS   " + u2.toString2());
 	}
 
+	public String toStringChannel(){
+		return this.getString("channel");
+	}
 	// Retorna el codigo del juego
 	public String toString2(){
 		return this.getString("id");

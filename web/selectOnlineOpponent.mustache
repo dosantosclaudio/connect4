@@ -21,7 +21,7 @@
 
     	<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
 		  <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
-		    <script>
+		    <script>	
 		      var channel=0;
 		      var socket = io.connect('192.168.1.112:3000');
 		      $('#btn1').on("click",function(){
@@ -50,6 +50,7 @@
 
 		      socket.on('suscriber',function(msg){
 		      	if (msg==channel){
+		      		socket.emit('suscriber',"OKEY");
 		      		//Redireccio a play
 		      		//channel -> "OnPlay"
 		      	}

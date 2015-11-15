@@ -30,7 +30,8 @@ CREATE TABLE ranks(
 
 --	Create games table
 CREATE TABLE games(
-	id INT NOT NULL AUTO_INCREMENT, 
+	id INT NOT NULL AUTO_INCREMENT,
+	channel INT NOT NULL, 
 	player1_id INT NOT NULL,
 	player2_id INT NOT NULL,
 	result_p1 ENUM('WIN','LOOSE','TIE'),
