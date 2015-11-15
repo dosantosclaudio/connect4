@@ -420,6 +420,7 @@ public class Menu{
 			}else{
 				Map<String, Object> attr = new HashMap<String,Object>();
 				attr.put("ip",Menu.getServerIp().toString());
+				attr.put("user",User.findFirst("id=?",usr).get("id"));
 				return new ModelAndView(attr, "web/selectOnlineOpponent.mustache");
 			}
 		},new MustacheTemplateEngine());
@@ -438,7 +439,7 @@ public class Menu{
 
 		get("/searchTable", (request,response)->{
 			Map<String, Object> attributes = new HashMap<String,Object>();
-			List<Game> sleepingGame = Game.where("player1_id=player2_id");
+			List<Game> sleepingGame = Game.where("player1_id=player2_id and channel<>0");
 			attributes.put("games",sleepingGame);
 			return new ModelAndView(attributes,"web/searchTable.mustache");
 		},new MustacheTemplateEngine());

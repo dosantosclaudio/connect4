@@ -10,9 +10,10 @@
 	 <script type="text/javascript">
 	 var ip_address='{{ip}}:3000';
 	 var socket = io.connect(ip_address);
-	 socket.on('suscriber',function(msg){
+	 var channel= {{channel}};
+	 socket.on('waitingSuscriber',function(msg){
 		      	if (msg=={{channel}}){
-		      		socket.emit('suscriber','OKEY');
+		      		socket.emit('suscriber',channel.toString()+':'+'OKEY');
 		      		document.forms['toPlay'].submit();
 		      	}
 		      });

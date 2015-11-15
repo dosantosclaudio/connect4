@@ -18,17 +18,22 @@
 		      var socket = io.connect(ip_address);
 
 		      $('#btn1').on("click",function(){
-		        socket.emit('publisher',"Publicando");
+		        socket.emit('publisher','{{user}}');
 		        return false;
 		      });
 
+
+
 		      socket.on('publisher', function(msg){
-		    
-		        if (msg!=0){
-		        	channel=msg; 
+
+		      	var elem=msg.split(':');
+	 			var channel=parseInt(elem[0]);
+	 			var message=elem[1];
+
+		        if ((channel!=0)&&({{user}}==message)) {
 					$.ajax({
 						url:"/createTable",
-						data: { channel: msg},
+						data: { channel: channel},
 						method:"POST"
 					}).done(function(data){
 							console.log(data);
@@ -40,13 +45,6 @@
 		        }
 		      });
 
-		      socket.on('suscriber',function(msg){
-		      	if (msg==channel){
-		      		socket.emit('suscriber',"OKEY");
-		      		//Redireccio a play
-		      		//channel -> "OnPlay"
-		      	}
-		      });
 		    </script>  
 	</body>
 </html>

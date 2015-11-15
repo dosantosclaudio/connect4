@@ -12,10 +12,13 @@
 	 var socket = io.connect(ip_address);
 	 var a=2;	
 	 
-	 socket.emit('suscriber',{{channel}});
-	 
+	 socket.emit('waitingSuscriber',{{channel}});
 	 socket.on('suscriber',function(msg){
-	 	if (msg=='OKEY') document.forms['toPlay'].submit();
+	 	var elem=msg.split(':');
+	 	var channel=parseInt(elem[0]);
+	 	var chn={{channel}};
+	 	var message=elem[1];
+	 	if ((channel==chn)&&(message=='OKEY')) document.forms['toPlay'].submit();
 	 });
 	
 	 /*socket.on('chn{{channel}}',function(msg)->{
