@@ -1,13 +1,11 @@
 <html>
 	{{> jqueryconfig}}
 	<body background="background.jpg" text="#FFFFFF">
-
-  	
+	
 			<p>		
 				<input type="submit" id="btn1" value="Create a table" name="createTable">
 			</p>
 		
-	
 		 	<form action="/searchTable" method="GET">
 			<p>		
 				<input type="submit" id="btn2" value="Search a table" name="createTable">
@@ -15,9 +13,9 @@
 			</form>
 
 	 <ul id="messages"></ul>
-    <form action="">
+    <!--form action="">
       <input id="m" autocomplete="off" /><button>Send</button>
-    </form>
+    </form-->
 		    <script>	
 		      var channel=0;
 		      var ip_address = "{{ip}}:3000";

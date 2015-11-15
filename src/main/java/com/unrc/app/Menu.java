@@ -420,14 +420,6 @@ public class Menu{
 				return null;
 			}else{
 				Map<String, Object> attr = new HashMap<String,Object>();
-				/*try {
-					InetAddress ip =InetAddress.getLocalHost();
-					//attr.put("ip",Inet4Address.getLocalHost().getHostAddress().toString());
-					
-					attr.put("ip",ip.getHostAddress());
-				}catch(UnknownHostException e){
-					e.printStackTrace();
-				}*/
 				attr.put("ip",Menu.getServerIp().toString());
 				return new ModelAndView(attr, "web/selectOnlineOpponent.mustache");
 			}
