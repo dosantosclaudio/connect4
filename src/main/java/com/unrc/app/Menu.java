@@ -148,7 +148,7 @@ public class Menu{
 				Map<String, Object> attributes = new HashMap<String,Object>();
 				attributes.put("player1_id",user1);
 				attributes.put("user1",User.findFirst("id=?",user1).get("email"));
-				List<Game> game=Game.where("(player1_id=? or player2_id=?)and end_date is null",user1,user1);
+				List<Game> game=Game.where("(player1_id=? xor player2_id=?)and end_date is null",user1,user1);
 				attributes.put("games",game);
 				return new ModelAndView(attributes,"web/selectSavedGame.mustache");
 			}
@@ -401,9 +401,16 @@ public class Menu{
 
 		post("/createTable",(request,response)->{
 			String usr=request.session().attribute("SESSION_NAME");  
+			Game currentGame= new Game(new Pair(User.findFirst("id=?",usr),User.findFirst("id=?",usr)));
 			return new ModelAndView(null,"web/createTable.mustache");
 		},new MustacheTemplateEngine());
 
+		get("/searchTable", (request,response)->{
+			Map<String, Object> attributes = new HashMap<String,Object>();
+			List<Game> sleepingGame = Game.where("player1_id=player2_id");
+			attributes.put("games",sleepingGame);
+			return new ModelAndView(attributes,"web/searchTable.mustache");
+		},new MustacheTemplateEngine());
 		
 	}	
 
