@@ -438,10 +438,8 @@ public class Menu{
 			Map<String, Object> attributes = new HashMap<String,Object>();
 			String usr=request.session().attribute("SESSION_NAME");  
 			Game currentGame= new Game(new Pair(User.findFirst("id=?",usr),User.findFirst("id=?",usr)));
-			System.out.println("****************************************************");
-			System.out.println(request.queryParams("channel"));
 			currentGame.set("channel",request.queryParams("channel")).saveIt();
-			System.out.println(currentGame.getString("channel"));
+			attributes.put("game",currentGame.get("id"));
 			attributes.put("channel",request.queryParams("channel"));
 			attributes.put("ip",Menu.getServerIp());
 			return new ModelAndView(attributes,"web/createTable.mustache");
@@ -459,10 +457,48 @@ public class Menu{
 			Game currentGame= Game.findFirst("id=?",request.queryParams("game"));
 			currentGame.set("player2_id",request.session().attribute("SESSION_NAME")).saveIt();
 			attributes.put("channel",request.queryParams("channel"));
-			attributes.put("game",currentGame);
+			attributes.put("game",request.queryParams("game"));
 			attributes.put("ip",Menu.getServerIp());
 			return new ModelAndView(attributes,"web/startingGame.mustache");
 		},new MustacheTemplateEngine());
+
+
+		post("/playOnline",(request,response)->{	
+			String rGame=request.queryParams("game");
+			String channel="chn"+request.queryParams("channel").toString();											
+			Map<String, Object> attributes = new HashMap<>();
+			Game currentGame=Game.findFirst("id=?",rGame);
+			String user1_id, user2_id, turn_user;
+			currentGame.resumeGame();
+			user1_id=Integer.toString((Integer)currentGame.get("player1_id"));
+			user2_id=Integer.toString((Integer)currentGame.get("player2_id"));
+			if(currentGame.turnUser()){ 
+				turn_user=user1_id;
+			}else{
+				turn_user=user2_id;
+			}		
+			// Se restringe la insercion de fichas en el tabler deshabilitando  los botones
+			Integer count=0;
+			for (int i=0;i<7;i++){	
+				if (currentGame.fullCol(count)) {
+					attributes.put("stateButton"+Integer.toString(count),"disabled");
+				}else{
+					attributes.put("stateButton"+Integer.toString(count),"");
+				}
+				count++;
+			}
+			request.session().attribute("gameId",currentGame.getInteger("id"));
+			attributes.put("channel",channel);
+			attributes.put("user1",user1_id);
+			attributes.put("user2",user2_id);
+			attributes.put("turnUser",turn_user);
+			attributes.put("turnUserEmail",User.findFirst("id=?",turn_user).getString("email"));			
+			attributes.put("board",currentGame.getBoard().toList(currentGame));
+			attributes.put("gameId",currentGame.getInteger("id"));
+			return new ModelAndView(attributes,"web/play.mustache");			
+		},new MustacheTemplateEngine());
+
+
 	}	
 
 

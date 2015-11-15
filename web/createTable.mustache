@@ -1,22 +1,19 @@
 <html>
 	{{> jqueryconfig}}
 	<h1 align="center">Esperando subscriptor...</h1>
-	<script type="text/javascript">
+
+	 <form id="toPlay" action="/playOnline" method="POST">
+	 	<input type="hidden" value={{game}} name="game">
+	 	<input type="hidden" value={{channel}} name="channel">
+	 </form>
+
+	 <script type="text/javascript">
 	 var ip_address='{{ip}}:3000';
 	 var socket = io.connect(ip_address);
 	 socket.on('suscriber',function(msg){
 		      	if (msg=={{channel}}){
-		      		socket.emit('suscriber',{{channel}});
-		      		$.ajax({
-						url:"/",
-						data: {},
-						method:"GET"
-					}).done(function(data){
-						console.log(data);
-						$('html').html(data);
-						
-					});
-		      		//channel -> "OnPlay"
+		      		socket.emit('suscriber','OKEY');
+		      		document.forms['toPlay'].submit();
 		      	}
 		      });
 	 </script>
@@ -24,6 +21,6 @@
 	<body background="background.jpg" text="#FFFFFF">
 
 		
-		</form>
+		s
 	</body>
 </html>

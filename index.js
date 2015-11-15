@@ -30,6 +30,26 @@ io.on('connection', function(socket){
 		}
 	});
 
+socket.on('chn1', function(msg){
+  	console.log(msg);
+    io.emit('chn1', msg);
+  });
+
+socket.on('chn2', function(msg){
+  	console.log(msg);
+    io.emit('chn2', msg);
+  });
+
+
+
+socket.on('chn3', function(msg){
+  	console.log(msg);
+    io.emit('chn3', msg);
+  });
+
+
+
+
   socket.on('chat message', function(msg){
   	console.log("ddd");
   	console.log(msg);

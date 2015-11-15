@@ -1,15 +1,37 @@
 <html>
 	{{> jqueryconfig}}
+
 	<h1 align="center">Cargando...</h1>
+	<form id="toPlay" action="/playOnline" method="POST">
+	 	<input type="hidden" value={{game}} name="game">
+	 	<input type="hidden" value={{channel}} name="channel">
+	 </form>
+
 	<script type="text/javascript">
 	 var ip_address="{{ip}}:3000";
-	 var socket = io.connect(ip_address);	
+	 var socket = io.connect(ip_address);
+	 var a=2;	
+	 
 	 socket.emit('suscriber',{{channel}});
+	 
+	 socket.on('suscriber',function(msg){
+	 	if (msg=='OKEY') document.forms['toPlay'].submit();
+	 });
+	
+	 /*socket.on('chn{{channel}}',function(msg)->{
+	 	if (msg==1) document.forms['toPlay'].submit();
+
+	 });*/
+	// document.forms['toPlay'].submit();
+
 	 </script>
 
+	 <script type="text/javascript">
+	 //	document.forms['toPlay'].submit();
+	 </script>
 	<body background="background.jpg" text="#FFFFFF">
-
+	
+	 
 		
-		</form>
 	</body>
 </html> 
