@@ -47,6 +47,12 @@ public class Game extends Model{
 		return (u1.toString2() + "   VS   " + u2.toString2());
 	}
 
+	public String toStringPlayer1(){
+		User u1=User.findFirst("id=?", this.get("player1_id"));
+		return u1.toString2();
+
+	}
+
 	public String toStringChannel(){
 		return this.getString("channel");
 	}

@@ -1,23 +1,16 @@
 <html>
 	{{> jqueryconfig}}
 	<body background="background.jpg" text="#FFFFFF">
-
-  	
+	
 			<p>		
 				<input type="submit" id="btn1" value="Create a table" name="createTable">
 			</p>
 		
-	
 		 	<form action="/searchTable" method="GET">
 			<p>		
 				<input type="submit" id="btn2" value="Search a table" name="createTable">
 			</p>
 			</form>
-
-	 <ul id="messages"></ul>
-    <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
-    </form>
 
 		    <script>	
 		      var channel=0;
@@ -25,13 +18,12 @@
 		      var socket = io.connect(ip_address);
 
 		      $('#btn1').on("click",function(){
-		        socket.emit('publisher', $('#m').val());
-		        $('#m').val('');
+		        socket.emit('publisher',"Publicando");
 		        return false;
 		      });
 
 		      socket.on('publisher', function(msg){
-		        $('#messages').append($('<li>').text(msg));
+		    
 		        if (msg!=0){
 		        	channel=msg;
 					$.ajax({
