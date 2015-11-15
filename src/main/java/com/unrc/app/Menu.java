@@ -7,6 +7,9 @@ import com.unrc.app.User;
 import java.lang.Exception;
 import java.io.Console;
 import java.util.*;
+import java.net.UnknownHostException;
+import java.net.Inet4Address;
+import java.net.InetAddress;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
@@ -14,6 +17,7 @@ import static spark.Spark.get;
 import static spark.Spark.post;
 import static spark.Spark.before;
 import static spark.Spark.after;
+
 
 
 public class Menu{
@@ -394,7 +398,14 @@ public class Menu{
 				response.redirect("/");
 				return null;
 			}else{
-				return new ModelAndView(null, "web/selectOnlineOpponent.mustache");
+				Map<String, Object> attr = new HashMap<String,Object>();
+				try {
+					attr.put("ip",Inet4Address.getLocalHost().getHostAddress().toString());
+					//attr.put("ip", InetAddress.getLocalHost().getHostAddress().toString());
+				}catch(UnknownHostException e){
+					e.printStackTrace();
+				}
+				return new ModelAndView(attr, "web/selectOnlineOpponent.mustache");
 			}
 		},new MustacheTemplateEngine());
 
