@@ -7,6 +7,7 @@ import com.unrc.app.User;
 import java.lang.Exception;
 import java.io.Console;
 import java.util.*;
+import java.net.*;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
@@ -14,6 +15,7 @@ import static spark.Spark.get;
 import static spark.Spark.post;
 import static spark.Spark.before;
 import static spark.Spark.after;
+
 
 
 public class Menu{
@@ -24,6 +26,29 @@ public class Menu{
 
 
 	public Menu(){}
+
+	private static String getServerIp(){
+	    String ip="";
+	    try {
+	        Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+	        while (interfaces.hasMoreElements()) {
+	            NetworkInterface iface = interfaces.nextElement();
+	            // filters out 127.0.0.1 and inactive interfaces
+	            if (iface.isLoopback() || !iface.isUp())
+	                continue;
+
+	            Enumeration<InetAddress> addresses = iface.getInetAddresses();
+	            while(addresses.hasMoreElements()) {
+	                InetAddress addr = addresses.nextElement();
+	                ip = addr.getHostAddress();
+	                System.out.println(iface.getDisplayName() + " " + ip);
+	            }
+	        }
+	    } catch (SocketException e) {
+	        throw new RuntimeException(e);
+	    }
+		return ip;
+	}
 
 	public static void showWebApp(){
 
@@ -394,7 +419,17 @@ public class Menu{
 				response.redirect("/");
 				return null;
 			}else{
-				return new ModelAndView(null, "web/selectOnlineOpponent.mustache");
+				Map<String, Object> attr = new HashMap<String,Object>();
+				/*try {
+					InetAddress ip =InetAddress.getLocalHost();
+					//attr.put("ip",Inet4Address.getLocalHost().getHostAddress().toString());
+					
+					attr.put("ip",ip.getHostAddress());
+				}catch(UnknownHostException e){
+					e.printStackTrace();
+				}*/
+				attr.put("ip",Menu.getServerIp().toString());
+				return new ModelAndView(attr, "web/selectOnlineOpponent.mustache");
 			}
 		},new MustacheTemplateEngine());
 

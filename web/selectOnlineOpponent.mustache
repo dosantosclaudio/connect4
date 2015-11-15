@@ -23,8 +23,11 @@
 		  <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
 		    <script>	
 		      var channel=0;
-		      var socket = io.connect('192.168.1.112:3000');
+		      var ip_address = "{{ip}}:3000";
+		      var socket = io.connect(ip_address);
+
 		      $('#btn1').on("click",function(){
+		        alert(ip_address);
 		        socket.emit('publisher', $('#m').val());
 		        $('#m').val('');
 		        return false;
@@ -55,7 +58,6 @@
 		      		//channel -> "OnPlay"
 		      	}
 		      });
-		    </script>
-  
+		    </script>  
 	</body>
 </html>
