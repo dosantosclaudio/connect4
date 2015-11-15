@@ -30,33 +30,65 @@ io.on('connection', function(socket){
 		}
 	});
 
-socket.on('chn1', function(msg){
-  	console.log(msg);
-    io.emit('chn1', msg);
-  });
+	socket.on('chn1', function(msg){
+	  	console.log("Entro a channel 1");
+	  	console.log(msg);
+	    io.emit('chn1', msg);
+	});
 
-socket.on('chn2', function(msg){
-  	console.log(msg);
-    io.emit('chn2', msg);
-  });
+	socket.on('chn2', function(msg){
+	  	console.log(msg);
+	    io.emit('chn2', msg);
+	});
+
+	socket.on('chn3', function(msg){
+	  	console.log(msg);
+	    io.emit('chn3', msg);
+	});
+
+	socket.on('chn4', function(msg){
+	  	console.log(msg);
+	    io.emit('chn4', msg);
+	});
+
+	socket.on('chn5', function(msg){
+	  	console.log(msg);
+	    io.emit('chn5', msg);
+	});
+
+	socket.on('chn6', function(msg){
+	  	console.log(msg);
+	    io.emit('chn6', msg);
+	});
+
+	socket.on('chn7', function(msg){
+	  	console.log(msg);
+	    io.emit('chn7', msg);
+	});
+
+	socket.on('chn8', function(msg){
+	  	console.log(msg);
+	    io.emit('chn8', msg);
+	});
+
+	socket.on('chn9', function(msg){
+	  	console.log(msg);
+	    io.emit('chn9', msg);
+	});
+
+	socket.on('chn10', function(msg){
+	  	console.log(msg);
+	    io.emit('chn10', msg);
+	});
 
 
+	  socket.on('chat message', function(msg){
+	  	console.log("ddd");
+	  	console.log(msg);
+	    io.emit('chat message', msg);
+	  });
+	});
 
-socket.on('chn3', function(msg){
-  	console.log(msg);
-    io.emit('chn3', msg);
-  });
-
-
-
-
-  socket.on('chat message', function(msg){
-  	console.log("ddd");
-  	console.log(msg);
-    io.emit('chat message', msg);
-  });
-});
-
-http.listen(3000, function(){
-  console.log('listening on *:3000');
-}); 
+	http.listen(3000, function(){
+	  console.log('listening on *:3000');
+	}); 

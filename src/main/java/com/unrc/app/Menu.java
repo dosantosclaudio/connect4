@@ -246,8 +246,7 @@ public class Menu{
 			return new ModelAndView(attributes,"web/play.mustache");			
 		},new MustacheTemplateEngine());
 
-		post("/doMovement",(request,response)->{
-														//ACORTAR METODO!!!!!!!!1 NO PUEDE TENER 130 LINEAS 
+		post("/doMovement",(request,response)->{ //ACORTAR METODO!!!!!!!!1 NO PUEDE TENER 130 LINEAS 
 			Integer gameId = request.session().attribute("gameId");
 			Game currentGame = Game.findFirst("id=?",Integer.toString(gameId));
 			currentGame.resumeGame();
@@ -487,8 +486,133 @@ public class Menu{
 			attributes.put("turnUserEmail",User.findFirst("id=?",turn_user).getString("email"));			
 			attributes.put("board",currentGame.getBoard().toList(currentGame));
 			attributes.put("gameId",currentGame.getInteger("id"));
-			return new ModelAndView(attributes,"web/play.mustache");			
+			return new ModelAndView(attributes,"web/playOnline.mustache");			
 		},new MustacheTemplateEngine());
+	
+		
+		post("/doMovementOnline",(request,response)->{
+														//ACORTAR METODO!!!!!!!!1 NO PUEDE TENER 130 LINEAS 
+			Integer gameId = request.session().attribute("gameId");
+			Game currentGame = Game.findFirst("id=?",Integer.toString(gameId));
+			currentGame.resumeGame();
+			String 	turn_user, 
+					sessionUser = request.session().attribute("SESSION_NAME"),
+					col = request.queryParams("col"),
+					user1_id = request.queryParams("player1"),
+					user2_id = request.queryParams("player2"),
+					current_g = request.queryParams("game"),
+					channel= request.queryParams("channel");
+			User 	player1 = User.findFirst("id=?",user1_id),
+					player2 = User.findFirst("id=?",user2_id);
+			Map<String, Object> attributes = new HashMap<>();
+			Cell c=null;
+
+			if(currentGame.turnUser()){
+					turn_user=request.queryParams("player1");
+			}else{
+					turn_user=request.queryParams("player2");
+			}
+			User turn=User.findFirst("id=?",turn_user);
+			try{ // this try catch check movement 
+				c=currentGame.doMovement(turn,Integer.parseInt(col));
+			}catch(BoardException f){
+				switch (f.getCode()){
+					case "000":
+						System.out.println("Has been detected some problems in this aplication ");
+						break;
+					case "001":
+						System.out.println(f.getMessage());
+						break;
+					case "002":
+						System.out.println(f.getMessage());
+						break;
+					}
+			}
+			if (!currentGame.thereIsAWinner(turn,c) && !currentGame.full()){		
+				// the game must continue
+				if (turn_user.equals(user1_id)){
+					turn_user =user2_id;
+				}else{
+					turn_user =user1_id;
+				}
+				Integer count=0;
+				for (int i=0;i<7;i++){
+					if (currentGame.fullCol(count)) {
+						attributes.put("stateButton"+Integer.toString(count),"disabled");
+					}else{
+						attributes.put("stateButton"+Integer.toString(count),"");
+					}
+					count++;
+				}
+				attributes.put("ip",Menu.getServerIp());
+
+
+				attributes.put("user1",user1_id);
+				attributes.put("user2",user2_id);
+				attributes.put("channel", channel);
+				attributes.put("turnUser",turn_user);
+				attributes.put("turnUserEmail",User.findFirst("id=?",turn_user).getString("email"));
+				attributes.put("gameId",currentGame.get("id"));
+				attributes.put("board",currentGame.getBoard().toList(currentGame));
+				return new ModelAndView(attributes,"web/boardOnline.mustache");
+			}else{
+				//the game must stop for any option, full board o there is a winner.
+				currentGame.set("end_date",Game.getDateMysql());
+				currentGame.saveIt();
+				if (currentGame.full()){
+					if(currentGame.thereIsAWinner(turn,c)) {		
+						// FULL BOARD AND PLAYER 2 IS WINNER
+						currentGame.updateRankWithWinner(player2,player1);
+						currentGame.set("result_p1","LOOSE");
+						if (user2_id.equals(sessionUser)){
+							attributes.put("text","GAME OVER ");
+						}else{
+							attributes.put("text","CONGRATULATIONS ");	
+						}
+						attributes.put("user",null);
+						currentGame.saveIt();
+						return new ModelAndView(attributes,"web/finishedGame.mustache");
+					}else{
+						// FULL BOARD BUT THERE IS NO WINNER
+						currentGame.updateRankWithDraw(player1,player2);
+						currentGame.set("result_p1","TIE"); 
+						attributes.put("text","TIE");
+						attributes.put("user",null);	
+						currentGame.saveIt();
+						return new ModelAndView(attributes,"web/finishedGame.mustache");
+					}
+				}else{
+
+					if(currentGame.thereIsAWinner(turn,c)) {
+						if(turn_user.equals(user1_id)){
+							currentGame.updateRankWithWinner(player1,player2);
+							if (user1_id.equals(sessionUser)){
+								attributes.put("text","CONGRATULATIONS");
+							}else{
+								attributes.put("text","GAME OVER ");	
+							}
+							currentGame.set("result_p1","WIN");
+							attributes.put("user",null);
+							currentGame.saveIt();
+							return new ModelAndView(attributes,"web/finishedGame.mustache");
+						}else{
+							currentGame.updateRankWithWinner(player2,player1);
+							currentGame.set("result_p1","LOOSE");
+							if (user2_id.equals(sessionUser)){
+								attributes.put("text","CONGRATULATIONS ");
+							}else{
+								attributes.put("text","GAME OVER ");	
+							}
+							attributes.put("user",null);
+							currentGame.saveIt();
+							return new ModelAndView(attributes,"web/finishedGame.mustache");
+						}
+					}
+				}
+				return new ModelAndView(null,"web/initPage.mustache");
+			}
+		},new MustacheTemplateEngine());
+
 
 
 	}	

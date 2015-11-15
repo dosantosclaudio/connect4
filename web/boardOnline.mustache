@@ -4,21 +4,31 @@
 				$("#container").load("#table1");
 			}
 */			
+			
+			console.log("{{channel}}");
+		 	var ip_address='{{ip}}:3000';
+			var socket = io.connect(ip_address);
 
+			socket.on('{{channel}}',function(msg){
+				$("#container").html(msg);
+			});
+			
+					
 			function listeningMovement(x,y){
 				$(x).on("click", function(e){
-					console.log({{user1}});
 					$.ajax({
-						url:"/doMovement",
+						url:"/doMovementOnline",
 						data: {	player1:{{user1}},
 								player2:{{user2}},
 								turnUser:{{turnUser}},
 								game:{{gameId}},
+								channel:"{{channel}}",
 								col: y},
 						method:"POST"
 					}).done(function(data){
 						console.log(data);
-						$("#container").html(data);
+						socket.emit('{{channel}}',data);
+						
 						
 					});
 					e.defaultPrevented;
@@ -35,6 +45,7 @@
 				listeningMovement("#6col","5");
 				listeningMovement("#7col","6");
 			});
+
 
 		</script>
 
