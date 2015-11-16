@@ -616,11 +616,18 @@ public class Menu{
 				return new ModelAndView(null,"web/initPage.mustache");
 			}
 		},new MustacheTemplateEngine());
-get("/opponentDisconnect",(request,response)-> {	
+		get("/opponentDisconnect",(request,response)-> {	
 			
 				return new ModelAndView(null,"web/opponentDisconnect.mustache");
 			
 		},new MustacheTemplateEngine());
+
+		get("/finishedOnlineGame",(request,response)-> {	
+			
+			response.redirect("/");
+			return new ModelAndView(null,"web/initPage.mustache");
+		},new MustacheTemplateEngine());
+	
 
 	
 

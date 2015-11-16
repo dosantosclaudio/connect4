@@ -3,19 +3,19 @@
 	{{> jqueryconfig}}
 	<form action="/opponentDisconnect" id="disconnect" method="GET"></form>
 	<script type="text/javascript">
-		console.log("{{channel}}");
+		 console.log("{{channel}}");
 		 var ip_address='{{ip}}:3000';
 		 var socket = io.connect(ip_address);
 		 var chn="{{channel}}";
 		 socket.emit('addUser',{{session}});
 		
+
+
 		 socket.on('killConnection',function(msg){
-		 	alert(msg);
-		 	alert(chn);
 		 	if (chn==msg){
 		 		console.log("ENTRO");
 		 		socket.emit('{{channel}}',"killConnection");
-		 		document.forms['disconnect'].submit();
+		 		document.forms['disconnect'].submit();	
 		 	}
 		 });
 		 socket.on('{{channel}}',function(msg){
@@ -29,30 +29,38 @@
 		 			console.log(turnUser);
 		 			console.log(data);
 		 			console.log(msg);
-		 			if ("{{session}}"==turnUser){
-		 				var filter=msg.split('<!--M!-->');
-		 				var table=filter[1];
-
-		 				$("#container").html(table);
+		 			
+		 			if (msg.indexOf("<!--MARCAFINISHED-->")> -1){ //juego finalizado
+		 				var filter2=msg.split('/(/(');
+		 				var p22=filter2[1];
+		 				$("#container").html(p22);
+		 				console.log(msg);
 		 			}else{
-		 				var botones="<tr>"+
-		 	"<td><input align='"+"center"+"' type='"+"submit"+"' value='"+"Put here!"+"' id='"+"1col' disabled></td>"+
-		 	"<td><input align='"+"center"+"' type='"+"submit"+"' value='"+"Put here!"+"' id='"+"2col' disabled></td>"+
-		 	"<td><input align='"+"center"+"' type='"+"submit"+"' value='"+"Put here!"+"' id='"+"3col' disabled></td>"+
-		 	"<td><input align='"+"center"+"' type='"+"submit"+"' value='"+"Put here!"+"' id='"+"4col' disabled></td>"+
-		 	"<td><input align='"+"center"+"' type='"+"submit"+"' value='"+"Put here!"+"' id='"+"5col' disabled></td>"+
-		 	"<td><input align='"+"center"+"' type='"+"submit"+"' value='"+"Put here!"+"' id='"+"6col' disabled></td>"+
-		 	"<td><input align='"+"center"+"' type='"+"submit"+"' value='"+"Put here!"+"' id='"+"7col' disabled></td>"+"</tr>";
-		 				var elem1= msg.split('<!--&&&&-->');
-		 				var p1=elem1[0];
-		 				var elem2=p1.split('<!--M!-->');
-		 				var p11=elem2[1];
-		 				var p2=elem1[2];
-		 				console.log(p1);
-		 				console.log(botones);
-		 				console.log(p2);
-		 				$("#container").html(p11+botones+p2);
-		 			}
+			 			if ("{{session}}"==turnUser){			//si es mi turno
+			 				var filter=msg.split('<!--M!-->');
+			 				var table=filter[1];
+
+			 				$("#container").html(table);
+			 			}else{								//si no es mi turno
+			 				var botones="<tr id='"+"botones"+"''>"+
+			 	"<td><input align='"+"center"+"' type='"+"submit"+"' value='"+"Put here!"+"' id='"+"1col' disabled></td>"+
+			 	"<td><input align='"+"center"+"' type='"+"submit"+"' value='"+"Put here!"+"' id='"+"2col' disabled></td>"+
+			 	"<td><input align='"+"center"+"' type='"+"submit"+"' value='"+"Put here!"+"' id='"+"3col' disabled></td>"+
+			 	"<td><input align='"+"center"+"' type='"+"submit"+"' value='"+"Put here!"+"' id='"+"4col' disabled></td>"+
+			 	"<td><input align='"+"center"+"' type='"+"submit"+"' value='"+"Put here!"+"' id='"+"5col' disabled></td>"+
+			 	"<td><input align='"+"center"+"' type='"+"submit"+"' value='"+"Put here!"+"' id='"+"6col' disabled></td>"+
+			 	"<td><input align='"+"center"+"' type='"+"submit"+"' value='"+"Put here!"+"' id='"+"7col' disabled></td>"+"</tr>";
+			 				var elem1= msg.split('<!--&&&&-->');
+			 				var p1=elem1[0];
+			 				var elem2=p1.split('<!--M!-->');
+			 				var p11=elem2[1];
+			 				var p2=elem1[2];
+			 				console.log(p1);
+			 				console.log(botones);
+			 				console.log(p2);
+			 				$("#container").html(p11+botones+p2);
+			 			}
+			 		}
 
 					
 		 	}
