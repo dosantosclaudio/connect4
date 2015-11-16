@@ -10,6 +10,7 @@
 	 <script type="text/javascript">
 	 var ip_address='{{ip}}:3000';
 	 var socket = io.connect(ip_address);
+	 socket.emit('addUser',"{{user}}")
 	 var channel= {{channel}};
 	 socket.on('waitingSuscriber',function(msg){
 		      	if (msg=={{channel}}){

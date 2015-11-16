@@ -1,10 +1,36 @@
 <html>
 	
 	{{> jqueryconfig}}
-	
+	<form action="/opponentDisconnect" id="disconnect" method="GET"></form>
+	<script type="text/javascript">
+		console.log("{{channel}}");
+		 var ip_address='{{ip}}:3000';
+		 var socket = io.connect(ip_address);
+		 var chn="{{channel}}";
+		 socket.emit('addUser',{{user1}});
+		
+		 socket.on('killConnection',function(msg){
+		 	alert(msg);
+		 	alert(chn);
+		 	if (chn==msg){
+		 		console.log("ENTRO");
+		 		socket.emit('{{channel}}',"killConnection");
+		 		document.forms['disconnect'].submit();
+		 	}
+		 });
+		 socket.on('{{channel}}',function(msg){
+		 	if (msg=='killConnection'){
+		 		socket.emit('{{channel}}',"killConnection");
+		 		document.forms['disconnect'].submit();
+		 	}else{
+					$("#container").html(msg);
+		 	}
+		 	});
+			
+	</script>
 
 	<body id="cuerpo1" background="background.jpg" text="#FFFFFF" >
-
+		
 		<h1 align="center">Connect 4 - Smart-team</h1>
 	  	<h3 align="center">Playing</h3>
 	  

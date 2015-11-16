@@ -18,7 +18,9 @@
 	 	var channel=parseInt(elem[0]);
 	 	var chn={{channel}};
 	 	var message=elem[1];
-	 	if ((channel==chn)&&(message=='OKEY')) document.forms['toPlay'].submit();
+	 	if ((channel==chn)&&(message=='OKEY')) 
+	 		socket.emit('newGameConfirmed',{{user}},{{channel}});
+	 		document.forms['toPlay'].submit();
 	 });
 	
 	 /*socket.on('chn{{channel}}',function(msg)->{

@@ -431,6 +431,7 @@ public class Menu{
 			String usr=request.session().attribute("SESSION_NAME");  
 			Game currentGame= new Game(new Pair(User.findFirst("id=?",usr),User.findFirst("id=?",usr)));
 			currentGame.set("channel",request.queryParams("channel")).saveIt();
+			attributes.put("user",usr);
 			attributes.put("game",currentGame.get("id"));
 			attributes.put("channel",request.queryParams("channel"));
 			attributes.put("ip",Menu.getServerIp());
@@ -448,6 +449,7 @@ public class Menu{
 			Map<String, Object> attributes = new HashMap<String,Object>();
 			Game currentGame= Game.findFirst("id=?",request.queryParams("game"));
 			currentGame.set("player2_id",request.session().attribute("SESSION_NAME")).saveIt();
+			attributes.put("user",request.session().attribute("SESSION_NAME"));
 			attributes.put("channel",request.queryParams("channel"));
 			attributes.put("game",request.queryParams("game"));
 			attributes.put("ip",Menu.getServerIp());
@@ -480,6 +482,7 @@ public class Menu{
 				count++;
 			}
 			request.session().attribute("gameId",currentGame.getInteger("id"));
+			attributes.put("session",request.session().attribute("SESSION_NAME"));
 			attributes.put("channel",channel);
 			attributes.put("user1",user1_id);
 			attributes.put("user2",user2_id);
@@ -613,6 +616,13 @@ public class Menu{
 				return new ModelAndView(null,"web/initPage.mustache");
 			}
 		},new MustacheTemplateEngine());
+get("/opponentDisconnect",(request,response)-> {	
+			
+				return new ModelAndView(null,"web/opponentDisconnect.mustache");
+			
+		},new MustacheTemplateEngine());
+
+	
 
 
 

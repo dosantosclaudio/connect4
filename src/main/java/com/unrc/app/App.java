@@ -44,9 +44,9 @@ public class App extends Thread{
 	    externalStaticFileLocation("./web/Images");
 	    App a=new App();
 	    //a.start();
+
 	    a.menu();
     
     }
 	
 }
-	
