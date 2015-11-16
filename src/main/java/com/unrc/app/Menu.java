@@ -550,7 +550,7 @@ public class Menu{
 				}
 				attributes.put("ip",Menu.getServerIp());
 
-
+				attributes.put("session",request.session().attribute("SESSION_NAME"));
 				attributes.put("user1",user1_id);
 				attributes.put("user2",user2_id);
 				attributes.put("channel", channel);

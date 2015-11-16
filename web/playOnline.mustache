@@ -7,7 +7,7 @@
 		 var ip_address='{{ip}}:3000';
 		 var socket = io.connect(ip_address);
 		 var chn="{{channel}}";
-		 socket.emit('addUser',{{user1}});
+		 socket.emit('addUser',{{session}});
 		
 		 socket.on('killConnection',function(msg){
 		 	alert(msg);
@@ -23,7 +23,38 @@
 		 		socket.emit('{{channel}}',"killConnection");
 		 		document.forms['disconnect'].submit();
 		 	}else{
-					$("#container").html(msg);
+		 			var elem =msg.split('/(/(');
+		 			var data=elem[1];
+		 			var turnUser=elem[0];
+		 			console.log(turnUser);
+		 			console.log(data);
+		 			console.log(msg);
+		 			if ("{{session}}"==turnUser){
+		 				var filter=msg.split('<!--M!-->');
+		 				var table=filter[1];
+
+		 				$("#container").html(table);
+		 			}else{
+		 				var botones="<tr>"+
+		 	"<td><input align='"+"center"+"' type='"+"submit"+"' value='"+"Put here!"+"' id='"+"1col' disabled></td>"+
+		 	"<td><input align='"+"center"+"' type='"+"submit"+"' value='"+"Put here!"+"' id='"+"2col' disabled></td>"+
+		 	"<td><input align='"+"center"+"' type='"+"submit"+"' value='"+"Put here!"+"' id='"+"3col' disabled></td>"+
+		 	"<td><input align='"+"center"+"' type='"+"submit"+"' value='"+"Put here!"+"' id='"+"4col' disabled></td>"+
+		 	"<td><input align='"+"center"+"' type='"+"submit"+"' value='"+"Put here!"+"' id='"+"5col' disabled></td>"+
+		 	"<td><input align='"+"center"+"' type='"+"submit"+"' value='"+"Put here!"+"' id='"+"6col' disabled></td>"+
+		 	"<td><input align='"+"center"+"' type='"+"submit"+"' value='"+"Put here!"+"' id='"+"7col' disabled></td>"+"</tr>";
+		 				var elem1= msg.split('<!--&&&&-->');
+		 				var p1=elem1[0];
+		 				var elem2=p1.split('<!--M!-->');
+		 				var p11=elem2[1];
+		 				var p2=elem1[2];
+		 				console.log(p1);
+		 				console.log(botones);
+		 				console.log(p2);
+		 				$("#container").html(p11+botones+p2);
+		 			}
+
+					
 		 	}
 		 	});
 			
