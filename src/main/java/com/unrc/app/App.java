@@ -43,10 +43,10 @@ public class App extends Thread{
     public static void main( String[] args ){
 	    externalStaticFileLocation("./web/Images");
 	    App a=new App();
-	   // a.start();
+	    //a.start();
+
 	    a.menu();
     
     }
 	
 }
-	

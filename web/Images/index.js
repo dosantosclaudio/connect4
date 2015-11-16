@@ -61,6 +61,7 @@ io.on('connection', function(socket){
 		socket.userName=userName;
 	});
 	socket.on('publisher',function(msg){
+
 		console.log("Entro a publisher");
 		var index=getFreeChannel();
 		console.log(index);
@@ -70,12 +71,11 @@ io.on('connection', function(socket){
 			channels[index-1]=1;
 			users[(index-1)*2]=parseInt(msg);
 			console.log(index.toString()+':'+msg);
+
 		}else{
 			io.emit("publisher",0);
 		}
 	});
-
-
 
 	socket.on('waitingSuscriber',function(msg){
 		console.log("Entro a waitingsuscriber");
@@ -86,7 +86,6 @@ io.on('connection', function(socket){
 			io.emit('waitingSuscriber',0);
 		}
 	});
-
 
 	socket.on('suscriber',function(msg){
 		console.log("Entro a suscriber");
@@ -112,7 +111,6 @@ io.on('connection', function(socket){
     	}
   	});
 
-
 	socket.on('chn2', function(msg){
 	  	console.log(msg);
 	  	if (msg=='killConnection'){
@@ -121,7 +119,6 @@ io.on('connection', function(socket){
 		}
 	    io.emit('chn2', msg);
 	});
-
 
 	socket.on('chn3', function(msg){
 	  	console.log(msg);
@@ -147,7 +144,6 @@ io.on('connection', function(socket){
 		}
 	    io.emit('chn5', msg);
 	});
-
 
 	socket.on('chn6', function(msg){
 	  	console.log(msg);
@@ -178,16 +174,18 @@ io.on('connection', function(socket){
 	  	if (msg=='killConnection'){
 			channels[8]=0;
 		}
+
 	    io.emit('chn9', msg);
 	});
 
 	socket.on('chn10', function(msg){
-	  	console.log(msg);
+			console.log(msg);
 	  	if (msg=='killConnection'){
-			channels[9]=0
+			channels[9]=0;
 		}
 	    io.emit('chn10', msg);
 	});
+
 
 	socket.on('newGameConfirmed', function(user,channel){
 	  	users[(channel-1)*2+1]=user;
@@ -215,9 +213,6 @@ io.on('connection', function(socket){
 	 });
 });
 
-
-
 http.listen(3000, function(){
   console.log('listening on *:3000');
 }); 
-
