@@ -18,6 +18,8 @@ io.on('connection', function(socket){
 		}
 	});
 
+
+
 	socket.on('waitingSuscriber',function(msg){
 		if (i>0){
 			io.emit('waitingSuscriber',msg);
@@ -25,6 +27,7 @@ io.on('connection', function(socket){
 			io.emit('waitingSuscriber',0);
 		}
 	});
+
 
 	socket.on('suscriber',function(msg){
 		if (i>0){
@@ -34,13 +37,16 @@ io.on('connection', function(socket){
 		}
 	});
 
+
 	socket.on('chn1', function(msg){
     	io.emit('chn1', msg);
   	});
 
+
 	socket.on('chn2', function(msg){
 	    io.emit('chn2', msg);
 	});
+
 
 	socket.on('chn3', function(msg){
 	    io.emit('chn3', msg);
@@ -53,6 +59,7 @@ io.on('connection', function(socket){
 	socket.on('chn5', function(msg){
 	    io.emit('chn5', msg);
 	});
+
 
 	socket.on('chn6', function(msg){
 	    io.emit('chn6', msg);
@@ -74,7 +81,8 @@ io.on('connection', function(socket){
 	    io.emit('chn10', msg);
 	});
 
-	socket.on('chat message', function(msg){
+
+	  socket.on('chat message', function(msg){
 	    io.emit('chat message', msg);
 	  });
 	});

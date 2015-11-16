@@ -12,12 +12,6 @@
 	  		<h4 align="center" type="text" style="Position:Absolute; left: 12%; top: 13%"> Turn player: {{turnUserEmail}} </h4>
 	   		{{> boardOnline}}
 	  	</div>
-	   
-
-	 	<form action="/savegame" method="GET" >
-	 		<input type="hidden" value={{gameId}} name="gameId">
-	 		<input align="center" type="submit" style="Position:Absolute; left: 81%; top: 5%" value="Save game" name="save_game">
-	 	</form>
 	 	
 	 	<form action="/abandonedGame" method="GET" >
 	 		<input type="hidden" value={{user2}} name="player2">

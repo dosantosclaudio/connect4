@@ -566,13 +566,13 @@ public class Menu{
 						currentGame.updateRankWithWinner(player2,player1);
 						currentGame.set("result_p1","LOOSE");
 						if (user2_id.equals(sessionUser)){
-							attributes.put("text","GAME OVER ");
+							attributes.put("text","The winner of this game is:"+ " " + player2.get("email"));
 						}else{
-							attributes.put("text","CONGRATULATIONS ");	
+							attributes.put("text","The winner of this game is:"+ " " + player1.get("email"));	
 						}
 						attributes.put("user",null);
 						currentGame.saveIt();
-						return new ModelAndView(attributes,"web/finishedGame.mustache");
+						return new ModelAndView(attributes,"web/finishedOnlineGame.mustache");
 					}else{
 						// FULL BOARD BUT THERE IS NO WINNER
 						currentGame.updateRankWithDraw(player1,player2);
@@ -580,7 +580,7 @@ public class Menu{
 						attributes.put("text","TIE");
 						attributes.put("user",null);	
 						currentGame.saveIt();
-						return new ModelAndView(attributes,"web/finishedGame.mustache");
+						return new ModelAndView(attributes,"web/finishedOnlineGame.mustache");
 					}
 				}else{
 
@@ -588,25 +588,25 @@ public class Menu{
 						if(turn_user.equals(user1_id)){
 							currentGame.updateRankWithWinner(player1,player2);
 							if (user1_id.equals(sessionUser)){
-								attributes.put("text","CONGRATULATIONS");
+								attributes.put("text","The winner of this game is:"+ " " + player1.get("email"));
 							}else{
-								attributes.put("text","GAME OVER ");	
+								attributes.put("text","The winner of this game is:"+ " " + player2.get("email"));	
 							}
 							currentGame.set("result_p1","WIN");
 							attributes.put("user",null);
 							currentGame.saveIt();
-							return new ModelAndView(attributes,"web/finishedGame.mustache");
+							return new ModelAndView(attributes,"web/finishedOnlineGame.mustache");
 						}else{
 							currentGame.updateRankWithWinner(player2,player1);
-							currentGame.set("result_p1","LOOSE");
+							currentGame.set("result_p1","LOOSE");	
 							if (user2_id.equals(sessionUser)){
-								attributes.put("text","CONGRATULATIONS ");
+								attributes.put("text","The winner of this game is:"+ " " + player1.get("email"));
 							}else{
-								attributes.put("text","GAME OVER ");	
+								attributes.put("text","The winner of this game is:"+ " " + player2.get("email"));	
 							}
 							attributes.put("user",null);
 							currentGame.saveIt();
-							return new ModelAndView(attributes,"web/finishedGame.mustache");
+							return new ModelAndView(attributes,"web/finishedOnlineGame.mustache");
 						}
 					}
 				}
