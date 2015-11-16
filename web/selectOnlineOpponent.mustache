@@ -25,6 +25,7 @@
 
 
 		      socket.on('publisher', function(msg){
+
 		      	var elem=msg.split(':');
 	 			var channel=parseInt(elem[0]);
 	 			var message=elem[1];

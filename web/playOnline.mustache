@@ -1,0 +1,55 @@
+<html>
+	
+	{{> jqueryconfig}}
+	<form action="/opponentDisconnect" id="disconnect" method="GET"></form>
+	<script type="text/javascript">
+		console.log("{{channel}}");
+		 var ip_address='{{ip}}:3000';
+		 var socket = io.connect(ip_address);
+		 var chn="{{channel}}";
+		 socket.emit('addUser',{{user1}});
+		
+		 socket.on('killConnection',function(msg){
+		 	alert(msg);
+		 	alert(chn);
+		 	if (chn==msg){
+		 		console.log("ENTRO");
+		 		socket.emit('{{channel}}',"killConnection");
+		 		document.forms['disconnect'].submit();
+		 	}
+		 });
+		 socket.on('{{channel}}',function(msg){
+		 	if (msg=='killConnection'){
+		 		socket.emit('{{channel}}',"killConnection");
+		 		document.forms['disconnect'].submit();
+		 	}else{
+					$("#container").html(msg);
+		 	}
+		 	});
+			
+	</script>
+
+	<body id="cuerpo1" background="background.jpg" text="#FFFFFF" >
+		
+		<h1 align="center">Connect 4 - Smart-team</h1>
+	  	<h3 align="center">Playing</h3>
+	  
+	  	<div id="container" align="center">
+	  		<h4 align="center" type="text" style="Position:Absolute; left: 12%; top: 13%"> Turn player: {{turnUserEmail}} </h4>
+	   		{{> boardOnline}}
+	  	</div>
+	   
+
+	 	<form action="/savegame" method="GET" >
+	 		<input type="hidden" value={{gameId}} name="gameId">
+	 		<input align="center" type="submit" style="Position:Absolute; left: 81%; top: 5%" value="Save game" name="save_game">
+	 	</form>
+	 	
+	 	<form action="/abandonedGame" method="GET" >
+	 		<input type="hidden" value={{user2}} name="player2">
+	 		<input type="hidden" value={{gameId}} name="gameId">
+	 		<input align="center" type="submit" style="Position:Absolute; left: 90%; top: 5%" value="Exit game" name="exit_game">
+	 	</form>
+
+	</body>
+</html>
