@@ -179,19 +179,13 @@ io.on('connection', function(socket){
 	});
 
 	socket.on('chn10', function(msg){
-
-	    io.emit('chn10', msg);
-	});
-
-	socket.on('chat message', function(msg){
-	    io.emit('chat message', msg);
-	  });
-	  	console.log(msg);
+			console.log(msg);
 	  	if (msg=='killConnection'){
-			channels[9]=0
+			channels[9]=0;
 		}
 	    io.emit('chn10', msg);
 	});
+
 
 	socket.on('newGameConfirmed', function(user,channel){
 	  	users[(channel-1)*2+1]=user;
@@ -219,10 +213,6 @@ io.on('connection', function(socket){
 	 });
 });
 
-
-
 http.listen(3000, function(){
   console.log('listening on *:3000');
 }); 
-
-
