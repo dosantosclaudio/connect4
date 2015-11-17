@@ -173,7 +173,7 @@ public class Menu{
 				Map<String, Object> attributes = new HashMap<String,Object>();
 				attributes.put("player1_id",user1);
 				attributes.put("user1",User.findFirst("id=?",user1).get("email"));
-				List<Game> game=Game.where("(player1_id=? xor player2_id=?)and end_date is null",user1,user1);
+				List<Game> game=Game.where("(player1_id=? xor player2_id=?)and channel=0 and end_date is null",user1,user1);
 				attributes.put("games",game);
 				return new ModelAndView(attributes,"web/selectSavedGame.mustache");
 			}
@@ -194,6 +194,7 @@ public class Menu{
 				return new ModelAndView(attributes,"web/selectOpponent.mustache");
 			}
 		},new MustacheTemplateEngine());
+
 
 		post("/play",(request,response)->{	//inicio de juego.
 			String rGame=request.queryParams("game");													
