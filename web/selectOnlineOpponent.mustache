@@ -1,50 +1,52 @@
 <html>
 	{{> jqueryconfig}}
 	<body background="background.jpg" text="#FFFFFF">
-	
-			<p>		
-				<input type="submit" id="btn1" value="Create a table" name="createTable">
+		
+		<div id="acreditar">
+			
+			<p align="center">		
+				<input type="submit" id="btn1" value="Create game" name="createTable" align="center">
 			</p>
 		
 		 	<form action="/searchTable" method="GET">
-			<p>		
-				<input type="submit" id="btn2" value="Search a table" name="createTable">
+			<p align="center">		
+				<input type="submit" id="btn2" value="Subscribe a game" name="createTable" align="center">
 			</p>
 			</form>
+		</div>
+		
 
-		    <script>	
-		      var channel=0;
-		      var ip_address = "{{ip}}:3000";
-		      var socket = io.connect(ip_address);
+	    <script>	
+	      var channel=0;
+	      var ip_address = "{{ip}}:3000";
+	      var socket = io.connect(ip_address);
 
-		      $('#btn1').on("click",function(){
-		        socket.emit('publisher','{{user}}');
-		        return false;
-		      });
+	      $('#btn1').on("click",function(){
+	        socket.emit('publisher','{{user}}');
+	        return false;
+	      });
 
 
 
-		      socket.on('publisher', function(msg){
+	      socket.on('publisher', function(msg){
 
-		      	var elem=msg.split(':');
-	 			var channel=parseInt(elem[0]);
-	 			var message=elem[1];
+	      	var elem=msg.split(':');
+ 			var channel=parseInt(elem[0]);
+ 			var message=elem[1];
 
-		        if ((channel!=0)&&({{user}}==message)) {
-					$.ajax({
-						url:"/createTable",
-						data: { channel: channel},
-						method:"POST"
-					}).done(function(data){
-							console.log(data);
-							$('html').html(data);
-												
-					});
-		        }else{
-		        	//No puede realizar nada
-		        }
-		      });
+	        if ((channel!=0)&&({{user}}==message)) {
+				$.ajax({
+					url:"/createTable",
+					data: { channel: channel},
+					method:"POST"
+				}).done(function(data){
+						$('#acreditar').html(data);	
+				});
+	        }else{
+	        	//No puede realizar nada
+	        }
+	      });
 
-		    </script>  
+	    </script>  
 	</body>
 </html>
