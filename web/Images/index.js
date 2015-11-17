@@ -57,9 +57,11 @@ io.on('connection', function(socket){
 	console.log("USER CONECTADO.");
 	console.log(channels);
 	console.log(users);
+
 	socket.on('addUser',function(userName){
 		socket.userName=userName;
 	});
+	
 	socket.on('publisher',function(msg){
 
 		console.log("Entro a publisher");

@@ -460,6 +460,7 @@ public class Menu{
 
 		post("/playOnline",(request,response)->{	
 			String rGame=request.queryParams("game");
+			String sessionUser = request.session().attribute("SESSION_NAME");
 			String channel="chn"+request.queryParams("channel").toString();											
 			Map<String, Object> attributes = new HashMap<>();
 			Game currentGame=Game.findFirst("id=?",rGame);
@@ -472,6 +473,8 @@ public class Menu{
 			}else{
 				turn_user=user2_id;
 			}		
+
+			
 			// Se restringe la insercion de fichas en el tabler deshabilitando  los botones
 			Integer count=0;
 			for (int i=0;i<7;i++){	
@@ -482,8 +485,17 @@ public class Menu{
 				}
 				count++;
 			}
+
+			if (currentGame.getBoard().isEmptyBoard()){
+				if (!(turn_user.equals(sessionUser))){
+					for (Integer i=0; i<7; i++){
+						attributes.put("stateButton"+Integer.toString(i),"disabled");
+						System.out.println("stateButton"+Integer.toString(i) +"disabled");
+					}
+				}
+			}
 			request.session().attribute("gameId",currentGame.getInteger("id"));
-			attributes.put("session",request.session().attribute("SESSION_NAME"));
+			attributes.put("session",sessionUser);
 			attributes.put("channel",channel);
 			attributes.put("user1",user1_id);
 			attributes.put("user2",user2_id);
@@ -496,7 +508,6 @@ public class Menu{
 	
 		
 		post("/doMovementOnline",(request,response)->{
-														//ACORTAR METODO!!!!!!!!1 NO PUEDE TENER 130 LINEAS 
 			Integer gameId = request.session().attribute("gameId");
 			Game currentGame = Game.findFirst("id=?",Integer.toString(gameId));
 			currentGame.resumeGame();
@@ -512,12 +523,15 @@ public class Menu{
 			Map<String, Object> attributes = new HashMap<>();
 			Cell c=null;
 
+			
 			if(currentGame.turnUser()){
-					turn_user=request.queryParams("player1");
+				turn_user=request.queryParams("player1");
 			}else{
-					turn_user=request.queryParams("player2");
+				turn_user=request.queryParams("player2");
 			}
 			User turn=User.findFirst("id=?",turn_user);
+
+
 			try{ // this try catch check movement 
 				c=currentGame.doMovement(turn,Integer.parseInt(col));
 			}catch(BoardException f){
@@ -533,6 +547,8 @@ public class Menu{
 						break;
 					}
 			}
+
+
 			if (!currentGame.thereIsAWinner(turn,c) && !currentGame.full()){		
 				// the game must continue
 				if (turn_user.equals(user1_id)){
@@ -540,6 +556,7 @@ public class Menu{
 				}else{
 					turn_user =user1_id;
 				}
+
 				Integer count=0;
 				for (int i=0;i<7;i++){
 					if (currentGame.fullCol(count)) {
@@ -549,8 +566,8 @@ public class Menu{
 					}
 					count++;
 				}
-				attributes.put("ip",Menu.getServerIp());
 
+				attributes.put("ip",Menu.getServerIp());
 				attributes.put("session",request.session().attribute("SESSION_NAME"));
 				attributes.put("user1",user1_id);
 				attributes.put("user2",user2_id);
@@ -560,18 +577,22 @@ public class Menu{
 				attributes.put("gameId",currentGame.get("id"));
 				attributes.put("board",currentGame.getBoard().toList(currentGame));
 				return new ModelAndView(attributes,"web/boardOnline.mustache");
+			
 			}else{
+				
 				//the game must stop for any option, full board o there is a winner.
 				currentGame.set("end_date",Game.getDateMysql());
 				currentGame.saveIt();
 				if (currentGame.full()){
-					if(currentGame.thereIsAWinner(turn,c)) {		
-						// FULL BOARD AND PLAYER 2 IS WINNER
-						currentGame.updateRankWithWinner(player2,player1);
-						currentGame.set("result_p1","LOOSE");
+					if(currentGame.thereIsAWinner(turn,c)) {
+						
 						if (user2_id.equals(sessionUser)){
+							currentGame.updateRankWithWinner(player2,player1);
+							currentGame.set("result_p1","LOOSE");
 							attributes.put("text","The winner of this game is:"+ " " + player2.get("email"));
 						}else{
+							currentGame.updateRankWithWinner(player1,player2);
+							currentGame.set("result_p1","WIN");
 							attributes.put("text","The winner of this game is:"+ " " + player1.get("email"));	
 						}
 						attributes.put("user",null);
@@ -590,23 +611,30 @@ public class Menu{
 
 					if(currentGame.thereIsAWinner(turn,c)) {
 						if(turn_user.equals(user1_id)){
-							currentGame.updateRankWithWinner(player1,player2);
+							
 							if (user1_id.equals(sessionUser)){
+								currentGame.updateRankWithWinner(player1,player2);
 								attributes.put("text","The winner of this game is:"+ " " + player1.get("email"));
+								currentGame.set("result_p1","WIN");
 							}else{
+								currentGame.updateRankWithWinner(player2,player1);
 								attributes.put("text","The winner of this game is:"+ " " + player2.get("email"));	
+								currentGame.set("result_p1","LOOSE");
 							}
-							currentGame.set("result_p1","WIN");
+							
 							attributes.put("user",null);
 							currentGame.saveIt();
 							return new ModelAndView(attributes,"web/finishedOnlineGame.mustache");
 						}else{
-							currentGame.updateRankWithWinner(player2,player1);
-							currentGame.set("result_p1","LOOSE");	
+							
 							if (user2_id.equals(sessionUser)){
-								attributes.put("text","The winner of this game is:"+ " " + player1.get("email"));
+								currentGame.updateRankWithWinner(player2,player1);
+								currentGame.set("result_p1","LOOSE");	
+								attributes.put("text","The winner of this game is:"+ " " + player2.get("email"));
 							}else{
-								attributes.put("text","The winner of this game is:"+ " " + player2.get("email"));	
+								currentGame.updateRankWithWinner(player1,player2);
+								currentGame.set("result_p1","WIN");	
+								attributes.put("text","The winner of this game is:"+ " " + player1.get("email"));	
 							}
 							attributes.put("user",null);
 							currentGame.saveIt();

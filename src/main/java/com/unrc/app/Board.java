@@ -93,6 +93,14 @@ public class Board extends Model{
 		return count;
 	}
 
+	public Boolean isEmptyBoard(){
+		Boolean count=true;
+		for(int i=0;i<7;i++){
+			count = count && (boardM[0][i].get("user_id")==null);
+		}
+		return count;
+	}
+
 	// Retorna la celda en la que jugo el usuario
 	public Cell fillCellMemory(User u,int colum) throws BoardException{
 		int i=0;
