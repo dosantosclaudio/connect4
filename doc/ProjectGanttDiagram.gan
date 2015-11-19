@@ -1,14 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2015-08-24" view-index="0" gantt-divider-location="353" resource-divider-location="300" version="2.7.1" locale="es">
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2015-09-01" view-index="0" gantt-divider-location="353" resource-divider-location="300" version="2.7.1" locale="es">
     <description/>
-    <view zooming-state="default:7" id="gantt-chart">
+    <view zooming-state="default:8" id="gantt-chart">
         <field id="tpd3" name="Nombre" width="62" order="0"/>
         <field id="tpd4" name="Fecha de inicio" width="21" order="1"/>
         <field id="tpd6" name="Duración" width="16" order="2"/>
+        <option id="taskLabelUp" value="resources"/>
         <option id="color.recent"><![CDATA[#99ff99 #ff0000]]></option>
     </view>
     <view id="resource-table">
-        <field id="0" name="Nombre" width="52" order="0"/>
-        <field id="1" name="Función" width="47" order="1"/>
+        <field id="0" name="Nombre" width="50" order="0"/>
+        <field id="1" name="Función" width="49" order="1"/>
     </view>
     <!-- -->
     <calendars base-id="Argentina">
@@ -63,26 +64,30 @@
             <task id="10" name="Database_design" meeting="false" start="2015-09-24" duration="1" complete="0" expand="true"/>
             <task id="44" name="Class_Diagram" meeting="false" start="2015-09-23" duration="2" complete="0" expand="true"/>
         </task>
-        <task id="2" name="Implementation" meeting="false" start="2015-09-25" duration="34" complete="0" expand="true">
+        <task id="2" name="Implementation" meeting="false" start="2015-09-25" duration="47" complete="0" expand="true">
             <task id="24" name="Database" meeting="false" start="2015-09-25" duration="1" complete="0" expand="true">
                 <depend id="28" type="2" difference="0" hardness="Strong"/>
                 <depend id="34" type="2" difference="0" hardness="Strong"/>
             </task>
             <task id="27" name="Client_implementation" meeting="false" start="2015-10-16" duration="13" complete="0" expand="true">
                 <depend id="38" type="2" difference="0" hardness="Strong"/>
+                <depend id="45" type="2" difference="0" hardness="Strong"/>
             </task>
             <task id="28" name="Server_implementation" meeting="false" start="2015-09-28" duration="13" complete="0" expand="true">
                 <depend id="27" type="2" difference="0" hardness="Strong"/>
                 <depend id="33" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="38" name="Views" meeting="false" start="2015-11-04" duration="7" complete="0" expand="true">
+            <task id="45" name="Online_implementation" meeting="false" start="2015-11-04" duration="13" complete="0" expand="true">
+                <depend id="38" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="38" name="Views" color="#8cb6ce" meeting="false" start="2015-11-24" duration="7" complete="0" expand="true">
                 <depend id="36" type="2" difference="0" hardness="Strong"/>
             </task>
         </task>
-        <task id="3" name="Test" meeting="false" start="2015-09-28" duration="40" complete="0" expand="true">
+        <task id="3" name="Test" meeting="false" start="2015-09-28" duration="53" complete="0" expand="true">
             <task id="33" name="Client_test" meeting="false" start="2015-10-16" duration="10" complete="0" expand="true"/>
             <task id="34" name="Server_test" meeting="false" start="2015-09-28" duration="10" complete="0" expand="true"/>
-            <task id="36" name="Integration_test" meeting="false" start="2015-11-13" duration="7" complete="0" expand="true"/>
+            <task id="36" name="Integration_test" meeting="false" start="2015-12-03" duration="7" complete="0" expand="true"/>
         </task>
     </tasks>
     <resources/>

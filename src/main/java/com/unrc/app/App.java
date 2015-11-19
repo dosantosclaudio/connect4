@@ -45,6 +45,13 @@ public class App extends Thread{
 	    App a=new App();
 	    //a.start();
 
+	    try {
+	    	String [] cmd = {"node", "index.js"}; 
+	    	Runtime.getRuntime().exec(cmd); 
+	    } catch (IOException ioe) {
+	    	System.out.println (ioe);
+	    }
+	    
 	    a.menu();
     
     }
